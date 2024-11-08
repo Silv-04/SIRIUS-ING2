@@ -1,5 +1,5 @@
 pipeline {
-    agent { label none }
+    agent none
     environment {
         REPO_URL = 'https://github.com/Silv-04/SIRIUS-ING2.git'
         DEPLOY_PATH = '/home/episaine/jenkins'
