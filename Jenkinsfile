@@ -14,8 +14,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build en cours...'
-                    sh 'mvn clean install'
-                    sh 'mvn package'
+                sh 'mvn clean install'
+                sh 'mvn package'
             }
         }
         stage('Déploiement') {
@@ -23,10 +23,7 @@ pipeline {
                 sshagent(credentials: ['episaine']) {
                     sh "scp -r ${WORKSPACE}/proto-back episaine@192.168.1.11:${DEPLOY_PATH}" 
                     sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
-                }
-            }
-            steps {
-                sshagent(credentials: ['episaine']) {
+                    
                     sh "scp -r ${WORKSPACE}/proto-front episaine@192.168.1.12:${DEPLOY_PATH}" 
                     sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
                 }
