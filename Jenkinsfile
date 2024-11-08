@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'Test_Back && Test_Front' }
+    agent { label 'Test_Back || Test_Front' }
     environment {
         REPO_URL = 'https://github.com/Silv-04/SIRIUS-ING2.git'
         DEPLOY_PATH = '/home/episaine/jenkins'
