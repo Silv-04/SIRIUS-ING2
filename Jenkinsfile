@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Cloner le dépôt') {
             steps {
-                git url: "${REPO_URL}", branch: 'EPISAINE', credentialsId: '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'
+                git url: "${REPO_URL}", branch: 'EPISAINE', credentialsId: 'EPISAINE'
             }
         }
         stage('Build') {
@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Déploiement') {
             steps {
-                sshagent(credentials: ['episaine']) {
+                sshagent(credentials: ['EPISAINE']) {
                     sh "scp -r ${WORKSPACE}/proto-back episaine@192.168.1.11:${DEPLOY_PATH}" 
                     sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
                     
