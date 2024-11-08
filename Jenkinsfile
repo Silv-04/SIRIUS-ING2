@@ -27,10 +27,13 @@ pipeline {
                 // Utilise les identifiants SSH pour copier les fichiers sur la VM
                 sshagent(credentials: ['episaine']) {
                     // Copie l'executable du workspace Jenkins vers le répertoire de déploiement sur la VM
-                    sh "scp -r ${WORKSPACE} episaine@192.168.1.11:${DEPLOY_PATH}" 
-                    
+                    sh "scp -r ${WORKSPACE}/proto-back episaine@192.168.1.11:${DEPLOY_PATH}" 
+                    sh "scp -r ${WORKSPACE}/proto-front episaine@192.168.1.12:${DEPLOY_PATH}"
+
                     // Rendre le script deploy.sh exécutable et l'exécuter
-                    sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'" 
+                    sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
+                    sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
+
                 }
             }
         }
