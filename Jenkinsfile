@@ -14,10 +14,10 @@ pipeline {
         stage('Déploiement') {
             steps {
                 sshagent(['id_rsa_jenkins']) {
-                    sh "scp -r ${WORKSPACE}/proto-back/target/*.jar episaine@192.168.1.11:${DEPLOY_PATH}" 
+                    sh "scp -r ${WORKSPACE}/Ing2-proto/proto-back/target/proto-back-*.jar episaine@192.168.1.11:${DEPLOY_PATH}" 
                     sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
                 
-                    sh "scp -r ${WORKSPACE}/proto-front/build episaine@192.168.1.12:${DEPLOY_PATH}" 
+                    sh "scp -r ${WORKSPACE}/Ing2-proto/proto-front/build episaine@192.168.1.12:${DEPLOY_PATH}" 
                     sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
                 }
             }
