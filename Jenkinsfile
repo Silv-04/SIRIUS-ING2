@@ -1,18 +1,36 @@
 pipeline {
-    agent { label 'vm-agent' }
+    agent any
+    environment {
+        REPO_URL = 'https://github.com/Silv-04/SIRIUS-ING2.git'
+        DEPLOY_PATH = '/home/episaine/jenkins'
+    }
+
     stages {
-        stage('Build') {
+        stage('Cloner le dépôt') {
             steps {
-                sh 'mvn clean install'
+                git url: "${REPO_URL}", branch: 'Test', credentialsId: 'EPISAINE'
             }
         }
-        stage('Deploy') {
+        stage('Déploiement') {
             steps {
-                sshagent(['3a44a20d-43e5-41f9-a16f-74d779917e1c']) {
-                    sh 'scp target/mon-projet.war episaine@172.31.250.244:/home/episaine/Jenkins'
-                    sh 'ssh episaine@172.31.250.244 "systemctl restart mon-service"'
+                sshagent(['id_rsa_jenkins']) {
+                    ping episaine@192.168.2.21
+                    //sh "scp -r ${WORKSPACE}/Ing2-proto/proto-back/target/proto-back-*.jar episaine@192.168.1.11:${DEPLOY_PATH}" 
+                    //sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
+
+                    ping episaine@192.168.2.22
+                    sh "scp -r ${WORKSPACE}/Ing2-proto/proto-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}" 
+                    //sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
                 }
             }
+        }
+    }
+    post {
+        success {
+            echo 'Déploiement réussi !'
+        }
+        failure {
+            echo 'Échec du déploiement.'
         }
     }
 }
