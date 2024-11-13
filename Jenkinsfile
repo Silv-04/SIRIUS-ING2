@@ -14,12 +14,12 @@ pipeline {
         stage('Déploiement') {
             steps {
                 sshagent(['id_rsa_jenkins']) {
-                    ping episaine@192.168.2.21
-                    //sh "scp -r ${WORKSPACE}/Ing2-proto/proto-back/target/proto-back-*.jar episaine@192.168.1.11:${DEPLOY_PATH}" 
+                    sh "ping -c 5 192.168.2.21"
+                    //sh "scp -r ${WORKSPACE}/Ing2-proto/proto-back/target/proto-back-*.jar episaine@192.168.2.21:${DEPLOY_PATH}" 
                     //sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
 
-                    ping episaine@192.168.2.22
-                    sh "scp -r ${WORKSPACE}/Ing2-proto/proto-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}" 
+                    sh "ping -c 5 192.168.2.22"
+                    //sh "scp -r ${WORKSPACE}/Ing2-proto/proto-front/build/ episaine@192.168.2.22:${DEPLOY_PATH}" 
                     //sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
                 }
             }
