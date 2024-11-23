@@ -1,4 +1,9 @@
 .idea
 .vscode
-/target/
-/build/
+target/
+build/
+node_modules/
+.cache/
+*.log
+*.pack
+*.node

@@ -1,2 +1,4 @@
 ./episaine-front/node_modules filter=lfs diff=lfs merge=lfs -text
 ./episaine-front/node_modules !text !filter !merge !diff
+episaine-front/node_modules filter=lfs diff=lfs merge=lfs -text
+episaine-front/node_modules !text !filter !merge !diff
