@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Cloner le dépôt') {
             steps {
-                git url: "${REPO_URL}", branch: 'Prod', credentialsId: 'EPISAINE'
+                git url: "${REPO_URL}", branch: 'Main', credentialsId: 'EPISAINE'
             }
         }
         stage('Déploiement') {
