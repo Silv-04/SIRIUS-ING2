@@ -3,24 +3,29 @@ pipeline {
     environment {
         REPO_URL = 'https://github.com/Silv-04/SIRIUS-ING2.git'
         DEPLOY_PATH = '/home/episaine/jenkins'
+        BRANCH = 'main'
     }
 
     stages {
         stage('Cloner le dépôt') {
             steps {
-                git url: "${REPO_URL}", branch: 'Main', credentialsId: 'EPISAINE'
+                git url: "${REPO_URL}", branch: "${BRANCH}", credentialsId: 'EPISAINE'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh "cd episaine-back/ && mvn clean install -P${BRANCH}"
+                sh "cd episaine-front/ && npm install && npm run build -- --mode ${BRANCH}"
             }
         }
         stage('Déploiement') {
             steps {
                 sshagent(['id_rsa_jenkins']) {
-                    sh "ping -c 5 192.168.3.31"
-                    //sh "scp -r ${WORKSPACE}/Ing2-proto/proto-back/target/proto-back-*.jar episaine@192.168.3.31:${DEPLOY_PATH}" 
-                    //sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
+                    sh "scp -r ${WORKSPACE}/episaine-back/target/*.jar episaine@192.168.3.31:${DEPLOY_PATH}" 
+                    sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
 
-                    sh "ping -c 5 192.168.3.32"
-                    //sh "scp -r ${WORKSPACE}/Ing2-proto/proto-front/build/ episaine@192.168.3.32:${DEPLOY_PATH}" 
-                    //sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
+                    sh "scp -r ${WORKSPACE}/episaine-front/build/ episaine@192.168.3.32:${DEPLOY_PATH}" 
+                    sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'"
                 }
             }
         }
