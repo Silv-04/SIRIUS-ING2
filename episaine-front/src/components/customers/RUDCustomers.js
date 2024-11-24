@@ -10,7 +10,7 @@ export default function RUDCustomers() {
     const [selectedField, setSelectedField] = useState("");
     const [newValue, setNewValue] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    
+    console.log('Environnement actuel:', READ_CUSTOMERS, UPDATE_CUSTOMER, DELETE_CUSTOMER, process.env.REACT_APP_ENV);
     const fieldLabels = {
         customer_lastname: "last name",
         customer_firstname: "first name",

@@ -12,6 +12,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { CREATE_CUSTOMER } from "../../constants/back";
 
 export default function Customers() {
+    console.log('Environnement actuel:', process.env.REACT_APP_ENV);
     const [customer_lastname, setCustomerLastName] = React.useState("");
     const [customer_firstname, setCustomerFirstName] = React.useState("");
     const [customer_birthdate, setCustomerBirthDate] = React.useState(null);
