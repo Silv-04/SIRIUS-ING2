@@ -25,13 +25,16 @@ pipeline {
                     sh "scp -r ${WORKSPACE}/episaine-back/target/*.jar episaine@192.168.1.11:${DEPLOY_PATH}" 
                     sh "ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && nohup /${DEPLOY_PATH}/deploy.sh'"
 
+                    sh "scp -r ${WORKSPACE}/episaine-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}" 
                     sh 
                     '''
-                    export NVM_DIR="/opt/nvm"
-                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                    nvm use --lts
+                        export NVM_DIR="/opt/nvm"
+                        if [ -s "$NVM_DIR/nvm.sh" ]; then
+                            . "$NVM_DIR/nvm.sh"
+                        fi
+                        nvm use --lts
+                        npm install
                     '''
-                    sh "scp -r ${WORKSPACE}/episaine-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}" 
                     sh "ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && nohup /${DEPLOY_PATH}/deploy.sh'"
                 }
             }
