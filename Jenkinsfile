@@ -32,17 +32,17 @@ pipeline {
                     '''
 
                     sh '''
-                        scp -r ${WORKSPACE}/episaine-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}
-                        ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && nohup ${DEPLOY_PATH}/deploy.sh &'
-                    '''
-
-                    sh '''
                         export NVM_DIR="/opt/nvm"
                         if [ -s "$NVM_DIR/nvm.sh" ]; then
                             . "$NVM_DIR/nvm.sh"
                         fi
                         nvm use --lts
                         npm install
+                    '''
+
+                    sh '''
+                        scp -r ${WORKSPACE}/episaine-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}
+                        ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && nohup ${DEPLOY_PATH}/deploy.sh &'
                     '''
                 }
             }
