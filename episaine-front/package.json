@@ -25,8 +25,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build:local": "set REACT_APP_ENV=local && react-scripts build",
+    "build:dev": "set REACT_APP_ENV=dev && react-scripts build",
+    "build:preprod": "set REACT_APP_ENV=preprod && react-scripts build",
+    "build:prod": "set REACT_APP_ENV=prod && react-scripts build"
   },
   "eslintConfig": {
     "extends": [
