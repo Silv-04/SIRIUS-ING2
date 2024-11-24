@@ -19,7 +19,7 @@ pipeline {
                 sh '''
                 cd episaine-front/
                 npm ci
-                npm run build -- --mode ${BRANCH}
+                npm run build:${BRANCH}
                 '''
             }
         }
