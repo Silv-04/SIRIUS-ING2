@@ -24,10 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build:local": "react-scripts build",
-    "build:dev": "react-scripts build",
-    "build:preprod": "react-scripts build",
-    "build:prod": "react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -48,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.4"
   }
 }
