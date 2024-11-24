@@ -27,13 +27,7 @@ export default function RUDCustomers() {
         try {
             const response = await axios.get(READ_CUSTOMERS);
             console.log("Customers fetched");
-
-            // Vérifier que les données sont bien un tableau
-            if (Array.isArray(response.data)) {
-                setCustomers(response.data);
-            } else {
-                console.error("Les données reçues ne sont pas un tableau :", response.data);
-            }
+            setCustomers(response.data);
         } catch (error) {
             console.error("Error while reading data:", error);
         }
@@ -80,8 +74,8 @@ export default function RUDCustomers() {
         readCustomers();
     }, []);
 
-    if (!Array.isArray(customers) || customers.length === 0) {
-        return <div>No customers found</div>;
+    if (customers.length === 0) {
+        return (<div>No customers, poor business</div>);
     }
 
     return (
@@ -105,9 +99,9 @@ export default function RUDCustomers() {
                         </tr>
                     </thead>
                     <tbody>
-                        {customers.map((customer) => (
+                    {customers.map((customer) => (
                             <tr key={customer.customer_id}>
-                                {Object.keys(customer).map((field) => {
+                                {Object.keys(customer).map((field, index) => {
                                     if (field === 'customer_id') {
                                         return (
                                             <td key={field}>
