@@ -24,10 +24,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build:local": "cross-env REACT_APP_ENV=local REACT_APP_BACKEND_URL=http://localhost:8080 react-scripts build ",
-    "build:dev": "cross-env REACT_APP_ENV=dev REACT_APP_BACKEND_URL=http://192.168.1.11:8080 react-scripts build ",
-    "build:preprod": "cross-env REACT_APP_ENV=preprod REACT_APP_BACKEND_URL=http://192.168.2.21:8080 react-scripts build ",
-    "build:prod": "cross-env REACT_APP_ENV=prod REACT_APP_BACKEND_URL=http://192.168.3.31:8080 react-scripts build ",
+    "build:local": "cross-env REACT_APP_BACKEND_URL=http://localhost:8080 react-scripts build ",
+    "build:dev": "cross-env REACT_APP_BACKEND_URL=http://192.168.1.11:8080 react-scripts build ",
+    "build:preprod": "cross-env REACT_APP_BACKEND_URL=http://192.168.2.21:8080 react-scripts build ",
+    "build:prod": "cross-env REACT_APP_BACKEND_URL=http://192.168.3.31:8080 react-scripts build ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
