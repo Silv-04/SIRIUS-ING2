@@ -36,9 +36,8 @@ pipeline {
                     // Déploiement frontend
                     sh "scp -r ${WORKSPACE}/episaine-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}"
                     sh """
-                    ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh'
+                    ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && sudo ${DEPLOY_PATH}/deploy.sh'
                     """
-                    // && nohup ${DEPLOY_PATH}/deploy.sh > ${DEPLOY_PATH}/deploy_front.log 2>&1 &
                 }
             }
         }
