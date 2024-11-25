@@ -19,8 +19,8 @@ export default function LabTabs() {
             <TabContext value={value}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <TabList onChange={handleChange} aria-label="lab API tabs example">
-                        <Tab label="Item One" value="1" />
-                        <Tab label="Item Two" value="2" />
+                        <Tab label="Insertion" value="1" />
+                        <Tab label="Affichage" value="2" />
                     </TabList>
                 </Box>
                 <TabPanel value="1"><InsertCustomers/></TabPanel>
