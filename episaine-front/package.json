@@ -24,7 +24,7 @@
     "webpack": "^5.96.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env REACT_APP_BACKEND_URL=http://localhost:8080 react-scripts start",
     "build:local": "cross-env REACT_APP_BACKEND_URL=http://localhost:8080 react-scripts build ",
     "build:dev": "cross-env REACT_APP_BACKEND_URL=http://192.168.1.11:8080 react-scripts build ",
     "build:preprod": "cross-env REACT_APP_BACKEND_URL=http://192.168.2.21:8080 react-scripts build ",
