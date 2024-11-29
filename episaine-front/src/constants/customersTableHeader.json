@@ -1,0 +1,12 @@
+[
+    {"value": "customer_id", "label": "ID"},
+    {"value": "customer_lastname", "label": "Nom"},
+    {"value": "customer_firstname", "label": "Prénom"},
+    {"value": "customer_birthdate", "label": "Date de naissance"},
+    {"value": "gender", "label": "Genre"},
+    {"value": "customer_phone_number", "label": "Numéro de téléphone"},
+    {"value": "customer_mail", "label": "Email"},
+    {"value": "city", "label": "Ville"},
+    {"value": "address", "label": "Adresse"},
+    {"value": "postal_code", "label": "Code postal"}
+]
