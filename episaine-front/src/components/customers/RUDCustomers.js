@@ -75,26 +75,26 @@ export default function RUDCustomers() {
     }, []);
 
     if (customers.length === 0) {
-        return (<div>No customers, poor business</div>);
+        return (<div>Pas de client</div>);
     }
 
     return (
         <div className="container">
-            <h1 className="title">Customers list</h1>
+            <h1 className="title">Liste des clients</h1>
             <div className="row">
                 <table className="custom-table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Last name</th>
-                            <th>First name</th>
-                            <th>Birth date</th>
-                            <th>Gender</th>
-                            <th>Phone number</th>
+                            <th>Nom de famille</th>
+                            <th>Prénom</th>
+                            <th>Date de naissance</th>
+                            <th>Genre</th>
+                            <th>Numéro de téléphone</th>
                             <th>Email</th>
-                            <th>City</th>
-                            <th>Address</th>
-                            <th>Postal Code</th>
+                            <th>Ville</th>
+                            <th>Adresse</th>
+                            <th>Code postal</th>
                             <th>Supprimer</th>
                         </tr>
                     </thead>
@@ -128,7 +128,7 @@ export default function RUDCustomers() {
                                         color="secondary"
                                         onClick={() => confirmDelete(customer.customer_id)}
                                     >
-                                        Delete
+                                        Supprimer
                                     </Button>
                                 </td>
                             </tr>
@@ -138,7 +138,7 @@ export default function RUDCustomers() {
             </div>
 
             <Dialog open={isDialogOpen} onClose={handleClose}>
-                <DialogTitle>Update {fieldLabels[selectedField]}</DialogTitle>
+                <DialogTitle>Modifier {fieldLabels[selectedField]}</DialogTitle>
                 <DialogContent>
                     <TextField
                         label={`New value for ${fieldLabels[selectedField]}`}

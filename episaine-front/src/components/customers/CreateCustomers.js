@@ -32,42 +32,42 @@ export default function Customers() {
     const validateFields = useCallback(() => {
         const newErrors = {};
         if (!customer_lastname) {
-            newErrors.customer_lastname = "Last Name is required";
+            newErrors.customer_lastname = "Nom de famille requis.";
         } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_lastname)) {
-            newErrors.customer_lastname = "Last name must contain only letters.";
+            newErrors.customer_lastname = "Le nom doit contenir que des lettres.";
         }
         if (!customer_firstname) {
-            newErrors.customer_firstname = "First Name is required";
+            newErrors.customer_firstname = "Prénom requis.";
         } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_firstname)) {
-            newErrors.customer_firstname = "First name must contain only letters.";
+            newErrors.customer_firstname = "Le prénom doit contenir que des lettres.";
         }
         if (!customer_birthdate) {
-            newErrors.customer_birthdate = "Birth Date is required";
+            newErrors.customer_birthdate = "Date de naissance requise";
         }
         if (!gender) {
-            newErrors.gender = "Gender is required";
+            newErrors.gender = "Genre requis";
         }
         if (!customer_phone_number) {
-            newErrors.customer_phone_number = "Phone Number is required";
+            newErrors.customer_phone_number = "Numéro de téléphone requis";
         } else if (!/^(\+33|0)[1-9]\d{8}$/.test(customer_phone_number)) {
             newErrors.customer_phone_number =
-                "Phone number not valid. Format : 0XXXXXXXXX";
+                "Numéro de téléphone non valide. Format : 0XXXXXXXXX";
         }
         if (!customer_mail) {
-            newErrors.customer_mail = "Email is required";
+            newErrors.customer_mail = "Adresse mail requis";
         } else if (!/\S+@\S+\.\S+/.test(customer_mail)) {
-            newErrors.customer_mail = "Email not valid.";
+            newErrors.customer_mail = "Adresse mail non valide. Format : exemple@exemple.com.";
         }
         if (!postal_code) {
-            newErrors.postal_code = "Postal Code is required";
+            newErrors.postal_code = "Code postal requis.";
         } else if (!/^\d{5}$/.test(postal_code)) {
-            newErrors.postal_code = "Postal code not valid.";
+            newErrors.postal_code = "Code postal non valide.";
         }
         if (!city) {
-            newErrors.city = "City is required";
+            newErrors.city = "Ville requise.";
         }
         if (!address) {
-            newErrors.address = "Address is required";
+            newErrors.address = "Adresse requise.";
         }
         setErrors(newErrors);
     }, [
@@ -113,13 +113,11 @@ export default function Customers() {
 
     const handleInputChange = (e, field) => {
         let value = e.target.value;
-    
-        // Supprimer les espaces pour le numéro de téléphone
+
         if (field === "customer_phone_number") {
             value = value.replace(/\s/g, '');
         }
-    
-        // Mettre à jour la valeur et valider le champ correspondant
+
         switch (field) {
             case "customer_lastname":
                 setCustomerLastName(value);
@@ -165,7 +163,7 @@ export default function Customers() {
         <Container maxWidth="md" style={{ marginTop: "40px" }}>
             <Grid container justifyContent="center" alignItems="center" style={{ marginBottom: "20px" }}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    Customer Form
+                    Formulaire client
                 </Typography>
             </Grid>
             <form onSubmit={handleSubmit} noValidate autoComplete="off">
@@ -174,52 +172,53 @@ export default function Customers() {
                         <TextField
                             fullWidth
                             margin="normal"
-                            label="Last Name"
+                            label="Nom de famille"
                             variant="outlined"
                             value={customer_lastname}
                             onChange={(e) => handleInputChange(e, "customer_lastname")}
                             onBlur={() => handleBlur("customer_lastname")}
                             error={Boolean(touched.customer_lastname && errors.customer_lastname)}
-                            helperText={touched.customer_lastname && errors.customer_lastname}
+                            helpertext={touched.customer_lastname && errors.customer_lastname}
                         />
                         <TextField
                             fullWidth
                             margin="normal"
-                            label="First Name"
+                            label="Prénom"
                             variant="outlined"
                             value={customer_firstname}
                             onChange={(e) => handleInputChange(e, "customer_firstname")}
                             onBlur={() => handleBlur("customer_firstname")}
                             error={Boolean(touched.customer_firstname && errors.customer_firstname)}
-                            helperText={touched.customer_firstname && errors.customer_firstname}
+                            helpertext={touched.customer_firstname && errors.customer_firstname}
                         />
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
-                                label="Birth Date"
+                                label="Date de naissance"
                                 value={customer_birthdate}
-                                onChange={(newValue) => handleInputChange({ target: { value: newValue } }, "customer_birthdate")}
+                                onChange={(newValue) =>
+                                    handleInputChange({ target: { value: newValue } }, "customer_birthdate")
+                                }
                                 onBlur={() => handleBlur("customer_birthdate")}
                                 format="dd-MM-yyyy"
-                                inputFormat="dd-MM-yyyy"
                                 shouldDisableDate={(date) => date >= new Date()}
-                                renderInput={(params) => (
-                                    <TextField
-                                        error={Boolean(touched.customer_birthdate && errors.customer_birthdate)}
-                                        helperText={touched.customer_birthdate && errors.customer_birthdate}
-                                        fullWidth
-                                        margin="normal"
-                                    />
-                                )}
+                                slotProps={{
+                                    textField: {
+                                        error: Boolean(touched.customer_birthdate && errors.customer_birthdate),
+                                        helperText: touched.customer_birthdate && errors.customer_birthdate,
+                                        fullWidth: true,
+                                        margin: "normal",
+                                    },
+                                }}
                             />
                         </LocalizationProvider>
                         <FormControl fullWidth variant="outlined" margin="normal">
-                            <InputLabel>Gender</InputLabel>
+                            <InputLabel>Genre</InputLabel>
                             <Select
                                 value={gender}
                                 onChange={(e) => handleInputChange(e, "gender")}
-                                label="Gender"
+                                label="Genre"
                                 error={Boolean(touched.gender && errors.gender)}
-                                helperText={touched.gender && errors.gender}
+                                helpertext={touched.gender && errors.gender}
                                 onBlur={() => handleBlur("gender")}
                             >
                                 {genderOptions.map((option) => (
@@ -232,12 +231,12 @@ export default function Customers() {
                         <TextField
                             fullWidth
                             margin="normal"
-                            label="Phone Number"
+                            label="Numéro de téléphone"
                             variant="outlined"
                             value={customer_phone_number}
                             onChange={(e) => handleInputChange(e, "customer_phone_number")}
                             error={Boolean(touched.customer_phone_number && errors.customer_phone_number)}
-                            helperText={touched.customer_phone_number && errors.customer_phone_number}
+                            helpertext={touched.customer_phone_number && errors.customer_phone_number}
                             onBlur={() => handleBlur("customer_phone_number")}
                         />
                     </Grid>
@@ -250,40 +249,40 @@ export default function Customers() {
                             value={customer_mail}
                             onChange={(e) => handleInputChange(e, "customer_mail")}
                             error={Boolean(touched.customer_mail && errors.customer_mail)}
-                            helperText={touched.customer_mail && errors.customer_mail}
+                            helpertext={touched.customer_mail && errors.customer_mail}
                             onBlur={() => handleBlur("customer_mail")}
                         />
                         <TextField
                             fullWidth
                             margin="normal"
-                            label="City"
+                            label="Ville"
                             variant="outlined"
                             value={city}
                             onChange={(e) => handleInputChange(e, "city")}
                             error={Boolean(touched.city && errors.city)}
-                            helperText={touched.city && errors.city}
+                            helpertext={touched.city && errors.city}
                             onBlur={() => handleBlur("city")}
                         />
                         <TextField
                             fullWidth
                             margin="normal"
-                            label="Address"
+                            label="Adresse"
                             variant="outlined"
                             value={address}
                             onChange={(e) => handleInputChange(e, "address")}
                             error={Boolean(touched.address && errors.address)}
-                            helperText={touched.address && errors.address}
+                            helpertext={touched.address && errors.address}
                             onBlur={() => handleBlur("address")}
                         />
                         <TextField
                             fullWidth
                             margin="normal"
-                            label="Postal Code"
+                            label="Code postal"
                             variant="outlined"
                             value={postal_code}
                             onChange={(e) => handleInputChange(e, "postal_code")}
                             error={Boolean(touched.postal_code && errors.postal_code)}
-                            helperText={touched.postal_code && errors.postal_code}
+                            helpertext={touched.postal_code && errors.postal_code}
                             onBlur={() => handleBlur("postal_code")}
                         />
                     </Grid>
@@ -295,7 +294,7 @@ export default function Customers() {
                         type="submit"
                         disabled={!isFormValid}
                     >
-                        Submit
+                        Valider
                     </Button>
                 </Grid>
             </form>
