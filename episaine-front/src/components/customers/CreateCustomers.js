@@ -15,6 +15,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { CREATE_CUSTOMER } from "../../constants/back";
 import genderOptions from '../../constants/genderOptions.json';
+import frLocale from "date-fns/locale/fr";
 
 export default function Customers() {
     const [customer_lastname, setCustomerLastName] = useState("");
@@ -191,7 +192,7 @@ export default function Customers() {
                             error={Boolean(touched.customer_firstname && errors.customer_firstname)}
                             helpertext={touched.customer_firstname && errors.customer_firstname}
                         />
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={frLocale}>
                             <DatePicker
                                 label="Date de naissance"
                                 value={customer_birthdate}
