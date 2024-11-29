@@ -32,42 +32,42 @@ export default function Customers() {
 
     const validateFields = useCallback(() => {
         const newErrors = {};
-        if (!String.prototype.trim(customer_lastname)) {
+        if (!customer_lastname) {
             newErrors.customer_lastname = "Nom de famille requis.";
         } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_lastname)) {
             newErrors.customer_lastname = "Le nom doit contenir que des lettres.";
         }
-        if (!String.prototype.trim(customer_firstname)) {
+        if (!customer_firstname) {
             newErrors.customer_firstname = "Prénom requis.";
         } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_firstname)) {
             newErrors.customer_firstname = "Le prénom doit contenir que des lettres.";
         }
-        if (!String.prototype.trim(customer_birthdate)) {
+        if (!customer_birthdate) {
             newErrors.customer_birthdate = "Date de naissance requise";
         }
-        if (!String.prototype.trim(gender)) {
+        if (!gender) {
             newErrors.gender = "Genre requis";
         }
-        if (!String.prototype.trim(customer_phone_number)) {
+        if (!customer_phone_number) {
             newErrors.customer_phone_number = "Numéro de téléphone requis";
         } else if (!/^(\+33|0)[1-9]\d{8}$/.test(customer_phone_number)) {
             newErrors.customer_phone_number =
                 "Numéro de téléphone non valide. Format : 0XXXXXXXXX";
         }
-        if (!String.prototype.trim(customer_mail)) {
+        if (!customer_mail) {
             newErrors.customer_mail = "Adresse mail requis";
         } else if (!/\S+@\S+\.\S+/.test(customer_mail)) {
             newErrors.customer_mail = "Adresse mail non valide. Format : exemple@exemple.com.";
         }
-        if (!String.prototype.trim(postal_code)) {
+        if (!postal_code) {
             newErrors.postal_code = "Code postal requis.";
         } else if (!/^\d{5}$/.test(postal_code)) {
             newErrors.postal_code = "Code postal non valide.";
         }
-        if (!String.prototype.trim(city)) {
+        if (!city) {
             newErrors.city = "Ville requise.";
         }
-        if (!String.prototype.trim(address)) {
+        if (!address) {
             newErrors.address = "Adresse requise.";
         }
         setErrors(newErrors);
@@ -164,7 +164,7 @@ export default function Customers() {
         <Container maxWidth="md" style={{ marginTop: "40px" }}>
             <Grid container justifyContent="center" alignItems="center" style={{ marginBottom: "20px" }}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    Formulaire client test
+                    Formulaire client
                 </Typography>
             </Grid>
             <form onSubmit={handleSubmit} noValidate autoComplete="off">
