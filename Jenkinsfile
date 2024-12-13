@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh "cd episaine-back/ && mvn clean install -P${BRANCH}"
+                sh "cd episaine-back/ && mvn clean package -P${BRANCH}"
                 sh '''
                 cd episaine-front/
                 npm ci
