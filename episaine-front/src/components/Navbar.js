@@ -5,7 +5,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import InsertCustomers from './customers/CreateCustomers';
-import RUDCustomers from './customers/RUDCustomers';
+import CustomerPage from './customers/CustomerPage';
 
 export default function LabTabs() {
     const [value, setValue] = React.useState('1');
@@ -23,8 +23,8 @@ export default function LabTabs() {
                         <Tab label="Affichage" value="2" />
                     </TabList>
                 </Box>
-                <TabPanel value="1"><InsertCustomers/></TabPanel>
-                <TabPanel value="2"><RUDCustomers/></TabPanel>
+                <TabPanel value="1"><InsertCustomers /></TabPanel>
+                <TabPanel value="2"><CustomerPage /></TabPanel>
             </TabContext>
         </Box>
     );

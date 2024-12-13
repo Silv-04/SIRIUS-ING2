@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import reportWebVitals from './reportWebVitals';
-import CustomerPage from './components/customers/CustomerPage'; 
+import Navbar from './components/Navbar'; 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <CustomerPage />
+    <Navbar />
   </React.StrictMode>
 );
 
