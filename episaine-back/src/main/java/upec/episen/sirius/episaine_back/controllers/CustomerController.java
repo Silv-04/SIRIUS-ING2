@@ -3,6 +3,7 @@ package upec.episen.sirius.episaine_back.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.persistence.OrderBy;
 import upec.episen.sirius.episaine_back.models.Customer;
 import upec.episen.sirius.episaine_back.services.CustomerService;
 
@@ -29,9 +32,17 @@ public class CustomerController {
         return "Customer added successfully";
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get/all")
     public List<Customer> getAllCustomers() {
         return customerService.findAllCustomers();
+    }
+
+    @GetMapping("/get")
+    @OrderBy
+    public Page<Customer> getPage(
+        @RequestParam int page,
+        @RequestParam int size) {
+        return customerService.findCustomers(page, size);
     }
 
     @DeleteMapping("/delete/{id}")
