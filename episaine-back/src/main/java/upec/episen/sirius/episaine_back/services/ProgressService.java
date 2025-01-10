@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back;
+package upec.episen.sirius.episaine_back.services;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -14,15 +14,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import upec.episen.sirius.episaine_back.customers.models.Customer;
-import upec.episen.sirius.episaine_back.customers.services.CustomerService;
-import upec.episen.sirius.episaine_back.informations.models.Informations;
-import upec.episen.sirius.episaine_back.informations.services.InformationsService;
-import upec.episen.sirius.episaine_back.recipes.models.Recipes;
-import upec.episen.sirius.episaine_back.recipes.services.RecipesService;
+import upec.episen.sirius.episaine_back.models.Customer;
+import upec.episen.sirius.episaine_back.models.Informations;
+import upec.episen.sirius.episaine_back.models.Recipes;
 
 @Service
-public class Progress {
+public class ProgressService {
     /* TODO : 
      * 1. Récupérer les informations du clients
      * 2. Récupérer les recettes répondant aux besoins clients
@@ -31,7 +28,7 @@ public class Progress {
     */
 
     // 1. Récupérer les informations du clients
-    protected static Logger progressLogger = LogManager.getLogger(Progress.class);
+    protected static Logger progressLogger = LogManager.getLogger(ProgressService.class);
 
     private InformationsService informationsService;
     private RecipesService recipesService;
@@ -41,7 +38,7 @@ public class Progress {
     private int perte_max = 800;
     private int gain_min = 300;
 
-    public Progress(InformationsService informationsService, RecipesService recipesService, CustomerService customerService) throws IOException {
+    public ProgressService(InformationsService informationsService, RecipesService recipesService, CustomerService customerService) throws IOException {
         this.informationsService = informationsService;
         this.recipesService = recipesService;
         this.customerService = customerService;

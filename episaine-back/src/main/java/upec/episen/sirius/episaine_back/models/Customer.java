@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.customers.models;
+package upec.episen.sirius.episaine_back.models;
 
 import java.sql.Date;
 

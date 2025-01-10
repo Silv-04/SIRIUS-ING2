@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.customers.services;
+package upec.episen.sirius.episaine_back.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import upec.episen.sirius.episaine_back.customers.models.Customer;
-import upec.episen.sirius.episaine_back.customers.repositories.CustomerRepository;
+import upec.episen.sirius.episaine_back.models.Customer;
+import upec.episen.sirius.episaine_back.repositories.CustomerRepository;
 
 @Service
 public class CustomerService {

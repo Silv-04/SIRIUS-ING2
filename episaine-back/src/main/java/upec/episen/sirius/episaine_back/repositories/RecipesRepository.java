@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.recipes.repositories;
+package upec.episen.sirius.episaine_back.repositories;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import upec.episen.sirius.episaine_back.recipes.models.Recipes;
+import upec.episen.sirius.episaine_back.models.Recipes;
 
 public interface RecipesRepository extends JpaRepository<Recipes, Integer> {
 

@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.customers.controllers;
+package upec.episen.sirius.episaine_back.controllers;
 
 import java.util.List;
 
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.OrderBy;
-import upec.episen.sirius.episaine_back.customers.models.Customer;
-import upec.episen.sirius.episaine_back.customers.services.CustomerService;
+import upec.episen.sirius.episaine_back.models.Customer;
+import upec.episen.sirius.episaine_back.services.CustomerService;
 
 @CrossOrigin
 @RestController

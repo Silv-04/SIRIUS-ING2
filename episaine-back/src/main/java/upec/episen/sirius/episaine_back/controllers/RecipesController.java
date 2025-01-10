@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.recipes.controllers;
+package upec.episen.sirius.episaine_back.controllers;
 
 import java.util.List;
 
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.OrderBy;
-import upec.episen.sirius.episaine_back.Progress;
-import upec.episen.sirius.episaine_back.recipes.models.Recipes;
-import upec.episen.sirius.episaine_back.recipes.services.RecipesService;
+import upec.episen.sirius.episaine_back.models.Recipes;
+import upec.episen.sirius.episaine_back.services.ProgressService;
+import upec.episen.sirius.episaine_back.services.RecipesService;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/recipes")
 public class RecipesController {
 
-    private final Progress progress;
-    public RecipesController(Progress progress) {
+    private final ProgressService progress;
+    public RecipesController(ProgressService progress) {
         this.progress = progress;
     }
 

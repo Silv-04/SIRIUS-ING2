@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.recipes.services;
+package upec.episen.sirius.episaine_back.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import upec.episen.sirius.episaine_back.recipes.models.Recipes;
-import upec.episen.sirius.episaine_back.recipes.repositories.RecipesRepository;
+import upec.episen.sirius.episaine_back.models.Recipes;
+import upec.episen.sirius.episaine_back.repositories.RecipesRepository;
 
 @Service
 public class RecipesService {

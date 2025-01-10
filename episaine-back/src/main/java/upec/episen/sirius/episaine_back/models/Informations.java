@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.informations.models;
+package upec.episen.sirius.episaine_back.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

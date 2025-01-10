@@ -1,4 +1,4 @@
-package upec.episen.sirius.episaine_back.informations.controllers;
+package upec.episen.sirius.episaine_back.controllers;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import upec.episen.sirius.episaine_back.informations.models.Informations;
-import upec.episen.sirius.episaine_back.informations.services.InformationsService;
+import upec.episen.sirius.episaine_back.models.Informations;
+import upec.episen.sirius.episaine_back.services.InformationsService;
 
 @CrossOrigin
 @RestController
