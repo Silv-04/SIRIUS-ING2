@@ -1,11 +1,17 @@
 import {
     Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
     TextField
 } from '@mui/material';
 import { Container, Grid } from '@mui/system';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GET_RECIPES_BY_CUSTOMER } from '../constants/back';
+import recipesListTableHeader from '../constants/recipesListTableHeader';
 
 export default function RecipesList() {
     const [customer_id, setCustomer_id] = useState('');
@@ -51,6 +57,32 @@ export default function RecipesList() {
                         >Obtenir les listes de recettes</Button>
                     </form>
                 </Grid>
+            </div>
+            <div className='recipesTable'>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            {recipesListTableHeader.map((header) => (
+                                <TableCell key={header.value}>
+                                    {header.label}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {allRecipesList.map((recipesList) => (
+                            recipesList.map((recipes) => (
+                                <TableRow key={recipes.recipe_id}>
+                                    {recipesListTableHeader.map(({ value }) => (
+                                        <TableCell key={value}>
+                                            {recipes[value] || 'N/A'}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ))}
+                    </TableBody>
+                </Table>
             </div>
         </Container>
     )

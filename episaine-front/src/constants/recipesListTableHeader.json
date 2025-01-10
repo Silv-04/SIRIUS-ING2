@@ -1,0 +1,9 @@
+[
+    {"value": "recipeId", "label": "Numéro de recette"},
+    {"value": "recipeName", "label": "Nom de recette"},
+    {"value": "calorieCount", "label": "Calories"},
+    {"value": "ingredients", "label": "Ingrédients"},
+    {"value": "instructions", "label": "Instructions"},
+    {"value": "dietaryRegime", "label": "Régime alimentaire"},
+    {"value": "fkNutritionistId", "label": "ID Nutritionniste"}
+]
