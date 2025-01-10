@@ -1,31 +1,19 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import InsertCustomers from './customers/CreateCustomers';
-import RUDCustomers from './customers/RUDCustomers';
+// src/components/Navbar.js
+import React from 'react';
 
-export default function LabTabs() {
-    const [value, setValue] = React.useState('1');
-
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
-
+const Navbar = () => {
     return (
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-            <TabContext value={value}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <TabList onChange={handleChange} aria-label="lab API tabs example">
-                        <Tab label="Item One" value="1" />
-                        <Tab label="Item Two" value="2" />
-                    </TabList>
-                </Box>
-                <TabPanel value="1"><InsertCustomers/></TabPanel>
-                <TabPanel value="2"><RUDCustomers/></TabPanel>
-            </TabContext>
-        </Box>
+        <nav className="navbar-gradient">
+            <div>
+                <h1>MonSite</h1>
+            </div>
+            <div>
+                <a href="#accueil">Accueil</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
     );
-}
+};
+
+export default Navbar;
