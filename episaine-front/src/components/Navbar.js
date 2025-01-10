@@ -6,6 +6,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import InsertCustomers from './customers/CreateCustomers';
 import CustomerPage from './customers/CustomerPage';
+import RecipesList from './RecipesList';
 
 export default function LabTabs() {
     const [value, setValue] = React.useState('1');
@@ -21,10 +22,12 @@ export default function LabTabs() {
                     <TabList onChange={handleChange} aria-label="lab API tabs example">
                         <Tab label="Insertion" value="1" />
                         <Tab label="Affichage" value="2" />
+                        <Tab label="Recettes" value="3" />
                     </TabList>
                 </Box>
                 <TabPanel value="1"><InsertCustomers /></TabPanel>
                 <TabPanel value="2"><CustomerPage /></TabPanel>
+                <TabPanel value="3"><RecipesList /></TabPanel>
             </TabContext>
         </Box>
     );

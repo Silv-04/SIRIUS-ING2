@@ -4,3 +4,4 @@ export const READ_CUSTOMERS = BACKEND_HOST_EPISAINE + '/customer/get';
 export const READ_ALL_CUSTOMERS = BACKEND_HOST_EPISAINE + '/customer/get/all';
 export const UPDATE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/update';
 export const DELETE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/delete';
+export const GET_RECIPES_BY_CUSTOMER = BACKEND_HOST_EPISAINE + '/recipes/test';
