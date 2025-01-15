@@ -1,10 +1,13 @@
 import {
     Button,
+    Checkbox,
     Table,
     TableBody,
     TableCell,
+    TableContainer,
     TableHead,
     TableRow,
+    TableSortLabel,
     TextField
 } from '@mui/material';
 import { Container, Grid } from '@mui/system';
@@ -17,16 +20,21 @@ export default function RecipesList() {
     const [customer_id, setCustomer_id] = useState('');
     const [numberOfDays, setNumberOfDays] = useState('');
     const [allRecipesList, setAllRecipesList] = useState([]);
-
+    const [selectedTables, setSelectedTables] = useState({});
+    
     const getRecipes = async () => {
         try {
-            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + customer_id +"?numberOfDays=" + numberOfDays);
+            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + customer_id + "?numberOfDays=" + numberOfDays);
             console.log("Recipes fetched");
             setAllRecipesList(response.data);
         } catch (error) {
             console.error("Error while reading data:", error);
         }
-    }
+    };
+
+    const handleSelectAll = (tableIndex, isChecked) => {
+        setSelectedTables((prev) => ({ ...prev, [tableIndex]: isChecked }));
+    };
 
     return (
         <Container>
@@ -59,31 +67,48 @@ export default function RecipesList() {
                 </Grid>
             </div>
             <div className='recipesTable'>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {recipesListTableHeader.map((header) => (
-                                <TableCell key={header.value}>
-                                    {header.label}
-                                </TableCell>
+                <TableContainer>
+                    <Table>
+                        <TableBody>
+                            {allRecipesList.map((recipesList, tableIndex) => (
+                                <Table key={tableIndex}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>
+                                                <Checkbox
+                                                    checked={selectedTables[tableIndex] || false}
+                                                    onChange={(e) => handleSelectAll(tableIndex, e.target.checked)}
+                                                />
+                                            </TableCell>
+                                            {recipesListTableHeader.map((header) => (
+                                                <TableCell key={header.value}>
+                                                    <TableSortLabel />
+                                                    {header.label}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {recipesList.map((recipes) => (
+                                            <TableRow
+                                                key={recipes.recipe_id}
+                                                selected={selectedTables[tableIndex] || false}
+                                            >
+                                                <TableCell/>
+                                                {recipesListTableHeader.map(({ value }) => (
+                                                    <TableCell key={value}>
+                                                        {recipes[value] || 'N/A'}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {allRecipesList.map((recipesList) => (
-                            recipesList.map((recipes) => (
-                                <TableRow key={recipes.recipe_id}>
-                                    {recipesListTableHeader.map(({ value }) => (
-                                        <TableCell key={value}>
-                                            {recipes[value] || 'N/A'}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </div>
         </Container>
-    )
+    );
 }
