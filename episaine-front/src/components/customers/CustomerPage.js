@@ -152,7 +152,7 @@ export default function EnhancedTable() {
                             ) : (
                                 <StyledTableRow>
                                     <StyledTableCell colSpan={customersTableHeader.length} align="center">
-                                        Aucun client trouvé.
+                                        Aucun client trouvé .
                                     </StyledTableCell>
                                 </StyledTableRow>
                             )}
