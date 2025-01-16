@@ -1,4 +1,4 @@
-// src/components/Home.jsx
+// src/components/Welcome/Home.js
 import React from "react";
 import {
     Flex,
@@ -9,9 +9,8 @@ import {
     Image,
     Text,
     HStack,
-    Link,
-    Spacer,
 } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom"; // Importer RouterLink
 
 export default function Home() {
     return (
@@ -44,7 +43,7 @@ export default function Home() {
                     Bienvenue sur Episaine !
                 </Heading>
                 <Text fontSize="lg" color="gray.200">
-                    Chez **Episaine**, nous croyons que manger sainement ne devrait pas
+                    Chez Episaine, nous croyons que manger sainement ne devrait pas
                     être compliqué. Notre application vous accompagne dans la planification
                     de repas équilibrés, adaptés à vos besoins et préférences alimentaires.
                     Que vous soyez un particulier cherchant à améliorer votre alimentation ou
@@ -82,6 +81,8 @@ export default function Home() {
                 >
                     {/* Bouton Client */}
                     <Button
+                        as={RouterLink}
+                        to="/customers" // Assurez-vous que cette route est définie dans App.js
                         colorScheme="teal"
                         variant="solid"
                         size="lg"
@@ -100,6 +101,8 @@ export default function Home() {
 
                     {/* Bouton Nutritionniste */}
                     <Button
+                        as={RouterLink}
+                        to="/nutritionniste" // Rediriger vers la page HomeNutritionniste
                         colorScheme="green"
                         variant="solid"
                         size="lg"
