@@ -8,99 +8,121 @@ import {
     Button,
     Image,
     VStack,
+    Text,
     useDisclosure,
-    Drawer,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
-    DrawerHeader,
-    DrawerBody,
-    IconButton,
 } from "@chakra-ui/react";
-import { FiMenu } from "react-icons/fi"; // Icône pour le menu
 
 export default function HomeNutritionniste() {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
         <Box>
-            {/* Menu à gauche - sidebar */}
+            {/* Menu à gauche - Sidebar */}
             <Flex direction="row">
                 {/* Sidebar */}
                 <Box
                     w={{ base: "100%", md: "250px" }}
                     h="100vh"
-                    bg="#2C3E50" // Bleu marine
+                    bg="#2C3E50" // Couleur bleu marine
                     color="white"
                     p={4}
                     display={{ base: "none", md: "block" }} // Masquer sur mobile
+                    borderRight="1px solid transparent" // Bordure droite transparente
                 >
+                    {/* Nom EPISAINE */}
+                    <Box mb={6} textAlign="center">
+                        <Text
+                            fontSize="xl"
+                            fontWeight="bold"
+                            letterSpacing="wide"
+                            color="white"
+                        >
+                            EPISAINE
+                        </Text>
+                    </Box>
                     <VStack align="start" spacing={4}>
-                        <Button as={RouterLink} to="/dashboard" variant="link" color="white" w="full">
+                        <Button
+                            as={RouterLink}
+                            to="/dashboard"
+                            variant="ghost"
+                            color="white"
+                            w="full"
+                            bg="transparent" // Bouton transparent
+                            border="1px solid transparent" // Bordure transparente
+                            borderRadius="md"
+                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }} // Effet de survol léger
+                        >
                             Tableau de bord
                         </Button>
-                        <Button as={RouterLink} to="/clients" variant="link" color="white" w="full">
+                        <Button
+                            as={RouterLink}
+                            to="/clients"
+                            variant="ghost"
+                            color="white"
+                            w="full"
+                            bg="transparent"
+                            border="1px solid transparent"
+                            borderRadius="md"
+                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+                        >
                             Clients
                         </Button>
-                        <Button as={RouterLink} to="/rendezvous" variant="link" color="white" w="full">
+                        <Button
+                            as={RouterLink}
+                            to="/rendezvous"
+                            variant="ghost"
+                            color="white"
+                            w="full"
+                            bg="transparent"
+                            border="1px solid transparent"
+                            borderRadius="md"
+                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+                        >
                             Rendez-vous
                         </Button>
-                        <Button as={RouterLink} to="/bibliotheque-recette" variant="link" color="white" w="full">
+                        <Button
+                            as={RouterLink}
+                            to="/bibliotheque-recette"
+                            variant="ghost"
+                            color="white"
+                            w="full"
+                            bg="transparent"
+                            border="1px solid transparent"
+                            borderRadius="md"
+                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+                        >
                             La bibliothèque recette
                         </Button>
-                        <Button as={RouterLink} to="/indicateur-performance" variant="link" color="white" w="full">
+                        <Button
+                            as={RouterLink}
+                            to="/indicateur-performance"
+                            variant="ghost"
+                            color="white"
+                            w="full"
+                            bg="transparent"
+                            border="1px solid transparent"
+                            borderRadius="md"
+                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+                        >
                             Indicateur de performance
                         </Button>
-                        <Button as={RouterLink} to="/parametres" variant="link" color="white" w="full">
+                        <Button
+                            as={RouterLink}
+                            to="/parametres"
+                            variant="ghost"
+                            color="white"
+                            w="full"
+                            bg="transparent"
+                            border="1px solid transparent"
+                            borderRadius="md"
+                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+                        >
                             Paramètre
                         </Button>
                     </VStack>
                 </Box>
 
-                {/* Menu mobile - Drawer (caché sur les grands écrans) */}
-                <Box display={{ base: "block", md: "none" }} p={4}>
-                    <IconButton
-                        aria-label="Open Menu"
-                        icon={<FiMenu />}
-                        onClick={onOpen}
-                        color="white"
-                        bg="#2C3E50"
-                        _hover={{ bg: "#1B2A32" }}
-                    />
-                    <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
-                        <DrawerOverlay />
-                        <DrawerContent>
-                            <DrawerCloseButton />
-                            <DrawerHeader bg="#2C3E50" color="white">
-                                Menu
-                            </DrawerHeader>
-                            <DrawerBody bg="#2C3E50">
-                                <VStack align="start" spacing={4}>
-                                    <Button as={RouterLink} to="/dashboard" variant="link" color="white" w="full">
-                                        Tableau de bord
-                                    </Button>
-                                    <Button as={RouterLink} to="/clients" variant="link" color="white" w="full">
-                                        Clients
-                                    </Button>
-                                    <Button as={RouterLink} to="/rendezvous" variant="link" color="white" w="full">
-                                        Rendez-vous
-                                    </Button>
-                                    <Button as={RouterLink} to="/bibliotheque-recette" variant="link" color="white" w="full">
-                                        La bibliothèque recette
-                                    </Button>
-                                    <Button as={RouterLink} to="/indicateur-performance" variant="link" color="white" w="full">
-                                        Indicateur de performance
-                                    </Button>
-                                    <Button as={RouterLink} to="/parametres" variant="link" color="white" w="full">
-                                        Paramètre
-                                    </Button>
-                                </VStack>
-                            </DrawerBody>
-                        </DrawerContent>
-                    </Drawer>
-                </Box>
-
-                {/* Contenu Principal */}
+                {/* Contenu principal */}
                 <Box
                     w="full"
                     p={4}
@@ -126,7 +148,6 @@ export default function HomeNutritionniste() {
                     >
                         Bienvenue, Nutritionniste !
                     </Heading>
-                    {/* Ajouter des sections ou des boutons supplémentaires ici si besoin */}
                 </Box>
             </Flex>
         </Box>
