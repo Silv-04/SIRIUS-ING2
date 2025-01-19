@@ -1,6 +1,0 @@
-upec\episen\sirius\episaine_back\EpisaineBackApplication.class
-upec\episen\sirius\episaine_back\SpringConfiguration.class
-upec\episen\sirius\episaine_back\controllers\CustomerController.class
-upec\episen\sirius\episaine_back\services\CustomerService.class
-upec\episen\sirius\episaine_back\models\Customer.class
-upec\episen\sirius\episaine_back\repositories\CustomerRepository.class
