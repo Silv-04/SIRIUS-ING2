@@ -6,7 +6,8 @@ import {GrInProgress} from "react-icons/gr";
 export default function Costumer() {
     return (
         <Box display="flex" height="100vh" bg="#1f2b3e" color="white">
-            {/* Navbar */}
+            {/*
+             Navbar */}
             <Navbar />
 
             {/* Content */}
