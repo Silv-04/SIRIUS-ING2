@@ -13,8 +13,8 @@ import {
 import { Container, Grid } from '@mui/system';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { GET_RECIPES_BY_CUSTOMER } from '../constants/back';
-import recipesListTableHeader from '../constants/recipesListTableHeader';
+import { GET_RECIPES_BY_CUSTOMER } from '../../constants/back';
+import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
 
 export default function RecipesList() {
     const [customer_id, setCustomer_id] = useState('');

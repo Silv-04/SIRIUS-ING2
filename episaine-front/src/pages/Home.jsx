@@ -82,7 +82,7 @@ export default function Home() {
                     {/* Bouton Client */}
                     <Button
                         as={RouterLink}
-                        to="/customers" // Assurez-vous que cette route est définie dans App.js
+                        to="/client" // Assurez-vous que cette route est définie dans App.js
                         colorScheme="teal"
                         variant="solid"
                         size="lg"

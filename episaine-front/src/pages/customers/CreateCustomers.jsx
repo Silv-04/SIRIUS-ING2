@@ -10,14 +10,17 @@ import {
     InputLabel,
     Select,
     MenuItem,
+    FormHelperText,
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { CREATE_CUSTOMER } from "../../constants/back";
 import genderOptions from '../../constants/genderOptions.json';
 import frLocale from "date-fns/locale/fr";
+import LeftMenu from "../../components/customers/LeftMenu";
+import { Box } from "@mui/system";
 
-export default function Customers() {
+function Customers() {
     const [customer_lastname, setCustomerLastName] = useState("");
     const [customer_firstname, setCustomerFirstName] = useState("");
     const [customer_birthdate, setCustomerBirthDate] = useState(null);
@@ -212,14 +215,12 @@ export default function Customers() {
                                 }}
                             />
                         </LocalizationProvider>
-                        <FormControl fullWidth variant="outlined" margin="normal">
+                        <FormControl fullWidth variant="outlined" margin="normal" error={Boolean(touched.gender && errors.gender)}>
                             <InputLabel>Genre</InputLabel>
                             <Select
                                 value={gender}
                                 onChange={(e) => handleInputChange(e, "gender")}
                                 label="Genre"
-                                error={Boolean(touched.gender && errors.gender)}
-                                helpertext={touched.gender && errors.gender}
                                 onBlur={() => handleBlur("gender")}
                             >
                                 {genderOptions.map((option) => (
@@ -228,6 +229,7 @@ export default function Customers() {
                                     </MenuItem>
                                 ))}
                             </Select>
+                            {touched.gender && errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
                         </FormControl>
                         <TextField
                             fullWidth
@@ -300,5 +302,18 @@ export default function Customers() {
                 </Grid>
             </form>
         </Container>
+    );
+}
+
+export default function CreateCustomers() {
+    return (
+        <Box sx={{ display: "flex", height: "100vh" }}>
+            <Grid item sx={{ width: 250 }}>
+                <LeftMenu />
+            </Grid>
+            <Grid item sx={{ flexGrow: 1 }}>
+                <Customers />
+            </Grid>
+        </Box>
     );
 }

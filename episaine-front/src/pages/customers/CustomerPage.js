@@ -10,7 +10,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { READ_CUSTOMERS } from '../../constants/back';
-import customersTableHeader from '../../constants/customersTableHeader';
+import customersTableHeader from '../../constants/customersTableHeader.json';
 import { format } from 'date-fns';
 import { styled } from '@mui/material/styles';
 import { TableSortLabel } from '@mui/material';

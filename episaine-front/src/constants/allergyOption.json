@@ -1,0 +1,29 @@
+{
+    "allergyOption": [
+        "Arachides",
+        "Noix de cajou",
+        "Noix de pécan",
+        "Noix du Brésil",
+        "Amandes",
+        "Noisettes",
+        "Pistaches",
+        "Noix de macadamia",
+        "Gluten",
+        "Lactose",
+        "Oeufs",
+        "Fruits de mer",
+        "Crevettes",
+        "Moules",
+        "Poissons",
+        "Soja",
+        "Moutarde",
+        "Sésame",
+        "Céleri",
+        "Sulfites",
+        "Lupin",
+        "Pollen",
+        "Acariens",
+        "Poils d'animaux",
+        "Latex"
+    ]
+}
