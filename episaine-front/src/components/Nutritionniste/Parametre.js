@@ -7,7 +7,7 @@ export default function Parametre() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        navigate("/"); // Redirige vers la page Home.js
+        navigate("/");
     };
 
     return (
@@ -50,8 +50,7 @@ export default function Parametre() {
                     px={12}
                     py={6}
                     onClick={handleLogout}
-                >
-                    Se Déconnecter
+                >Se Déconnecter
                 </Button>
             </Box>
         </Box>

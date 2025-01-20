@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Button, Heading, Text} from "@chakra-ui/react";
+import {Box,Heading} from "@chakra-ui/react";
 import Navbar from "../../Pages/navbar";
 import { GrInProgress } from "react-icons/gr";
 
@@ -7,7 +7,6 @@ export default function Recipe() {
     return (
         <Box display="flex" height="100vh" bg="#1f2b3e" color="white">
             <Navbar />
-
             {/*Content */}
             <Box
                 flex="1"
@@ -33,7 +32,6 @@ export default function Recipe() {
                 >
                     Bibliothèque de Recettes
                 </Heading>
-
                 <Box
                     display="flex"
                     alignItems="center"
@@ -50,7 +48,6 @@ export default function Recipe() {
                     <GrInProgress size={80} color="white" />
                     TBD (in the future)
                 </Box>
-
             </Box>
         </Box>
     );

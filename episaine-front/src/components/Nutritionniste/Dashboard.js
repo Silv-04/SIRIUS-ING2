@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Heading, Text, Button } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 import Navbar from "../../Pages/navbar";
 import {GrInProgress} from "react-icons/gr";
 
@@ -8,7 +8,6 @@ export default function Dashboard() {
         <Box display="flex" height="100vh" bg="#1f2b3e" color="white">
             {/* Navbar */}
             <Navbar />
-
             {/* Content */}
             <Box
                 flex="1"
