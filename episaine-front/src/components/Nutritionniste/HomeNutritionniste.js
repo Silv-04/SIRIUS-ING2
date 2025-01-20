@@ -6,150 +6,154 @@ import {
     Flex,
     Heading,
     Button,
-    Image,
     VStack,
-    Text,
-    useDisclosure,
+    Icon,
+    Spacer,
 } from "@chakra-ui/react";
+import {
+    FaWallet,
+    FaUsers,
+    FaCalendarAlt,
+    FaBook,
+    FaCog,
+    FaChartLine,
+} from "react-icons/fa";
 
 export default function HomeNutritionniste() {
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
     return (
-        <Box>
-            {/* Menu à gauche - Sidebar */}
-            <Flex direction="row">
-                {/* Sidebar */}
-                <Box
-                    w={{ base: "100%", md: "250px" }}
-                    h="100vh"
-                    bg="#2C3E50" // Couleur bleu marine
-                    color="white"
-                    p={4}
-                    display={{ base: "none", md: "block" }} // Masquer sur mobile
-                    borderRight="1px solid transparent" // Bordure droite transparente
-                >
-                    {/* Nom EPISAINE */}
-                    <Box mb={6} textAlign="center">
-                        <Text
-                            fontSize="xl"
-                            fontWeight="bold"
-                            letterSpacing="wide"
-                            color="white"
-                        >
-                            EPISAINE
-                        </Text>
-                    </Box>
-                    <VStack align="start" spacing={4}>
-                        <Button
-                            as={RouterLink}
-                            to="/dashboard"
-                            variant="ghost"
-                            color="white"
-                            w="full"
-                            bg="transparent" // Bouton transparent
-                            border="1px solid transparent" // Bordure transparente
-                            borderRadius="md"
-                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }} // Effet de survol léger
-                        >
-                            Tableau de bord
-                        </Button>
-                        <Button
-                            as={RouterLink}
-                            to="/clients"
-                            variant="ghost"
-                            color="white"
-                            w="full"
-                            bg="transparent"
-                            border="1px solid transparent"
-                            borderRadius="md"
-                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                        >
-                            Clients
-                        </Button>
-                        <Button
-                            as={RouterLink}
-                            to="/rendezvous"
-                            variant="ghost"
-                            color="white"
-                            w="full"
-                            bg="transparent"
-                            border="1px solid transparent"
-                            borderRadius="md"
-                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                        >
-                            Rendez-vous
-                        </Button>
-                        <Button
-                            as={RouterLink}
-                            to="/bibliotheque-recette"
-                            variant="ghost"
-                            color="white"
-                            w="full"
-                            bg="transparent"
-                            border="1px solid transparent"
-                            borderRadius="md"
-                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                        >
-                            La bibliothèque recette
-                        </Button>
-                        <Button
-                            as={RouterLink}
-                            to="/indicateur-performance"
-                            variant="ghost"
-                            color="white"
-                            w="full"
-                            bg="transparent"
-                            border="1px solid transparent"
-                            borderRadius="md"
-                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                        >
-                            Indicateur de performance
-                        </Button>
-                        <Button
-                            as={RouterLink}
-                            to="/parametres"
-                            variant="ghost"
-                            color="white"
-                            w="full"
-                            bg="transparent"
-                            border="1px solid transparent"
-                            borderRadius="md"
-                            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                        >
-                            Paramètre
-                        </Button>
-                    </VStack>
-                </Box>
-
-                {/* Contenu principal */}
-                <Box
-                    w="full"
-                    p={4}
-                    bg="#2C3E50"
-                    color="white"
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                >
-                    <Image
-                        src="https://img.icons8.com/fluency/96/000000/vegetarian-food.png"
-                        alt="Logo Episaine"
-                        mb={8}
-                        boxSize="100px"
-                    />
-                    <Heading
-                        as="h1"
-                        size="2xl"
-                        bgGradient="linear(to-r, teal.300, green.400)"
-                        bgClip="text"
-                        fontWeight="extrabold"
-                        mb={6}
-                    >
-                        Bienvenue, Nutritionniste !
+        <Flex height="100vh" bg="#1f2b3e" color="white">
+            {/* Sidebar */}
+            <Box
+                w="250px"
+                bg="#0F1C2E"
+                p={6}
+                display="flex"
+                flexDirection="column"
+                borderRight="1px solid #4d648d"
+            >
+                {/* Titre EPISAINE */}
+                <Box textAlign="center" mb={8}>
+                    <Heading size="md" color="#acc2ef">
+                        EPISAINE
                     </Heading>
                 </Box>
-            </Flex>
-        </Box>
+
+                {/* Navigation */}
+                <VStack align="start" spacing={4}>
+                    <Button
+                        as={RouterLink}
+                        to="/dashboard"
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        leftIcon={<Icon as={FaWallet} />}
+                        _hover={{ bg: "#4d648d" }}
+                        color="white"
+                        bg="#2C3A4F"
+                        borderRadius="8px"
+                        w="100%"
+                    >
+                        Tableau de bord
+                    </Button>
+                    <Button
+                        as={RouterLink}
+                        to="/components/Nutritionniste/Costumer"
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        leftIcon={<Icon as={FaUsers} />}
+                        _hover={{ bg: "#4d648d" }}
+                        color="white"
+                        bg="#2C3A4F"
+                        borderRadius="8px"
+                        w="100%"
+                    >
+                        Clients
+                    </Button>
+                    <Button
+                        as={RouterLink}
+                        to="/components/Nutritionniste/rdv"
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        leftIcon={<Icon as={FaCalendarAlt} />}
+                        _hover={{ bg: "#4d648d" }}
+                        color="white"
+                        bg="#2C3A4F"
+                        borderRadius="8px"
+                        w="100%"
+                    >
+                        Rendez-vous
+                    </Button>
+                    <Button
+                        as={RouterLink}
+                        to="/components/Nutritionniste/recipe"
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        leftIcon={<Icon as={FaBook} />}
+                        _hover={{ bg: "#4d648d" }}
+                        color="white"
+                        bg="#2C3A4F"
+                        borderRadius="8px"
+                        w="100%"
+                    >
+                        Bibliothèque recette
+                    </Button>
+                    <Button
+                        as={RouterLink}
+                        to="/IndicateurPerformance" // Chemin mis à jour
+                        variant="ghost"
+                        justifyContent="flex-start"
+                        leftIcon={<Icon as={FaChartLine} />}
+                        _hover={{ bg: "#4d648d" }}
+                        color="white"
+                        bg="#2C3A4F"
+                        borderRadius="8px"
+                        w="100%"
+                    >
+                        KPI
+                    </Button>
+                </VStack>
+
+                {/* Spacer to push "Paramètres" to the bottom */}
+                <Spacer />
+
+                <Button
+                    as={RouterLink}
+                    to="/components/Nutritionniste/Parametre"
+                    variant="ghost"
+                    justifyContent="flex-start"
+                    leftIcon={<Icon as={FaCog} />}
+                    _hover={{ bg: "#4d648d" }}
+                    color="white"
+                    bg="#2C3A4F"
+                    borderRadius="8px"
+                    w="100%"
+                    mt={4}
+                >
+                    Paramètres
+                </Button>
+            </Box>
+
+            {/* Main Content */}
+            <Box
+                flex="1"
+                p={6}
+                bg="#1f2b3e"
+                color="white"
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Heading
+                    as="h1"
+                    size="2xl"
+                    bgGradient="linear(to-r, teal.300, green.400)"
+                    bgClip="text"
+                    fontWeight="extrabold"
+                    mb={6}
+                >
+                    Bienvenue, Nutritionniste !
+                </Heading>
+            </Box>
+        </Flex>
     );
 }
