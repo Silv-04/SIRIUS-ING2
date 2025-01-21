@@ -56,10 +56,14 @@ public class ProgressService {
         int number_of_meals = informations.getMeals_per_day();
         String gender = customer.getGender();
         String regime = informations.getDietary_regime();
-        String[] categories = informations.getCuisine_type().split(",");
+        String[] categories = informations.getCuisine_type().split(", ");
 
         double calories = avgCalories(weight, height, age, gender, number_of_meals);
         progressLogger.info("Calories per meal: " + calories);
+
+        if (regime.equals("")) {
+            regime = null;
+        }
 
         // 2. Get recipes according to client's goals
         switch (goal.toLowerCase()) {

@@ -1,4 +1,3 @@
-// src/components/Welcome/Home.js
 import React from "react";
 import {
     Flex,
@@ -7,10 +6,9 @@ import {
     Button,
     Box,
     Image,
-    Text,
-    HStack,
+    Text
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom"; // Importer RouterLink
+import { Link as RouterLink } from "react-router-dom";
 
 export default function Home() {
     return (
@@ -19,11 +17,10 @@ export default function Home() {
             align="center"
             justify="center"
             minH="100vh"
-            bg="#2C3E50" // Bleu marine de fond
+            bg="#2C3E50"
             p={4}
             color="white"
         >
-            {/* Logo */}
             <Image
                 src="https://img.icons8.com/fluency/96/000000/vegetarian-food.png"
                 alt="Logo Episaine"
@@ -31,7 +28,6 @@ export default function Home() {
                 boxSize="100px"
             />
 
-            {/* Section Bienvenue */}
             <VStack spacing={6} textAlign="center" maxW="600px">
                 <Heading
                     as="h1"
@@ -52,7 +48,6 @@ export default function Home() {
                 </Text>
             </VStack>
 
-            {/* Section Qui êtes-vous ? */}
             <Box
                 bg="whiteAlpha.200"
                 p={8}
@@ -79,10 +74,9 @@ export default function Home() {
                     justify="center"
                     direction={{ base: "column", md: "row" }}
                 >
-                    {/* Bouton Client */}
                     <Button
                         as={RouterLink}
-                        to="/client" // Assurez-vous que cette route est définie dans App.js
+                        to="/client/" 
                         colorScheme="teal"
                         variant="solid"
                         size="lg"
@@ -99,10 +93,9 @@ export default function Home() {
                         Client
                     </Button>
 
-                    {/* Bouton Nutritionniste */}
                     <Button
                         as={RouterLink}
-                        to="/nutritionniste" // Rediriger vers la page HomeNutritionniste
+                        to="/parametres/"
                         colorScheme="green"
                         variant="solid"
                         size="lg"

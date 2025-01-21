@@ -10,14 +10,15 @@ import {
     TableSortLabel,
     TextField
 } from '@mui/material';
-import { Container, Grid } from '@mui/system';
+import { Box, Container, Grid } from '@mui/system';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GET_RECIPES_BY_CUSTOMER } from '../../constants/back';
+import LeftMenu from '../../components/customers/LeftMenu';
 import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
 import { useLocation } from 'react-router-dom';
 
-export default function RecipesList() {
+function RecipesListInput() {
     const [id, setId] = useState('');
     const [numberOfDays, setNumberOfDays] = useState('');
     const [allRecipesList, setAllRecipesList] = useState([]);
@@ -111,5 +112,19 @@ export default function RecipesList() {
                 </TableContainer>
             </div>
         </Container>
+    );
+}
+
+export default function RecipesList() {
+    return (
+        <Box sx={{ display: "flex", height: "100vh" }}>
+            <Grid sx={{ width: 250 }}>
+                <LeftMenu />
+            </Grid>
+            
+            <Grid sx={{ flexGrow: 1 }}>
+                <RecipesListInput />
+            </Grid>
+        </Box>
     );
 }
