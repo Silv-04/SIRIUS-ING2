@@ -13,6 +13,8 @@ import cuisineTypeOptions from '../../constants/cuisineTypeOptions';
 import LeftMenu from '../../components/customers/LeftMenu';
 import healthGoalOptions from '../../constants/healthGoalOptions';
 
+// path="/client/recettes/informations/"
+// page to display and update the customer's informations if needed
 function InformationsPageInputs() {
     const [id, setId] = useState('');
     const [informations, setInformations] = useState(null);
@@ -32,6 +34,7 @@ function InformationsPageInputs() {
     const [customerId, setCustomerId] = useState('');
     const [informationId, setInformationId] = useState('');
 
+    // submit the new informations, check whether or not the informations was updated, and move to the next page
     const handleSubmit = async (e) => {
         e.preventDefault();
         const new_information = {
@@ -73,6 +76,7 @@ function InformationsPageInputs() {
         }
     };
 
+    // empty each input field
     const handleReset = () => {
         setAllergies([]);
         setIntolerances([]);
@@ -86,12 +90,14 @@ function InformationsPageInputs() {
         setCuisineType([]);
     };
 
+    // get data sent from the previous page
     useEffect(() => {
         if (location.state?.inputValue) {
             setId(location.state.inputValue);
         }
     }, [location.state]);
 
+    // get informations from customer's id once received from the previous page
     useEffect(() => {
         const readInformations = async () => {
             try {
@@ -108,6 +114,7 @@ function InformationsPageInputs() {
         }
     }, [id]);
 
+    // once informations received, update each fields
     useEffect(() => {
         if (informations) {
             setAllergies(informations.allergies ? informations.allergies.split(", ").map(value => value.trim()) : []);

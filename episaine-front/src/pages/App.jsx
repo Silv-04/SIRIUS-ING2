@@ -5,7 +5,6 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import HomeNutritionniste from "./Nutritionniste/HomeNutritionniste";
 import IndicateurPerformance from "./Nutritionniste/IndicateurPerformance";
 import CustomerMainPage from "./customers/CustomerMainPage";
-import RUDCustomers from "./customers/RUDCustomers";
 import RecipesList from "./customers/RecipesList";
 import CreateCustomers from "./customers/CreateCustomers";
 import ExistingCustomer from "./customers/ExistingCustomer";
@@ -22,7 +21,6 @@ function App() {
                     <Route path="/" element={<Home />} />
                     
                     <Route path="/client/" element={<CustomerMainPage/> }/>
-                    <Route path="/affichage/" element={<RUDCustomers />} />
                     <Route path="/client/recettes/" element={<ExistingCustomer />} />
                     <Route path="/client/recettes/informations/" element={<InformationsPage />} />
                     <Route path="/client/recettes/informations/choix/" element={<RecipesList />} />

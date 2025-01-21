@@ -23,6 +23,8 @@ import recipesListTableHeader from '../../constants/recipesListTableHeader.json'
 import { useLocation, useNavigate } from 'react-router-dom';
 import sortRecipesTableOptions from '../../constants/sortRecipesTableOptions.json';
 
+// path="/client/recettes/informations/choix/"
+// page to display each recipes according to the customer's informations
 function RecipesListInput() {
     const [id, setId] = useState('');
     const [numberOfDays, setNumberOfDays] = useState('');
@@ -33,6 +35,7 @@ function RecipesListInput() {
     const location = useLocation();
     const navigate = useNavigate();
 
+    // fetched recipes 
     const getRecipes = async () => {
         try {
             const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays);
@@ -43,6 +46,7 @@ function RecipesListInput() {
         }
     };
 
+    // save recipes selected by the checkbox
     const handleSelectAll = (tableIndex, isChecked) => {
         setSelectedTables((prev) => ({ ...prev, [tableIndex]: isChecked }));
 
@@ -53,16 +57,19 @@ function RecipesListInput() {
         }
     };
 
+    // sent saved recipes to the next page
     const handleValidate = () => {
         console.log("Selected recipes: ", recipesList);
         navigate("/client/recettes/informations/choix/resultat/", { state: { inputValue: recipesList } });
     }
 
+    // calculate average calories to sort the list
     const calculateAverageCalories = (recipes) => {
         const totalCalories = recipes.reduce((sum, recipe) => sum + (recipe.calorieCount || 0), 0);
         return recipes.length > 0 ? totalCalories / recipes.length : 0;
     };
 
+    // handle the sort according to the chosen option
     const handleSort = () => {
         if (sortValue === 'none') {
             return;
@@ -80,12 +87,7 @@ function RecipesListInput() {
         }
     };
     
-
-    useEffect(() => {
-        console.log("Valeur du tri sélectionnée :", sortValue);
-    }, [sortValue]);
-
-    
+    // receive id from previous page
     useEffect(() => {
         if (location.state?.inputValue) {
             console.log("ID received: ", location.state.inputValue);

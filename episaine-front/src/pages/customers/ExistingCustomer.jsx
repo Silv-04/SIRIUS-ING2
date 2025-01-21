@@ -3,10 +3,13 @@ import { Box, Grid2, Typography, TextField, Button, Divider } from "@mui/materia
 import LeftMenu from "../../components/customers/LeftMenu";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 
+// path="/client/recettes/
+// page to redirect whether we want to create a customer or fetch informations from an existing customer
 function ExistingCustomerOrNot() {
     const [customerNumber, setCustomerNumber] = useState("");
     const navigate = useNavigate();
 
+    // handle the action of allowing only numbers in textfield
     const handleChange = (e) => {
         const value = e.target.value;
         if (/^\d*$/.test(value)) {
@@ -14,10 +17,12 @@ function ExistingCustomerOrNot() {
         }
     };
 
+    // reset the textfield when the button is clicked
     const handleReset = () => {
         setCustomerNumber("");
     };
 
+    // validate button's action
     const handleValidate = () => {
         if (customerNumber) {
             console.log("Customer number: ", customerNumber);

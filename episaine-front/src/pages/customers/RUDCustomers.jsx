@@ -3,8 +3,10 @@ import axios from "axios";
 import { READ_CUSTOMERS, UPDATE_CUSTOMER, DELETE_CUSTOMER } from "../../constants/back";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 import "../../styles/customers.css";
+import { Box, Grid } from "@mui/system";
+import LeftMenu from "../../components/customers/LeftMenu"
 
-export default function RUDCustomers() {
+function RUDCustomers() {
     const [customers, setCustomers] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [selectedField, setSelectedField] = useState("");
@@ -23,6 +25,7 @@ export default function RUDCustomers() {
         postal_code: "postal code",
     };
 
+    // get customers value from back server
     const readCustomers = async () => {
         try {
             const response = await axios.get(READ_CUSTOMERS);
@@ -33,6 +36,7 @@ export default function RUDCustomers() {
         }
     };
 
+    // handle the action of clicking in a cell of the table
     const handleCellClick = (customer, field) => {
         setSelectedCustomer(customer);
         setSelectedField(field);
@@ -40,10 +44,12 @@ export default function RUDCustomers() {
         setIsDialogOpen(true);
     };
 
+    // handle the action of closing the dialog panel
     const handleClose = () => {
         setIsDialogOpen(false);
     };
 
+    // handle the action of updating a value 
     const handleSave = async () => {
         const updatedCustomer = { ...selectedCustomer, [selectedField]: newValue };
         axios.post(UPDATE_CUSTOMER, updatedCustomer).then((response) => {
@@ -55,12 +61,14 @@ export default function RUDCustomers() {
         handleClose();
     };
 
+    // confirmation for the deletion of a value in the table
     const confirmDelete = (customerId) => {
         if (window.confirm("Are you sure you want to delete this customer?")) {
             handleDelete(customerId);
         }
     };
 
+    // handle the deletion of a value in the table
     const handleDelete = async (customerId) => {
         await axios.delete(DELETE_CUSTOMER +'/'+ customerId).then((response) => {
             console.log("Customer deleted");
@@ -70,6 +78,7 @@ export default function RUDCustomers() {
         });
     };
 
+    // read all customers value once the page is opened
     useEffect(() => {
         readCustomers();
     }, []);
@@ -160,4 +169,18 @@ export default function RUDCustomers() {
             </Dialog>
         </div>
     );
+}
+
+export default function RUDCustomersPage() {
+    return (
+        <Box sx={{ display: "flex", height: "100vh" }}>
+            <Grid sx={{ width: 250 }}>
+                <LeftMenu />
+            </Grid>
+
+            <Grid sx={{ flexGrow: 1 }}>
+                <RUDCustomers />
+            </Grid>
+        </Box>
+    )
 }

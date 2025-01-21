@@ -7,11 +7,13 @@ import recipesListTableHeader from "../../constants/recipesListTableHeader.json"
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+// path="/client/recettes/informations/choix/resultat/"
 function ResultPage() {
     const [recipesList, setRecipesList] = useState([]);
     const location = useLocation();
     const pdfRef = useRef();
 
+    // generate a pdf
     const generatePDF = () => {
         const input = pdfRef.current;
         html2canvas(input, { scale: 2 }).then((canvas) => {
@@ -24,6 +26,7 @@ function ResultPage() {
         });
     };
 
+    // receive data from previous page
     useEffect(() => {
         if (location.state?.inputValue) {
             console.log("Recipes List: ", location.state.inputValue);

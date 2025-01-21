@@ -20,6 +20,8 @@ import frLocale from "date-fns/locale/fr";
 import LeftMenu from "../../components/customers/LeftMenu";
 import { Box } from "@mui/system";
 
+// path="/client/recettes/creation_profil/" 
+// page used to create a customer
 function Customers() {
     const [customer_lastname, setCustomerLastName] = useState("");
     const [customer_firstname, setCustomerFirstName] = useState("");

@@ -19,6 +19,7 @@ function formatDate(dateString) {
     return dateString ? format(new Date(dateString), 'dd-MM-yyyy') : 'N/A';
 }
 
+// Page used to get values and display them on table with pagination option - CURRENTLY NOT USED
 export default function EnhancedTable() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
