@@ -1,6 +1,10 @@
 import {
     Button,
     Checkbox,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
     Table,
     TableBody,
     TableCell,
@@ -17,6 +21,7 @@ import { GET_RECIPES_BY_CUSTOMER } from '../../constants/back';
 import LeftMenu from '../../components/customers/LeftMenu';
 import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
 import { useLocation, useNavigate } from 'react-router-dom';
+import sortRecipesTableOptions from '../../constants/sortRecipesTableOptions.json';
 
 function RecipesListInput() {
     const [id, setId] = useState('');
@@ -24,6 +29,7 @@ function RecipesListInput() {
     const [allRecipesList, setAllRecipesList] = useState([]);
     const [selectedTables, setSelectedTables] = useState({});
     const [recipesList, setRecipesList] = useState([]);
+    const [sortValue, setSortValue] = useState('none');
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -49,9 +55,37 @@ function RecipesListInput() {
 
     const handleValidate = () => {
         console.log("Selected recipes: ", recipesList);
-        navigate("/client/recettes/informations/choix/resultat/", { state: {inputValue: recipesList} });
+        navigate("/client/recettes/informations/choix/resultat/", { state: { inputValue: recipesList } });
     }
 
+    const calculateAverageCalories = (recipes) => {
+        const totalCalories = recipes.reduce((sum, recipe) => sum + (recipe.calorieCount || 0), 0);
+        return recipes.length > 0 ? totalCalories / recipes.length : 0;
+    };
+
+    const handleSort = () => {
+        if (sortValue === 'none') {
+            return;
+        }
+    
+        if (sortValue === 'calories') {
+            const sortedRecipesGroups = [...allRecipesList].sort((groupA, groupB) => {
+                const avgA = calculateAverageCalories(groupA);
+                const avgB = calculateAverageCalories(groupB);
+                return avgB - avgA;
+            });
+    
+            setAllRecipesList(sortedRecipesGroups.map(group => [...group]));
+            console.log("Recettes triées :", sortedRecipesGroups);
+        }
+    };
+    
+
+    useEffect(() => {
+        console.log("Valeur du tri sélectionnée :", sortValue);
+    }, [sortValue]);
+
+    
     useEffect(() => {
         if (location.state?.inputValue) {
             console.log("ID received: ", location.state.inputValue);
@@ -62,26 +96,58 @@ function RecipesListInput() {
     return (
         <Container>
             <div className="input">
-                <Grid>
-                    <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
-                        <TextField
-                            fullWidth
-                            margin='normal'
-                            label='Nombre de jours'
-                            variant='outlined'
-                            value={numberOfDays}
-                            onChange={(e) => setNumberOfDays(e.target.value)}
-                            type='number'
-                        />
+                <Grid container spacing={2}>
+                    <Grid sx={{ width: "40%" }}>
+                        <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
+                            <TextField
+                                fullWidth
+                                margin='normal'
+                                label='Nombre de jours'
+                                variant='outlined'
+                                value={numberOfDays}
+                                onChange={(e) => setNumberOfDays(e.target.value)}
+                                type='number'
+                            />
+                            <Button
+                                variant='contained'
+                                color='primary'
+                                type='submit'
+                            >Obtenir les listes de recettes</Button>
+                        </form>
+                    </Grid>
+                    <Grid sx={{ width: "40%" }}>
+                        <FormControl fullWidth margin='normal'>
+                            <InputLabel>Trier par</InputLabel>
+                            <Select
+                                fullWidth
+                                onChange={(e) => setSortValue(e.target.value)}
+                                value={sortValue}
+                                label="Trier par"
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            maxHeight: 200,
+                                        },
+                                    },
+                                }}
+                            >
+                                {sortRecipesTableOptions.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                         <Button
                             variant='contained'
                             color='primary'
-                            type='submit'
-                        >Obtenir les listes de recettes</Button>
-                    </form>
+                            onClick={handleSort}
+                        >Trier</Button>
+                    </Grid>
                 </Grid>
             </div>
             <div className='recipesTable'>
+
                 <TableContainer sx={{ maxHeight: "500px", overflowY: "auto" }}>
                     <Table stickyHeader>
                         <TableBody>
@@ -97,6 +163,7 @@ function RecipesListInput() {
                                             </TableCell>
                                             {recipesListTableHeader.map((header) => (
                                                 <TableCell key={header.value}>
+                                                    <TableSortLabel />
                                                     {header.label}
                                                 </TableCell>
                                             ))}
