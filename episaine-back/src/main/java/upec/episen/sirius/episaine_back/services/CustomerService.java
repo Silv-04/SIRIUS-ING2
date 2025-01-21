@@ -44,13 +44,4 @@ public class CustomerService {
         }
         return false;
     }
-
-    public boolean updateCustomer(Customer customer) {
-        Optional<Customer> customerOptional = customerRepository.findById(customer.getCustomer_id());
-        if (customerOptional.isPresent()) {
-            customerRepository.save(customer);
-            return true;
-        }
-        return false;
-    }
 }

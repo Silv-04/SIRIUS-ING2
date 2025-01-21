@@ -59,12 +59,5 @@ public class CustomerController {
         return "Customer not found";
     }
 
-    @PostMapping("/update")
-    public String updateCustomer(@RequestBody Customer customer) {
-        boolean isUpdated = customerService.updateCustomer(customer);
-        if (isUpdated) {
-            return "Customer updated successfully";
-        }
-        return "Customer not found";
-    }
+
 }

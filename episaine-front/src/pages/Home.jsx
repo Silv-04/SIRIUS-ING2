@@ -76,7 +76,7 @@ export default function Home() {
                 >
                     <Button
                         as={RouterLink}
-                        to="/client/" 
+                        to="/client/"
                         colorScheme="teal"
                         variant="solid"
                         size="lg"
@@ -95,7 +95,7 @@ export default function Home() {
 
                     <Button
                         as={RouterLink}
-                        to="/parametres/"
+                        to="/nutritionniste"    
                         colorScheme="green"
                         variant="solid"
                         size="lg"

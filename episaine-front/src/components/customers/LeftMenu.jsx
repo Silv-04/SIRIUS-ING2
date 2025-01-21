@@ -96,7 +96,7 @@ export default function HomeNutritionniste() {
 
                 <Button
                     as={RouterLink}
-                    to="/components/Nutritionniste/Parametre"
+                    to="/client/parametre/"
                     variant="ghost"
                     justifyContent="flex-start"
                     leftIcon={<Icon as={FaCog} />}
