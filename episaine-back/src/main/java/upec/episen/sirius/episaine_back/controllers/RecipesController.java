@@ -78,7 +78,7 @@ public class RecipesController {
         return recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime, minCalories, maxCalories, category);
     }
 
-    @GetMapping("/test/{id}")
+    @GetMapping("/getRecipesList/{id}")
     public List<List<Recipes>> getRecipesTest(
         @PathVariable Integer id,
         @RequestParam(required = false) Integer numberOfDays) {

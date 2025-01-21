@@ -115,9 +115,23 @@ public class ProgressService {
         progressLogger.info(" Number of recipes loaded: " + recipesList.size());
         progressLogger.info(" List of recipes: " + recipesList.toString());
 
-        String[] allergies = normalize(informations.getAllergies().split(", "));
-        String[] intolerances = normalize(informations.getIntolerances().split(", "));
-        String[] prohibitedFoods = normalize(informations.getProhibited_food().split(", "));
+        
+        String[] allergies = new String[0];
+        String[] intolerances = new String[0];
+        String[] prohibitedFoods = new String[0];
+        
+        String allergiesArray = informations.getAllergies();
+        if (allergiesArray != null && !allergiesArray.isEmpty()) {
+            allergies = normalize(allergiesArray.split(", "));
+        }
+        String intolerancesArray = informations.getIntolerances();
+        if (intolerancesArray != null && !intolerancesArray.isEmpty()) {
+            intolerances = normalize(intolerancesArray.split(", "));
+        }
+        String prohibitedFoodsArray = informations.getProhibited_food();
+        if (prohibitedFoodsArray != null && !prohibitedFoodsArray.isEmpty()) {
+            prohibitedFoods = normalize(prohibitedFoodsArray.split(", "));
+        }
 
         recipesList = recipesProductFiltering(allergies, intolerances, prohibitedFoods, recipesList);
 
