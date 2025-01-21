@@ -10,7 +10,7 @@ import upec.episen.sirius.episaine_back.models.Recipes;
 
 public interface RecipesRepository extends JpaRepository<Recipes, Integer> {
 
-    @Query(value="SELECT * FROM recipes WHERE dietary_regime = :regime " + 
+    @Query(value="SELECT * FROM recipes WHERE (dietary_regime = :regime or :regime IS NULL)" + 
     "AND (:minCalories IS NULL or calorie_count > :minCalories)" + 
     "AND (:maxCalories IS NULL or calorie_count < :maxCalories)" + 
     "AND (:category IS NULL or category = :category)", nativeQuery = true)

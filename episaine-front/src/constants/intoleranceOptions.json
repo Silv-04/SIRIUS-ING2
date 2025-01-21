@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "name": "gluten"
+    },
+    {
+        "id": 2,
+        "name": "lactose"
+    },
+    {
+        "id": 3,
+        "name": "fructose"
+    },
+    {
+        "id": 4,
+        "name": "histamine"
+    },
+    {
+        "id": 5,
+        "name": "sorbitol"
+    },
+    {
+        "id": 6,
+        "name": "salicylates"
+    },
+    {
+        "id": 7,
+        "name": "caféine"
+    },
+    {
+        "id": 8,
+        "name": "glutamate"
+    },
+    {
+        "id": 9,
+        "name": "fodmaps"
+    },
+    {
+        "id": 10,
+        "name": "phénylalanine"
+    }
+]

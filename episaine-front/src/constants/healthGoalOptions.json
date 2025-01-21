@@ -1,0 +1,14 @@
+[
+    {
+        "key": "loseWeight",
+        "label": "perte de poids"
+    },
+    {
+        "key": "gainWeight",
+        "label": "gain de poids"
+    },
+    {
+        "key": "maintainWeight",
+        "label": "maintien de poids"
+    }
+]

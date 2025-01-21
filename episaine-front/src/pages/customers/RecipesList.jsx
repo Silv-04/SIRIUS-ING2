@@ -1,0 +1,115 @@
+import {
+    Button,
+    Checkbox,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    TextField
+} from '@mui/material';
+import { Container, Grid } from '@mui/system';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { GET_RECIPES_BY_CUSTOMER } from '../../constants/back';
+import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
+import { useLocation } from 'react-router-dom';
+
+export default function RecipesList() {
+    const [id, setId] = useState('');
+    const [numberOfDays, setNumberOfDays] = useState('');
+    const [allRecipesList, setAllRecipesList] = useState([]);
+    const [selectedTables, setSelectedTables] = useState({});
+    const location = useLocation();
+    
+    const getRecipes = async () => {
+        try {
+            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays);
+            console.log("Recipes fetched");
+            setAllRecipesList(response.data);
+        } catch (error) {
+            console.error("Error while reading data:", error);
+        }
+    };
+
+    const handleSelectAll = (tableIndex, isChecked) => {
+        setSelectedTables((prev) => ({ ...prev, [tableIndex]: isChecked }));
+    };
+
+    useEffect(() => {
+        if (location.state?.inputValue) {
+            console.log("ID received: ", location.state.inputValue);
+            setId(location.state.inputValue);
+        }
+    }, [location.state]);
+
+    return (
+        <Container>
+            <div className="input">
+                <Grid>
+                    <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
+                        <TextField
+                            fullWidth
+                            margin='normal'
+                            label='Nombre de jours'
+                            variant='outlined'
+                            value={numberOfDays}
+                            onChange={(e) => setNumberOfDays(e.target.value)}
+                            type='number'
+                        />
+                        <Button
+                            variant='contained'
+                            color='primary'
+                            type='submit'
+                        >Obtenir les listes de recettes</Button>
+                    </form>
+                </Grid>
+            </div>
+            <div className='recipesTable'>
+                <TableContainer>
+                    <Table>
+                        <TableBody>
+                            {allRecipesList.map((recipesList, tableIndex) => (
+                                <Table key={tableIndex}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>
+                                                <Checkbox
+                                                    checked={selectedTables[tableIndex] || false}
+                                                    onChange={(e) => handleSelectAll(tableIndex, e.target.checked)}
+                                                />
+                                            </TableCell>
+                                            {recipesListTableHeader.map((header) => (
+                                                <TableCell key={header.value}>
+                                                    <TableSortLabel />
+                                                    {header.label}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {recipesList.map((recipes) => (
+                                            <TableRow
+                                                key={recipes.recipe_id}
+                                                selected={selectedTables[tableIndex] || false}
+                                            >
+                                                <TableCell/>
+                                                {recipesListTableHeader.map(({ value }) => (
+                                                    <TableCell key={value}>
+                                                        {recipes[value] || 'N/A'}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+        </Container>
+    );
+}

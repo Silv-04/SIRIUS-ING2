@@ -1,11 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Home";
-import { ThemeProvider, createTheme } from "@mui/material/styles"; // Ajouté
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import HomeNutritionniste from "./Nutritionniste/HomeNutritionniste";
 import IndicateurPerformance from "./Nutritionniste/IndicateurPerformance";
 import CustomerMainPage from "./customers/CustomerMainPage";
-import CustomerPage from "./customers/CustomerPage";
 import RUDCustomers from "./customers/RUDCustomers";
 import RecipesList from "./customers/RecipesList";
 import CreateCustomers from "./customers/CreateCustomers";
@@ -25,6 +24,7 @@ function App() {
                     <Route path="/affichage/" element={<RUDCustomers />} />
                     <Route path="/client/recettes/" element={<ExistingCustomer />} />
                     <Route path="/client/recettes/informations/" element={<InformationsPage />} />
+                    <Route path="/client/recettes/informations/resultat/" element={<RecipesList />} />
                     <Route path="/client/recettes/creation_profil/" element={<CreateCustomers />} />
 
                     <Route path="/nutritionniste" element={<HomeNutritionniste />} />

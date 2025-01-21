@@ -1,6 +1,18 @@
 [
-    {"value": "Homme", "label":"Homme"},
-    {"value": "Femme", "label":"Femme"},
-    {"value": "Autre", "label":"Autre"},
-    {"value": "Préfère ne pas dire", "label":"Préfère ne pas dire"}
+    {
+        "value": "homme",
+        "label": "homme"
+    },
+    {
+        "value": "femme",
+        "label": "femme"
+    },
+    {
+        "value": "autre",
+        "label": "autre"
+    },
+    {
+        "value": "préfère ne pas dire",
+        "label": "préfère ne pas dire"
+    }
 ]

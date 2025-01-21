@@ -1,0 +1,54 @@
+[
+    {
+        "id": 1,
+        "name": "végétarien"
+    },
+    {
+        "id": 2,
+        "name": "végétalien"
+    },
+    {
+        "id": 3,
+        "name": "végane"
+    },
+    {
+        "id": 4,
+        "name": "pescetarien"
+    },
+    {
+        "id": 5,
+        "name": "flexitarien"
+    },
+    {
+        "id": 6,
+        "name": "omnivore"
+    },
+    {
+        "id": 7,
+        "name": "crudivore"
+    },
+    {
+        "id": 8,
+        "name": "cétogène"
+    },
+    {
+        "id": 9,
+        "name": "paléo"
+    },
+    {
+        "id": 10,
+        "name": "sans gluten"
+    },
+    {
+        "id": 11,
+        "name": "sans lactose"
+    },
+    {
+        "id": 12,
+        "name": "halal"
+    },
+    {
+        "id": 13,
+        "name": "casher"
+    }
+]

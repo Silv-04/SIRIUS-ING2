@@ -1,0 +1,5 @@
+[
+    {"key": "cold", "label": "froid"},
+    {"key": "hot", "label": "chaud"},
+    {"key": "none", "label": "aucune préférence"}
+]

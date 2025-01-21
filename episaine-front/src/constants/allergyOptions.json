@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "name": "arachides"
+    },
+    {
+        "id": 2,
+        "name": "noix de cajou"
+    },
+    {
+        "id": 3,
+        "name": "noix de pécan"
+    },
+    {
+        "id": 4,
+        "name": "noix du brésil"
+    },
+    {
+        "id": 5,
+        "name": "amandes"
+    },
+    {
+        "id": 6,
+        "name": "noisettes"
+    },
+    {
+        "id": 7,
+        "name": "pistaches"
+    },
+    {
+        "id": 8,
+        "name": "noix de macadamia"
+    },
+    {
+        "id": 9,
+        "name": "gluten"
+    },
+    {
+        "id": 10,
+        "name": "lactose"
+    },
+    {
+        "id": 11,
+        "name": "œufs"
+    },
+    {
+        "id": 12,
+        "name": "fruits de mer"
+    },
+    {
+        "id": 13,
+        "name": "crevettes"
+    },
+    {
+        "id": 14,
+        "name": "moules"
+    },
+    {
+        "id": 15,
+        "name": "poissons"
+    },
+    {
+        "id": 16,
+        "name": "soja"
+    },
+    {
+        "id": 17,
+        "name": "moutarde"
+    },
+    {
+        "id": 18,
+        "name": "sésame"
+    },
+    {
+        "id": 19,
+        "name": "céleri"
+    },
+    {
+        "id": 20,
+        "name": "sulfites"
+    },
+    {
+        "id": 21,
+        "name": "lupin"
+    }
+]
