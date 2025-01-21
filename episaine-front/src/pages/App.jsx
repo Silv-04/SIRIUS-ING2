@@ -10,6 +10,7 @@ import RecipesList from "./customers/RecipesList";
 import CreateCustomers from "./customers/CreateCustomers";
 import ExistingCustomer from "./customers/ExistingCustomer";
 import InformationsPage from "./customers/InformationsPage";
+import Result from "./customers/Result";
 
 const theme = createTheme();
 
@@ -24,7 +25,8 @@ function App() {
                     <Route path="/affichage/" element={<RUDCustomers />} />
                     <Route path="/client/recettes/" element={<ExistingCustomer />} />
                     <Route path="/client/recettes/informations/" element={<InformationsPage />} />
-                    <Route path="/client/recettes/informations/resultat/" element={<RecipesList />} />
+                    <Route path="/client/recettes/informations/choix/" element={<RecipesList />} />
+                    <Route path="/client/recettes/informations/choix/resultat/" element={<Result />} />
                     <Route path="/client/recettes/creation_profil/" element={<CreateCustomers />} />
 
                     <Route path="/nutritionniste" element={<HomeNutritionniste />} />

@@ -16,15 +16,17 @@ import axios from 'axios';
 import { GET_RECIPES_BY_CUSTOMER } from '../../constants/back';
 import LeftMenu from '../../components/customers/LeftMenu';
 import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function RecipesListInput() {
     const [id, setId] = useState('');
     const [numberOfDays, setNumberOfDays] = useState('');
     const [allRecipesList, setAllRecipesList] = useState([]);
     const [selectedTables, setSelectedTables] = useState({});
+    const [recipesList, setRecipesList] = useState([]);
     const location = useLocation();
-    
+    const navigate = useNavigate();
+
     const getRecipes = async () => {
         try {
             const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays);
@@ -37,7 +39,18 @@ function RecipesListInput() {
 
     const handleSelectAll = (tableIndex, isChecked) => {
         setSelectedTables((prev) => ({ ...prev, [tableIndex]: isChecked }));
+
+        if (isChecked) {
+            setRecipesList((prev) => [...prev, allRecipesList[tableIndex]]);
+        } else {
+            setRecipesList((prev) => prev.filter((_, index) => index !== tableIndex));
+        }
     };
+
+    const handleValidate = () => {
+        console.log("Selected recipes: ", recipesList);
+        navigate("/client/recettes/informations/choix/resultat/", { state: {inputValue: recipesList} });
+    }
 
     useEffect(() => {
         if (location.state?.inputValue) {
@@ -69,10 +82,10 @@ function RecipesListInput() {
                 </Grid>
             </div>
             <div className='recipesTable'>
-                <TableContainer>
-                    <Table>
+                <TableContainer sx={{ maxHeight: "500px", overflowY: "auto" }}>
+                    <Table stickyHeader>
                         <TableBody>
-                            {allRecipesList.map((recipesList, tableIndex) => (
+                            {allRecipesList.map((recipesListGroup, tableIndex) => (
                                 <Table key={tableIndex}>
                                     <TableHead>
                                         <TableRow>
@@ -84,19 +97,15 @@ function RecipesListInput() {
                                             </TableCell>
                                             {recipesListTableHeader.map((header) => (
                                                 <TableCell key={header.value}>
-                                                    <TableSortLabel />
                                                     {header.label}
                                                 </TableCell>
                                             ))}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {recipesList.map((recipes) => (
-                                            <TableRow
-                                                key={recipes.recipe_id}
-                                                selected={selectedTables[tableIndex] || false}
-                                            >
-                                                <TableCell/>
+                                        {recipesListGroup.map((recipes) => (
+                                            <TableRow key={recipes.recipe_id} selected={selectedTables[tableIndex] || false}>
+                                                <TableCell />
                                                 {recipesListTableHeader.map(({ value }) => (
                                                     <TableCell key={value}>
                                                         {recipes[value] || 'N/A'}
@@ -111,6 +120,8 @@ function RecipesListInput() {
                     </Table>
                 </TableContainer>
             </div>
+
+            <Button onClick={handleValidate} variant="contained" color="primary">Valider</Button>
         </Container>
     );
 }
@@ -121,7 +132,7 @@ export default function RecipesList() {
             <Grid sx={{ width: 250 }}>
                 <LeftMenu />
             </Grid>
-            
+
             <Grid sx={{ flexGrow: 1 }}>
                 <RecipesListInput />
             </Grid>

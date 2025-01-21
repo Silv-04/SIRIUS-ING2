@@ -51,7 +51,7 @@ function InformationsPageInputs() {
     
         if (informations && JSON.stringify(informations) === JSON.stringify(new_information)) {
             console.log("No changes detected");
-            navigate("/client/recettes/informations/resultat/", { state: { inputValue: informations.fk_customer_id } });
+            navigate("/client/recettes/informations/choix/", { state: { inputValue: informations.fk_customer_id } });
             return;
         }
     
@@ -66,7 +66,7 @@ function InformationsPageInputs() {
                 console.log("Informations created");
             }
     
-            navigate("/client/recettes/informations/resultat/", { state: { inputValue: new_information.fk_customer_id } });
+            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } });
     
         } catch (error) {
             console.error("Error while updating or creating data:", error);
