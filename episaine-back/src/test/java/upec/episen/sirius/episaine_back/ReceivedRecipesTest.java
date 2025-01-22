@@ -250,8 +250,21 @@ public class ReceivedRecipesTest {
         for (List<Recipes> dayMeals : result) {
             for (Recipes r : dayMeals) {
                 for (String allergy : allergies) {
-                    assertFalse(r.getIngredients().toLowerCase().contains(allergy.toLowerCase()),
-                            "Recette contient une allergie interdite : " + allergy + " -> " + r.getRecipeName());
+                    assertFalse(r.getIngredients().toLowerCase().contains(allergy.toLowerCase()));
+                }
+            }
+        }
+        for (List<Recipes> dayMeals : result) {
+            for (Recipes r : dayMeals) {
+                for (String intolerance : intolerances) {
+                    assertFalse(r.getIngredients().toLowerCase().contains(intolerance.toLowerCase()));
+                }
+            }
+        }
+        for (List<Recipes> dayMeals : result) {
+            for (Recipes r : dayMeals) {
+                for (String prohibitedFood : prohibitedFoods) {
+                    assertFalse(r.getIngredients().toLowerCase().contains(prohibitedFood.toLowerCase()));
                 }
             }
         }

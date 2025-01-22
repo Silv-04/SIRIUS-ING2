@@ -27,9 +27,8 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping("/add")
-    public String addCustomer(@RequestBody Customer customer) {
-        customerService.saveCustomer(customer);
-        return "Customer added successfully";
+    public int addCustomer(@RequestBody Customer customer) {
+        return customerService.saveCustomer(customer);
     }
 
     @GetMapping("/get/{id}")
