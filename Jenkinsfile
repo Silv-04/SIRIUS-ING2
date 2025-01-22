@@ -18,7 +18,7 @@ pipeline {
                 sh "cd episaine-back/ && mvn clean package -P${BRANCH}"
                 sh '''
                 cd episaine-front/
-                npm ci --force
+                npm ci
                 npm run build:${BRANCH}
                 '''
             }
