@@ -17,11 +17,11 @@ import {
     FaCog,
 } from "react-icons/fa";
 
-export default function HomeNutritionniste() {
+export default function LeftMenu() {
     return (
         <Flex height="100vh" color="white">
             <Box
-                w="250px"
+                w={{ base: "100%", md: "250px" }}
                 bg="#0F1C2E"
                 p={6}
                 display="flex"
