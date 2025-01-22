@@ -2,7 +2,7 @@
   "name": "episaine-front",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "/episaine/",
   "dependencies": {
     "@chakra-ui/react": "^2.10.4",
     "@emotion/react": "^11.14.0",
