@@ -14,7 +14,6 @@ import { Box, Button, createTheme, FormControl, Grid, InputLabel, MenuItem, Sele
 // path="/client/recettes/informations/"
 // page to display and update the customer's informations if needed
 function InformationsPageInputs() {
-    const [id, setId] = useState();
     const [informations, setInformations] = useState();
 
     const location = useLocation();
@@ -39,17 +38,17 @@ function InformationsPageInputs() {
         const new_information = {
             information_id: informationId,
             health_goal: healthGoal,
-            allergies: allergies.join(","),
-            intolerances: intolerances.join(","),
+            allergies: Array.isArray(allergies) ? allergies.join(",") : "",
+            intolerances: Array.isArray(intolerances) ? intolerances.join(",") : "",
             dietary_regime: dietaryRegime,
             meals_per_day: mealsPerDay,
             weight: weight,
             height: height,
-            prohibited_food: foodToAvoid.join,
+            prohibited_food: foodToAvoid,
             recipe_temperature: foodTemperature,
-            cuisine_type: cuisineType.join(","),
+            cuisine_type: Array.isArray(cuisineType) ? cuisineType.join(",") : "",
             fk_customer_id: customerId
-        }
+        };
 
         if (informations && JSON.stringify(informations) === JSON.stringify(new_information)) {
             console.log("No changes detected");
@@ -79,20 +78,23 @@ function InformationsPageInputs() {
     const handleReset = () => {
         setAllergies([]);
         setIntolerances([]);
-        setHealthGoal();
-        setDietaryRegime();
-        setMealsPerDay();
-        setWeight();
-        setHeight();
-        setFoodToAvoid();
-        setFoodTemperature();
+        setHealthGoal('');
+        setDietaryRegime('');
+        setMealsPerDay('');
+        setWeight('');
+        setHeight('');
+        setFoodToAvoid('');
+        setFoodTemperature('');
         setCuisineType([]);
+        setCustomerId('');
+        setInformationId('');
     };
+    
 
     // get data sent from the previous page
     useEffect(() => {
         if (location.state?.inputValue) {
-            setId(location.state.inputValue);
+            setCustomerId(location.state.inputValue);
         }
     }, [location.state]);
 
@@ -100,7 +102,7 @@ function InformationsPageInputs() {
     useEffect(() => {
         const readInformations = async () => {
             try {
-                const response = await axios.get(GET_INFORMATIONS_BY_CUSTOMER_ID + "/" + id);
+                const response = await axios.get(GET_INFORMATIONS_BY_CUSTOMER_ID + "/" + customerId);
                 console.log("Informations fetched", response.data);
                 setInformations(response.data);
             } catch (error) {
@@ -108,10 +110,10 @@ function InformationsPageInputs() {
             }
         };
 
-        if (id) {
+        if (customerId) {
             readInformations();
         }
-    }, [id]);
+    }, [customerId]);
 
     // once informations received, update each fields
     useEffect(() => {
@@ -141,7 +143,7 @@ function InformationsPageInputs() {
             <form onSubmit={handleSubmit} autoComplete='off'>
                 <Box>
                     <Grid container spacing={2} sx={{ width: '90%', height: 'auto', marginLeft: "50px" }}>
-                        <Grid xs={12} sm={6} sx={{ width: '30%', height: 'auto', paddingRight: "20px" }}>
+                        <Grid item xs={12} sm={6} sx={{ width: '30%', height: 'auto', paddingRight: "20px" }}>
                             <FormControl fullWidth margin='normal' sx={{ height: 'auto' }}>
                                 <InputLabel>Objectif de santé</InputLabel>
                                 <Select
@@ -231,7 +233,7 @@ function InformationsPageInputs() {
                                 onChange={(e) => setMealsPerDay(e.target.value)}
                             />
                         </Grid>
-                        <Grid xs={12} sm={6} sx={{ width: '30%', height: 'auto', paddingLeft: "20px" }}>
+                        <Grid item xs={12} sm={6} sx={{ width: '30%', height: 'auto', paddingLeft: "20px" }}>
                             <TextField
                                 label="Poids (kg)"
                                 variant='outlined'
