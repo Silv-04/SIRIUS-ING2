@@ -1,5 +1,4 @@
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { Box, Grid } from "@mui/system";
+import { Box, Button, createTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import LeftMenu from "../../components/customers/LeftMenu";
@@ -12,6 +11,7 @@ function ResultPage() {
     const [recipesList, setRecipesList] = useState([]);
     const location = useLocation();
     const pdfRef = useRef();
+    const theme = createTheme();
 
     // generate a pdf
     const generatePDF = () => {
@@ -35,48 +35,50 @@ function ResultPage() {
     }, [location.state]);
 
     return (
-        <div>
-            <TableContainer sx={{ maxHeight: "400px", overflowY: "auto" }}>
-                <Table stickyHeader ref={pdfRef}>
-                    <TableHead>
-                        <TableRow>
-                            {recipesListTableHeader.map((header) => (
-                                <TableCell key={header.value} align="left">
-                                    {header.label}
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {recipesList.flat().map((recipe, index) => (
-                            <TableRow key={index}>
-                                {recipesListTableHeader.map(({ value }) => (
-                                    <TableCell key={value} align="left">
-                                        {recipe[value] || 'N/A'}
+        <ThemeProvider theme={theme}>
+            <Box sx={{ paddingLeft: "20px", paddingTop: "20px" }}>
+                <TableContainer sx={{ maxHeight: "400px", overflowY: "auto" }}>
+                    <Table stickyHeader ref={pdfRef}>
+                        <TableHead>
+                            <TableRow>
+                                {recipesListTableHeader.map((header) => (
+                                    <TableCell key={header.value} align="left">
+                                        {header.label}
                                     </TableCell>
                                 ))}
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Button variant="contained" color="primary" onClick={generatePDF}>
-                Enregistrer en PDF
-            </Button>
-        </div>
+                        </TableHead>
+                        <TableBody>
+                            {recipesList.flat().map((recipe, index) => (
+                                <TableRow key={index}>
+                                    {recipesListTableHeader.map(({ value }) => (
+                                        <TableCell key={value} align="left">
+                                            {recipe[value] || 'N/A'}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Button variant="contained" color="primary" onClick={generatePDF}>
+                    Enregistrer en PDF
+                </Button>
+            </Box>
+        </ThemeProvider>
     )
 }
 
 export default function Result() {
     return (
-        <Box sx={{ display: "flex", height: "100vh" }}>
-            <Grid sx={{ width: 250 }}>
+        <div style={{ display: 'flex', height: '100vh' }}>
+            <div style={{ width: '250px' }}>
                 <LeftMenu />
-            </Grid>
+            </div>
 
-            <Grid sx={{ flexGrow: 1, marginLeft: 10 }}>
+            <div style={{ flexGrow: 1 }}>
                 <ResultPage />
-            </Grid>
-        </Box>
+            </div>
+        </div>
     )
 }

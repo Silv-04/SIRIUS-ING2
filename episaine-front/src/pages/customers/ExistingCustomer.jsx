@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography, TextField, Button, Divider } from "@mui/material";
+import { Box, Grid, Typography, TextField, Button, Divider, ThemeProvider, createTheme } from "@mui/material";
 import LeftMenu from "../../components/customers/LeftMenu";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 
@@ -8,6 +8,8 @@ import { useNavigate, Link as RouterLink } from "react-router-dom";
 function ExistingCustomerOrNot() {
     const [customerNumber, setCustomerNumber] = useState("");
     const navigate = useNavigate();
+
+    const theme = createTheme();
 
     // handle the action of allowing only numbers in textfield
     const handleChange = (e) => {
@@ -31,6 +33,7 @@ function ExistingCustomerOrNot() {
     }
 
     return (
+        <ThemeProvider theme={theme}>
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
             <Grid container sx={{ width: "70%", padding: 4 }}>
 
@@ -59,19 +62,21 @@ function ExistingCustomerOrNot() {
                 </Grid>
             </Grid>
         </Box>
+
+        </ThemeProvider>
     );
 }
 
 export default function ExistingCustomer() {
     return (
-        <Box sx={{ display: "flex", height: "100vh" }}>
-            <Grid sx={{ width: 250 }}>
-                <LeftMenu />
-            </Grid>
-            
-            <Grid sx={{ flexGrow: 1 }}>
-                <ExistingCustomerOrNot />
-            </Grid>
-        </Box>
+    <div style={{ display: 'flex', height: '100vh' }}>
+        <div style={{ width: '250px' }}>
+            <LeftMenu />
+        </div>
+
+        <div style={{ flexGrow: 1 }}>
+            <ExistingCustomerOrNot />
+        </div>
+    </div>
     );
 }

@@ -6,6 +6,7 @@ import "../../styles/customers.css";
 import { Box, Grid } from "@mui/system";
 import LeftMenu from "../../components/customers/LeftMenu"
 
+// CURRENTLY NOT USED
 function RUDCustomers() {
     const [customers, setCustomers] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState(null);

@@ -15,13 +15,9 @@ import Rdv from "./nutritionniste/rdv"
 import Recipe from "./nutritionniste/recipe"
 import Customer from "./nutritionniste/Customer"
 import ParametreNutritionist from "../components/nutritionist/Parametre"
-import { createTheme, ThemeProvider } from "@mui/material";
-
-const theme = createTheme();
 
 function App() {
     return (
-        <ThemeProvider theme={theme}>
             <Router basename="/episaine">
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -43,7 +39,6 @@ function App() {
                     <Route path="/components/nutritionniste/Parametre/" element={<ParametreNutritionist />} />
                 </Routes>
             </Router>
-        </ThemeProvider>
     );
 }
 

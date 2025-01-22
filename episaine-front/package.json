@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "/episaine/",
   "dependencies": {
-    "@chakra-ui/react": "^2.10.5",
+    "@chakra-ui/react": "^2.10.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.1",
