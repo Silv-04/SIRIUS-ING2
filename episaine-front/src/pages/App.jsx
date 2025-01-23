@@ -8,13 +8,13 @@ import RecipesList from "./customers/RecipesList";
 import CreateCustomers from "./customers/CreateCustomers";
 import ExistingCustomer from "./customers/ExistingCustomer";
 import InformationsPage from "./customers/InformationsPage";
-import CustomerParameter from "../components/customers/Parameter"
+import CustomerParameter from "./customers/Parameter"
 import Result from "./customers/Result";
 import Dashboard from "./nutritionniste/Dashboard";
 import Rdv from "./nutritionniste/rdv"
 import Recipe from "./nutritionniste/recipe"
 import Customer from "./nutritionniste/Customer"
-import ParametreNutritionist from "../components/nutritionist/Parametre"
+import ParametreNutritionist from "./nutritionniste/Parametre"
 
 function App() {
     return (

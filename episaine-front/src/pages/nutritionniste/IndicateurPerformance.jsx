@@ -7,7 +7,6 @@ import {
     SimpleGrid,
     Button,
 } from "@chakra-ui/react";
-import { FEMALE_COUNT, MALE_COUNT, TOTAL_COUNT } from "../../constants/back";
 import Navbar from "../../components/nutritionist/navbar";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
