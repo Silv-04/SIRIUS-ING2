@@ -46,4 +46,7 @@ public class Customer {
 
     @Column(name="postal_code")
     private String postal_code;
+    
+    @Column(name="date_creation")
+    private Date date_creation;
 }
