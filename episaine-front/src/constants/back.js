@@ -1,6 +1,4 @@
-// src/constants/back.js
 
-// URL de base du backend
 export const BACKEND_HOST_EPISAINE = process.env.REACT_APP_BACKEND_URL;
 
 // Endpoints pour les clients
@@ -10,11 +8,11 @@ export const UPDATE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/update';
 export const DELETE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/delete';
 
 // ---------------------------------------//
-// Endpoints (KPIs) //
+//            Endpoints (KPIs)            //
 // ---------------------------------------//
 
 export const FEMALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/females";
 export const MALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/males";
 export const TOTAL_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/total";
-export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/kpis/customers/age-distribution';
 export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/api/kpis/customers/monthly-distribution';
+export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/api/kpis/customers/age-distribution';
