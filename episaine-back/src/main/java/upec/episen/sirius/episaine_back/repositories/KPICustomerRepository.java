@@ -27,16 +27,14 @@ public interface KPICustomerRepository extends JpaRepository<KPICustomer, Long> 
             "    WHEN EXTRACT(YEAR FROM AGE(current_date, customer_birthdate)) BETWEEN 26 AND 35 THEN '26-35' " +
             "    WHEN EXTRACT(YEAR FROM AGE(current_date, customer_birthdate)) BETWEEN 36 AND 45 THEN '36-45' " +
             "    WHEN EXTRACT(YEAR FROM AGE(current_date, customer_birthdate)) BETWEEN 46 AND 55 THEN '46-55' " +
-            "    WHEN EXTRACT(YEAR FROM AGE(current_date, customer_birthdate)) >= 56 THEN '56+' " +
-            "    ELSE 'Unknown' " +
+            "    WHEN EXTRACT(YEAR FROM AGE(current_date, customer_birthdate)) BETWEEN 56 AND 64 THEN '56-64' " +
+            "    ELSE '+65' " +
             "END AS age_group, " +
             "COUNT(*) AS count " +
             "FROM customer " +
             "WHERE customer_birthdate IS NOT NULL " +
             "GROUP BY age_group", nativeQuery = true)
     List<Object[]> getAgeDistribution();
-
-
 
     // Monthly distribution by gender
     @Query(value = "SELECT " +
