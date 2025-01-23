@@ -9,7 +9,7 @@ export const DELETE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/delete';
 export const FEMALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/females";
 export const MALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/males";
 export const TOTAL_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/total";
-export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/kpis/customers/age-distribution';
+export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/api/kpis/customers/age-distribution';
 export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/api/kpis/customers/monthly-distribution'
 
 export const GET_RECIPES_BY_CUSTOMER = BACKEND_HOST_EPISAINE + '/recipes/getRecipesList';
