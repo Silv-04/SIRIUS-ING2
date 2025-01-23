@@ -15,22 +15,24 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh "cd episaine-back/ && mvn clean package -P${BRANCH}"
-                sh "cd episaine-front/"
-                sh "npm ci"
-                sh "npm run build:${BRANCH}"
+                sh """
+                cd episaine-back && mvn clean package -P${BRANCH}
+                cd ../episaine-front
+                npm ci
+                npm run build:${BRANCH}
+                """
             }
         }
         stage('Déploiement') {
             steps {
                 sshagent(['id_rsa_jenkins']) {
-                    sh "scp -r ${WORKSPACE}/episaine-back/target/*.jar episaine@192.168.3.31:${DEPLOY_PATH}"
                     sh """
-                    ssh episaine@192.168.3.31 'chmod +x ${DEPLOY_PATH}/deploy.sh'
+                    scp -r episaine-back/target/*.jar episaine@192.168.3.31:${DEPLOY_PATH}
+                    ssh episaine@192.168.3.31 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'
                     """
-
-                    sh "scp -r ${WORKSPACE}/episaine-front/build/ episaine@192.168.3.32:${DEPLOY_PATH}"
+                    
                     sh """
+                    scp -r episaine-front/build/ episaine@192.168.3.32:${DEPLOY_PATH}
                     ssh episaine@192.168.3.32 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'
                     """
                 }
