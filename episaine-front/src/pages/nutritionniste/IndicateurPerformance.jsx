@@ -191,7 +191,7 @@ export default function IndicateurPerformance() {
 
     return (
         <Box bg="#1f2b3e" minHeight="100vh">
-            <Flex height="100vh" color="#1f2b3e">
+            <Flex height="100%" color="#1f2b3e">
                 <Navbar />
 
                 <Box
