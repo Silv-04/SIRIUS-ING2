@@ -9,8 +9,12 @@ export const READ_CUSTOMERS = BACKEND_HOST_EPISAINE + '/customer/all';
 export const UPDATE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/update';
 export const DELETE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/delete';
 
-// Endpoints pour les statistiques (KPIs)
+// ---------------------------------------//
+// Endpoints (KPIs) //
+// ---------------------------------------//
+
 export const FEMALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/females";
 export const MALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/males";
 export const TOTAL_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/total";
 export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/kpis/customers/age-distribution';
+export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/api/kpis/customers/monthly-distribution';
