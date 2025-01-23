@@ -1,17 +1,18 @@
 package upec.episen.sirius.episaine_back.models;
+
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "customer") // Nom de la table en base
+@Table(name = "customer")
 public class KPICustomer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id") // Colonne en base
-    private Long customerId; // Nom du champ dans la classe
+    @Column(name = "customer_id")
+    private Long customerId;
 
-    @Column(name = "customer_lastname") // Ajoutez des mappings explicites pour éviter toute ambiguïté
+    @Column(name = "customer_lastname")
     private String customerLastname;
 
     @Column(name = "customer_firstname")
@@ -37,6 +38,10 @@ public class KPICustomer {
 
     @Column(name = "postal_code")
     private String postalCode;
+
+    @Column(name = "date_creation")
+
+    private Date dateCreation;
 
     // Getters et Setters
     public Long getCustomerId() {
@@ -117,5 +122,13 @@ public class KPICustomer {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public Date getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
     }
 }
