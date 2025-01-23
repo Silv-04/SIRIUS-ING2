@@ -16,11 +16,9 @@ pipeline {
         stage('Build') {
             steps {
                 sh "cd episaine-back/ && mvn clean package -P${BRANCH}"
-                sh '''
-                cd episaine-front/
-                npm ci
-                npm run build:${BRANCH}
-                '''
+                sh "cd episaine-front/"
+                sh "npm ci"
+                sh "npm run build:${BRANCH}"
             }
         }
         stage('Déploiement') {
