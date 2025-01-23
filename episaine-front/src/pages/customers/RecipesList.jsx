@@ -44,7 +44,7 @@ function RecipesListInput() {
     const getRecipes = async () => {
         try {
             const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays);
-            console.log("Recipes fetched");
+            console.log("Recipes fetched:", response.data);
             setAllRecipesList(response.data);
         } catch (error) {
             console.error("Error while reading data:", error);
