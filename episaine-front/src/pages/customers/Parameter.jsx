@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Heading, Button, Text } from "@chakra-ui/react";
-import Navbar from "./navbar";
+import Navbar from "../../components/customers/LeftMenu";
 import { useNavigate } from "react-router-dom";
 
 export default function Parametre() {
@@ -14,7 +14,6 @@ export default function Parametre() {
         <Box display="flex" height="100vh" bg="#1f2b3e" color="white">
             <Navbar />
 
-            {/*Content */}
             <Box
                 flex="1"
                 p={6}

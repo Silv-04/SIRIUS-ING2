@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Heading, Button, Text } from "@chakra-ui/react";
-import Navbar from "./LeftMenu";
+import Navbar from "../../components/nutritionist/navbar";
 import { useNavigate } from "react-router-dom";
 
 export default function Parametre() {

@@ -53,7 +53,7 @@ public class KPICustomerController {
 
         return ResponseEntity.ok(genderCounts);
     }
-    // API pour la répartition par tranche d'âge
+    // API for age distribution
     @GetMapping("/age-distribution")
     public ResponseEntity<Map<String, Long>> getAgeDistribution() {
         List<Object[]> results = kpiCustomerRepository.getAgeDistribution();
@@ -67,6 +67,19 @@ public class KPICustomerController {
 
         return ResponseEntity.ok(ageDistribution);
     }
+    // API for monthly distribution ( per gender)
 
+    @GetMapping("/monthly-distribution")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlyDistribution() {
+        List<Object[]> results = kpiCustomerRepository.getMonthlyDistribution();
+        List<Map<String, Object>> monthlyDistribution = results.stream().map(result -> {
+            Map<String, Object> data = new HashMap<>();
+            data.put("month", result[0]);
+            data.put("gender", result[1]);
+            data.put("count", ((Number) result[2]).longValue());
+            return data;
+        }).toList();
+        return ResponseEntity.ok(monthlyDistribution);
+    }
 
 }
