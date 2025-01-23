@@ -98,6 +98,7 @@ function Customers() {
     
         try {
             const date_creation = new Date().toISOString().split('T')[0];
+            console.log("Date de création du client : ", date_creation);
             const response = await axios.post(CREATE_CUSTOMER, {
                 customer_lastname,
                 customer_firstname,
