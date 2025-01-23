@@ -3,7 +3,7 @@ pipeline {
     environment {
         REPO_URL = 'https://github.com/Silv-04/SIRIUS-ING2.git'
         DEPLOY_PATH = '/home/episaine/jenkins'
-        BRANCH = 'prod'
+        BRANCH = 'dev'
         PATH = "/opt/nvm/versions/node/v22.11.0/bin:${env.PATH}"
     }
 
