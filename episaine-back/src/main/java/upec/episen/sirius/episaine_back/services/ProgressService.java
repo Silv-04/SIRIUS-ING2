@@ -26,8 +26,8 @@ public class ProgressService {
     private RecipesService recipesService;
     private CustomerService customerService;
 
-    private int perte_min = 300;
-    private int perte_max = 800;
+    private int perte_min = 100;
+    private int perte_max = 300;
     private int gain_min = 300;
 
     public ProgressService(InformationsService informationsService, RecipesService recipesService,
