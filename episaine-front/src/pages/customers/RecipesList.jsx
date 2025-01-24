@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -16,42 +17,38 @@ import {
     TableRow,
     TableSortLabel,
     TextField,
-    ThemeProvider
-} from '@mui/material';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { GET_RECIPES_BY_CUSTOMER } from '../../constants/back';
-import LeftMenu from '../../components/customers/LeftMenu';
-import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
-import { useLocation, useNavigate } from 'react-router-dom';
-import sortRecipesTableOptions from '../../constants/sortRecipesTableOptions.json';
+    ThemeProvider,
+    Typography,
+} from "@mui/material";
+import { Search, Sort, CheckCircle, RestaurantMenu } from "@mui/icons-material";
+import axios from "axios";
+import { GET_RECIPES_BY_CUSTOMER } from "../../constants/back";
+import LeftMenu from "../../components/customers/LeftMenu";
+import recipesListTableHeader from "../../constants/recipesListTableHeader.json";
+import { useLocation, useNavigate } from "react-router-dom";
+import sortRecipesTableOptions from "../../constants/sortRecipesTableOptions.json";
 
-// path="/client/recettes/informations/choix/"
-// page to display each recipes according to the customer's informations
 function RecipesListInput() {
-    const [id, setId] = useState('');
-    const [numberOfDays, setNumberOfDays] = useState('');
+    const [id, setId] = useState("");
+    const [numberOfDays, setNumberOfDays] = useState("");
     const [allRecipesList, setAllRecipesList] = useState([]);
     const [selectedTables, setSelectedTables] = useState({});
     const [recipesList, setRecipesList] = useState([]);
-    const [sortValue, setSortValue] = useState('none');
+    const [sortValue, setSortValue] = useState("none");
     const location = useLocation();
     const navigate = useNavigate();
 
     const theme = createTheme();
 
-    // fetched recipes 
     const getRecipes = async () => {
         try {
             const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays);
-            console.log("Recipes fetched:", response.data);
             setAllRecipesList(response.data);
         } catch (error) {
-            console.error("Error while reading data:", error);
+            console.error("Error while fetching recipes:", error);
         }
     };
 
-    // save recipes selected by the checkbox
     const handleSelectAll = (tableIndex, isChecked) => {
         setSelectedTables((prev) => ({ ...prev, [tableIndex]: isChecked }));
 
@@ -62,141 +59,178 @@ function RecipesListInput() {
         }
     };
 
-    // sent saved recipes to the next page
     const handleValidate = () => {
-        console.log("Selected recipes: ", recipesList);
         navigate("/client/recettes/informations/choix/resultat/", { state: { inputValue: recipesList } });
-    }
+    };
 
-    // calculate average calories to sort the list
     const calculateAverageCalories = (recipes) => {
         const totalCalories = recipes.reduce((sum, recipe) => sum + (recipe.calorieCount || 0), 0);
         return recipes.length > 0 ? totalCalories / recipes.length : 0;
     };
 
-    // handle the sort according to the chosen option
     const handleSort = () => {
-        if (sortValue === 'none') {
-            return;
-        }
+        if (sortValue === "none") return;
 
-        if (sortValue === 'calories') {
+        if (sortValue === "calories") {
             const sortedRecipesGroups = [...allRecipesList].sort((groupA, groupB) => {
                 const avgA = calculateAverageCalories(groupA);
                 const avgB = calculateAverageCalories(groupB);
                 return avgB - avgA;
             });
 
-            setAllRecipesList(sortedRecipesGroups.map(group => [...group]));
-            console.log("Recettes triées :", sortedRecipesGroups);
+            setAllRecipesList(sortedRecipesGroups.map((group) => [...group]));
         }
     };
 
-    // receive id from previous page
     useEffect(() => {
         if (location.state?.inputValue) {
-            console.log("ID received: ", location.state.inputValue);
             setId(location.state.inputValue);
         }
     }, [location.state]);
 
     return (
         <ThemeProvider theme={theme}>
-            <Box sx={{paddingLeft:"50px", paddingTop:"50px"}}>
-                <div className="input">
-                    <Grid container spacing={2}>
-                        <Grid sx={{ width: "40%" }}>
-                            <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
-                                <TextField
-                                    fullWidth
-                                    margin='normal'
-                                    label='Nombre de jours'
-                                    variant='outlined'
-                                    value={numberOfDays}
-                                    onChange={(e) => setNumberOfDays(e.target.value)}
-                                    type='number'
-                                />
-                                <Button
-                                    variant='contained'
-                                    color='primary'
-                                    type='submit'
-                                >Obtenir les listes de recettes</Button>
-                            </form>
-                        </Grid>
-                        <Grid sx={{ width: "40%" }}>
-                            <FormControl fullWidth margin='normal'>
-                                <InputLabel>Trier par</InputLabel>
-                                <Select
-                                    fullWidth
-                                    onChange={(e) => setSortValue(e.target.value)}
-                                    value={sortValue}
-                                    label="Trier par"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    {sortRecipesTableOptions.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <Button
-                                variant='contained'
-                                color='primary'
-                                onClick={handleSort}
-                            >Trier</Button>
-                        </Grid>
-                    </Grid>
-                </div>
-                <div className='recipesTable'>
+            <Box
+                sx={{
+                    padding: 4,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 4,
+                    backgroundColor: "#f9f9f9",
+                    minHeight: "100vh",
+                }}
+            >
+                <Typography
+                    variant="h4"
+                    color="primary"
+                    textAlign="center"
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        fontWeight: "bold",
+                        marginBottom: 3,
+                    }}
+                >
+                    <RestaurantMenu fontSize="large" /> Liste des Recettes Disponibles
+                </Typography>
 
-                    <TableContainer sx={{ maxHeight: "500px", overflowY: "auto" }}>
-                        <Table stickyHeader>
-                            <TableBody>
-                                {allRecipesList.map((recipesListGroup, tableIndex) => (
-                                    <Table key={tableIndex}>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>
-                                                    <Checkbox
-                                                        checked={selectedTables[tableIndex] || false}
-                                                        onChange={(e) => handleSelectAll(tableIndex, e.target.checked)}
-                                                    />
-                                                </TableCell>
-                                                {recipesListTableHeader.map((header) => (
-                                                    <TableCell key={header.value}>
-                                                        <TableSortLabel />
-                                                        {header.label}
-                                                    </TableCell>
+                <Grid container spacing={4} justifyContent="center">
+                    <Grid item xs={12} sm={6}>
+                        <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }}>
+                            <TextField
+                                fullWidth
+                                label="Nombre de jours"
+                                variant="outlined"
+                                value={numberOfDays}
+                                onChange={(e) => setNumberOfDays(e.target.value)}
+                                type="number"
+                                sx={{ marginBottom: 2 }}
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                fullWidth
+                                startIcon={<Search />}
+                                sx={{ padding: "10px 20px" }}
+                            >
+                                Obtenir les listes de recettes
+                            </Button>
+                        </form>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth>
+                            <InputLabel>Trier par</InputLabel>
+                            <Select
+                                value={sortValue}
+                                onChange={(e) => setSortValue(e.target.value)}
+                                label="Trier par"
+                                sx={{ marginBottom: 2 }}
+                            >
+                                {sortRecipesTableOptions.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={handleSort}
+                                startIcon={<Sort />}
+                                sx={{ padding: "10px 20px" }}
+                            >
+                                Trier
+                            </Button>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+
+                <TableContainer
+                    sx={{
+                        maxHeight: "500px",
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        overflowY: "auto",
+                    }}
+                >
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Action</TableCell>
+                                {recipesListTableHeader.map((header) => (
+                                    <TableCell key={header.value}>
+                                        <TableSortLabel>{header.label}</TableSortLabel>
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {allRecipesList.map((recipesListGroup, tableIndex) => (
+                                <Table key={tableIndex}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>
+                                                <Checkbox
+                                                    checked={selectedTables[tableIndex] || false}
+                                                    onChange={(e) => handleSelectAll(tableIndex, e.target.checked)}
+                                                />
+                                            </TableCell>
+                                            {recipesListTableHeader.map((header) => (
+                                                <TableCell key={header.value}>{header.label}</TableCell>
+                                            ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {recipesListGroup.map((recipes) => (
+                                            <TableRow key={recipes.recipe_id}>
+                                                <TableCell />
+                                                {recipesListTableHeader.map(({ value }) => (
+                                                    <TableCell key={value}>{recipes[value] || "N/A"}</TableCell>
                                                 ))}
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {recipesListGroup.map((recipes) => (
-                                                <TableRow key={recipes.recipe_id} selected={selectedTables[tableIndex] || false}>
-                                                    <TableCell />
-                                                    {recipesListTableHeader.map(({ value }) => (
-                                                        <TableCell key={value}>
-                                                            {recipes[value] || 'N/A'}
-                                                        </TableCell>
-                                                    ))}
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </div>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
 
-                <Button onClick={handleValidate} variant="contained" color="primary">Valider</Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginTop: 3, padding: "10px 20px" }}
+                    onClick={handleValidate}
+                    startIcon={<CheckCircle />}
+                >
+                    Valider
+                </Button>
             </Box>
         </ThemeProvider>
     );
@@ -204,11 +238,8 @@ function RecipesListInput() {
 
 export default function RecipesList() {
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            <div style={{ width: '250px' }}>
-                <LeftMenu />
-            </div>
-
+        <div style={{ display: "flex", height: "100vh" }}>
+            <LeftMenu style={{ width: "250px" }} />
             <div style={{ flexGrow: 1 }}>
                 <RecipesListInput />
             </div>
