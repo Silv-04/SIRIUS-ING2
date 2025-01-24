@@ -38,7 +38,7 @@ def insert_recipe(dietary_regime, cuisine_types):
     fk_nutritionist_id = 1  # Toujours le même ID nutritionniste
     category = random.choice(cuisine_types)
 
-    # Requête SQL
+
     insert_query = """
     INSERT INTO public.recipes (
         recipe_name,
