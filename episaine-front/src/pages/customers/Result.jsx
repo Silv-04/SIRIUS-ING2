@@ -1,4 +1,17 @@
-import { Box, Button, createTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider } from "@mui/material";
+import {
+    Box,
+    Button,
+    createTheme,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    ThemeProvider,
+    Typography,
+} from "@mui/material";
+import { PictureAsPdf } from "@mui/icons-material";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import LeftMenu from "../../components/customers/LeftMenu";
@@ -6,14 +19,13 @@ import recipesListTableHeader from "../../constants/recipesListTableHeader.json"
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-// path="/client/recettes/informations/choix/resultat/"
 function ResultPage() {
     const [recipesList, setRecipesList] = useState([]);
     const location = useLocation();
     const pdfRef = useRef();
     const theme = createTheme();
 
-    // generate a pdf
+    // Generate PDF
     const generatePDF = () => {
         const input = pdfRef.current;
         html2canvas(input, { scale: 2 }).then((canvas) => {
@@ -26,18 +38,44 @@ function ResultPage() {
         });
     };
 
-    // receive data from previous page
+    // Receive data from previous page
     useEffect(() => {
         if (location.state?.inputValue) {
-            console.log("Recipes List: ", location.state.inputValue);
             setRecipesList(location.state.inputValue);
         }
     }, [location.state]);
 
     return (
         <ThemeProvider theme={theme}>
-            <Box sx={{ paddingLeft: "20px", paddingTop: "20px" }}>
-                <TableContainer sx={{ maxHeight: "400px", overflowY: "auto" }}>
+            <Box
+                sx={{
+                    padding: 4,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 4,
+                    backgroundColor: "#f9f9f9",
+                    minHeight: "100vh",
+                }}
+            >
+                <Typography
+                    variant="h4"
+                    color="primary"
+                    sx={{ fontWeight: "bold", marginBottom: 3 }}
+                >
+                    Résultats des Recettes
+                </Typography>
+
+                <TableContainer
+                    sx={{
+                        maxHeight: "500px",
+                        width: "100%",
+                        backgroundColor: "#fff",
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        overflowY: "auto",
+                    }}
+                >
                     <Table stickyHeader ref={pdfRef}>
                         <TableHead>
                             <TableRow>
@@ -53,7 +91,7 @@ function ResultPage() {
                                 <TableRow key={index}>
                                     {recipesListTableHeader.map(({ value }) => (
                                         <TableCell key={value} align="left">
-                                            {recipe[value] || 'N/A'}
+                                            {recipe[value] || "N/A"}
                                         </TableCell>
                                     ))}
                                 </TableRow>
@@ -61,18 +99,25 @@ function ResultPage() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Button variant="contained" color="primary" onClick={generatePDF}>
+
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={generatePDF}
+                    startIcon={<PictureAsPdf />}
+                    sx={{ padding: "10px 20px" }}
+                >
                     Enregistrer en PDF
                 </Button>
             </Box>
         </ThemeProvider>
-    )
+    );
 }
 
 export default function Result() {
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            <div style={{ width: '250px' }}>
+        <div style={{ display: "flex", height: "100vh" }}>
+            <div style={{ width: "250px" }}>
                 <LeftMenu />
             </div>
 
@@ -80,5 +125,5 @@ export default function Result() {
                 <ResultPage />
             </div>
         </div>
-    )
+    );
 }
