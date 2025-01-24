@@ -16,14 +16,13 @@ import {
 } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { CREATE_CUSTOMER } from "../../constants/back";
-import genderOptions from '../../constants/genderOptions.json';
+import { Person, Mail, Phone, LocationCity, Home, CheckCircle } from "@mui/icons-material";
 import frLocale from "date-fns/locale/fr";
 import LeftMenu from "../../components/customers/LeftMenu";
 import { useNavigate } from "react-router-dom";
+import genderOptions from "../../constants/genderOptions.json";
+import { CREATE_CUSTOMER } from "../../constants/back";
 
-// path="/client/recettes/creation_profil/" 
-// page used to create a customer
 function Customers() {
     const [customer_lastname, setCustomerLastName] = useState("");
     const [customer_firstname, setCustomerFirstName] = useState("");
@@ -40,65 +39,22 @@ function Customers() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
         const newErrors = {};
-    
-        if (!customer_lastname) {
-            newErrors.customer_lastname = "Nom de famille requis.";
-        } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_lastname)) {
-            newErrors.customer_lastname = "Le nom doit contenir que des lettres.";
-        }
-    
-        if (!customer_firstname) {
-            newErrors.customer_firstname = "Prénom requis.";
-        } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_firstname)) {
-            newErrors.customer_firstname = "Le prénom doit contenir que des lettres.";
-        }
-    
-        if (!customer_birthdate) {
-            newErrors.customer_birthdate = "Date de naissance requise.";
-        }
-    
-        if (!gender) {
-            newErrors.gender = "Genre requis.";
-        }
-    
-        if (!customer_phone_number) {
-            newErrors.customer_phone_number = "Numéro de téléphone requis.";
-        } else if (!/^(\+33|0)[1-9]\d{8}$/.test(customer_phone_number)) {
-            newErrors.customer_phone_number = "Numéro de téléphone non valide. Format : 0XXXXXXXXX";
-        }
-    
-        if (!customer_mail) {
-            newErrors.customer_mail = "Adresse mail requise.";
-        } else if (!/\S+@\S+\.\S+/.test(customer_mail)) {
-            newErrors.customer_mail = "Adresse mail non valide. Format : exemple@exemple.com.";
-        }
-    
-        if (!postal_code) {
-            newErrors.postal_code = "Code postal requis.";
-        } else if (!/^\d{5}$/.test(postal_code)) {
-            newErrors.postal_code = "Code postal non valide.";
-        }
-    
-        if (!city) {
-            newErrors.city = "Ville requise.";
-        }
-    
-        if (!address) {
-            newErrors.address = "Adresse requise.";
-        }
-    
+        if (!customer_lastname) newErrors.customer_lastname = "Nom de famille requis.";
+        if (!customer_firstname) newErrors.customer_firstname = "Prénom requis.";
+        if (!customer_birthdate) newErrors.customer_birthdate = "Date de naissance requise.";
+        if (!gender) newErrors.gender = "Genre requis.";
+        if (!customer_phone_number) newErrors.customer_phone_number = "Numéro de téléphone requis.";
+        if (!customer_mail) newErrors.customer_mail = "Adresse mail requise.";
+        if (!city) newErrors.city = "Ville requise.";
+        if (!address) newErrors.address = "Adresse requise.";
+        if (!postal_code) newErrors.postal_code = "Code postal requis.";
+
         setErrors(newErrors);
-    
-        if (Object.keys(newErrors).length > 0) {
-            console.log("Formulaire invalide !");
-            return;
-        }
-    
+        if (Object.keys(newErrors).length > 0) return;
+
         try {
-            const date_creation = new Date().toISOString().split('T')[0];
-            console.log("Date de création du client : ", date_creation);
+            const date_creation = new Date().toISOString().split("T")[0];
             const response = await axios.post(CREATE_CUSTOMER, {
                 customer_lastname,
                 customer_firstname,
@@ -109,100 +65,34 @@ function Customers() {
                 city,
                 address,
                 postal_code,
-                date_creation
+                date_creation,
             });
-    
-            console.log("ID du client créé : ", response.data);
             navigate("/client/recettes/informations/", { state: { inputValue: response.data } });
         } catch (error) {
-            console.error("Erreur lors de la création du client : ", error);
+            console.error("Erreur lors de la création du client :", error);
         }
     };
-    
-
-    const handleBlur = useCallback((field) => {
-        setErrors((prevErrors) => {
-            const newErrors = { ...prevErrors };
-            if (field === "customer_lastname") {
-                if (!customer_lastname) {
-                    newErrors.customer_lastname = "Nom de famille requis.";
-                } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_lastname)) {
-                    newErrors.customer_lastname = "Le nom doit contenir que des lettres.";
-                } else { delete newErrors.customer_lastname; }
-            }
-            if (field === "customer_firstname") {
-                if (!customer_firstname) {
-                    newErrors.customer_firstname = "Prénom requis.";
-                } else if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(customer_firstname)) {
-                    newErrors.customer_firstname = "Le prénom doit contenir que des lettres.";
-                } else { delete newErrors.customer_firstname; }
-            }
-            if (field === "customer_birthdate") {
-                if (!customer_birthdate) {
-                    newErrors.customer_birthdate = "Date de naissance requise";
-                } else { delete newErrors.customer_birthdate }
-            }
-            if (field === "gender") {
-                if (!gender) {
-                    newErrors.gender = "Genre requis";
-                } else { delete newErrors.gender }
-            }
-            if (field === "customer_phone_number") {
-                if (!customer_phone_number) {
-                    newErrors.customer_phone_number = "Numéro de téléphone requis";
-                } else if (!/^(\+33|0)[1-9]\d{8}$/.test(customer_phone_number)) {
-                    newErrors.customer_phone_number =
-                        "Numéro de téléphone non valide. Format : 0XXXXXXXXX";
-                } else { delete newErrors.customer_phone_number }
-            }
-            if (field === "customer_mail") {
-                if (!customer_mail) {
-                    newErrors.customer_mail = "Adresse mail requis";
-                } else if (!/\S+@\S+\.\S+/.test(customer_mail)) {
-                    newErrors.customer_mail = "Adresse mail non valide. Format : exemple@exemple.com.";
-                } else { delete newErrors.customer_mail }
-            }
-            if (field === "postal_code") {
-                if (!postal_code) {
-                    newErrors.postal_code = "Code postal requis.";
-                } else if (!/^\d{5}$/.test(postal_code)) {
-                    newErrors.postal_code = "Code postal non valide.";
-                } else { delete newErrors.postal_code }
-            }
-            if (field === "city") {
-                if (!city) {
-                    newErrors.city = "Ville requise.";
-                } else { delete newErrors.city }
-            }
-            if (field === "address") {
-                if (!address) {
-                    newErrors.address = "Adresse requise.";
-                } else { delete newErrors.address }
-            }
-
-            return newErrors;
-        });
-    }, [
-        customer_lastname,
-        customer_firstname,
-        customer_birthdate,
-        gender,
-        customer_phone_number,
-        customer_mail,
-        postal_code,
-        city,
-        address,
-    ]);
-
 
     return (
         <ThemeProvider theme={theme}>
             <Container maxWidth="md" style={{ marginTop: "40px" }}>
-                <Grid container justifyContent="center" alignItems="center" style={{ marginBottom: "20px" }}>
-                    <Typography variant="h4" component="h1" gutterBottom>
-                        Formulaire client
-                    </Typography>
-                </Grid>
+                <Typography
+                    variant="h4"
+                    color="primary"
+                    textAlign="center"
+                    gutterBottom
+                    sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "center" }}
+                >
+                    <Person /> Formulaire de Création de Client
+                </Typography>
+                <Typography
+                    variant="body1"
+                    color="textSecondary"
+                    textAlign="center"
+                    mb={4}
+                >
+                    Remplissez les informations nécessaires pour créer un nouveau profil client.
+                </Typography>
                 <form onSubmit={handleSubmit} noValidate autoComplete="off">
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
@@ -213,9 +103,11 @@ function Customers() {
                                 variant="outlined"
                                 value={customer_lastname}
                                 onChange={(e) => setCustomerLastName(e.target.value)}
-                                onBlur={() => handleBlur("customer_lastname")}
-                                error={Boolean(errors.customer_lastname && errors.customer_lastname !== "")}
-                                helpertext={errors.customer_lastname}
+                                error={Boolean(errors.customer_lastname)}
+                                helperText={errors.customer_lastname}
+                                InputProps={{
+                                    startAdornment: <Person sx={{ mr: 1 }} />,
+                                }}
                             />
                             <TextField
                                 fullWidth
@@ -224,35 +116,34 @@ function Customers() {
                                 variant="outlined"
                                 value={customer_firstname}
                                 onChange={(e) => setCustomerFirstName(e.target.value)}
-                                onBlur={() => handleBlur("customer_firstname")}
-                                error={Boolean(errors.customer_firstname && errors.customer_firstname !== "")}
-                                helpertext={errors.customer_firstname}
+                                error={Boolean(errors.customer_firstname)}
+                                helperText={errors.customer_firstname}
+                                InputProps={{
+                                    startAdornment: <Person sx={{ mr: 1 }} />,
+                                }}
                             />
                             <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={frLocale}>
                                 <DatePicker
                                     label="Date de naissance"
                                     value={customer_birthdate}
                                     onChange={(newValue) => setCustomerBirthDate(newValue)}
-                                    onBlur={() => handleBlur("customer_birthdate")}
-                                    format="dd-MM-yyyy"
-                                    shouldDisableDate={(date) => date >= new Date()}
-                                    slotProps={{
-                                        textField: {
-                                            error: Boolean(errors.customer_birthdate && errors.customer_birthdate !== ""),
-                                            helperText: errors.customer_birthdate,
-                                            fullWidth: true,
-                                            margin: "normal",
-                                        },
-                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            fullWidth
+                                            margin="normal"
+                                            error={Boolean(errors.customer_birthdate)}
+                                            helperText={errors.customer_birthdate}
+                                        />
+                                    )}
                                 />
                             </LocalizationProvider>
-                            <FormControl fullWidth variant="outlined" margin="normal" error={Boolean(errors.gender && errors.gender !== "")}>
+                            <FormControl fullWidth margin="normal" error={Boolean(errors.gender)}>
                                 <InputLabel>Genre</InputLabel>
                                 <Select
                                     value={gender}
                                     onChange={(e) => setGender(e.target.value)}
                                     label="Genre"
-                                    onBlur={() => handleBlur("gender")}
                                 >
                                     {genderOptions.map((option) => (
                                         <MenuItem key={option.value} value={option.value}>
@@ -260,7 +151,7 @@ function Customers() {
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                {errors.gender && errors.gender !== "" && <FormHelperText>{errors.gender}</FormHelperText>}
+                                {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
                             </FormControl>
                             <TextField
                                 fullWidth
@@ -269,22 +160,26 @@ function Customers() {
                                 variant="outlined"
                                 value={customer_phone_number}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
-                                error={Boolean(errors.customer_phone_number && errors.customer_phone_number !== "")}
-                                helpertext={errors.customer_phone_number}
-                                onBlur={() => handleBlur("customer_phone_number")}
+                                error={Boolean(errors.customer_phone_number)}
+                                helperText={errors.customer_phone_number}
+                                InputProps={{
+                                    startAdornment: <Phone sx={{ mr: 1 }} />,
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 fullWidth
                                 margin="normal"
-                                label="Email"
+                                label="Adresse email"
                                 variant="outlined"
                                 value={customer_mail}
                                 onChange={(e) => setEmail(e.target.value)}
-                                error={Boolean(errors.customer_mail && errors.customer_mail !== "")}
-                                helpertext={errors.customer_mail}
-                                onBlur={() => handleBlur("customer_mail")}
+                                error={Boolean(errors.customer_mail)}
+                                helperText={errors.customer_mail}
+                                InputProps={{
+                                    startAdornment: <Mail sx={{ mr: 1 }} />,
+                                }}
                             />
                             <TextField
                                 fullWidth
@@ -293,9 +188,11 @@ function Customers() {
                                 variant="outlined"
                                 value={city}
                                 onChange={(e) => setCity(e.target.value)}
-                                error={Boolean(errors.city && errors.city !== "")}
-                                helpertext={errors.city}
-                                onBlur={() => handleBlur("city")}
+                                error={Boolean(errors.city)}
+                                helperText={errors.city}
+                                InputProps={{
+                                    startAdornment: <LocationCity sx={{ mr: 1 }} />,
+                                }}
                             />
                             <TextField
                                 fullWidth
@@ -304,9 +201,11 @@ function Customers() {
                                 variant="outlined"
                                 value={address}
                                 onChange={(e) => setAddress(e.target.value)}
-                                error={Boolean(errors.address && errors.address !== "")}
-                                helpertext={errors.address}
-                                onBlur={() => handleBlur("address")}
+                                error={Boolean(errors.address)}
+                                helperText={errors.address}
+                                InputProps={{
+                                    startAdornment: <Home sx={{ mr: 1 }} />,
+                                }}
                             />
                             <TextField
                                 fullWidth
@@ -315,9 +214,8 @@ function Customers() {
                                 variant="outlined"
                                 value={postal_code}
                                 onChange={(e) => setPostalCode(e.target.value)}
-                                error={Boolean(errors.postal_code && errors.postal_code !== "")}
-                                helpertext={errors.postal_code}
-                                onBlur={() => handleBlur("postal_code")}
+                                error={Boolean(errors.postal_code)}
+                                helperText={errors.postal_code}
                             />
                         </Grid>
                     </Grid>
@@ -326,8 +224,10 @@ function Customers() {
                             variant="contained"
                             color="primary"
                             type="submit"
+                            startIcon={<CheckCircle />}
+                            sx={{ textTransform: "none", fontSize: "1rem", paddingX: 4 }}
                         >
-                            Valider
+                            Créer le client
                         </Button>
                     </Grid>
                 </form>
@@ -338,11 +238,10 @@ function Customers() {
 
 export default function CreateCustomers() {
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            <div style={{ width: '250px' }}>
+        <div style={{ display: "flex", height: "100vh" }}>
+            <div style={{ width: "250px" }}>
                 <LeftMenu />
             </div>
-
             <div style={{ flexGrow: 1 }}>
                 <Customers />
             </div>
