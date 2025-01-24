@@ -33,7 +33,7 @@
     "build:local": "cross-env REACT_APP_BACKEND_URL=http://localhost:8080 react-scripts build ",
     "build:dev": "CI=false cross-env REACT_APP_BACKEND_URL=http://172.31.253.160:8081 react-scripts build ",
     "build:preprod": "CI=false cross-env REACT_APP_BACKEND_URL=http://192.168.2.21:8080 react-scripts build ",
-    "build:prod": "CI=false cross-env REACT_APP_BACKEND_URL=http://192.168.3.31:8080 react-scripts build ",
+    "build:main": "CI=false cross-env REACT_APP_BACKEND_URL=http://192.168.3.31:8080 react-scripts build ",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
