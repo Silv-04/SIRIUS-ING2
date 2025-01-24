@@ -42,9 +42,7 @@ public class ProgressService {
 
         // 1. Get client's informations
         Customer customer = customerService.findByIdCustomer(id);
-        progressLogger.info("Customer " + id + " loaded.");
         Informations informations = informationsService.findByIdCustomer(id);
-        progressLogger.info("Customer " + id + " informations found.");
         String goal = informations.getHealth_goal();
         int weight = informations.getWeight();
         int height = informations.getHeight();
@@ -59,8 +57,7 @@ public class ProgressService {
         String[] categories = informations.getCuisine_type().split(", ");
 
         double calories = avgCalories(weight, height, age, gender, number_of_meals);
-        progressLogger.info("Calories per meal: " + calories);
-
+        
         if (regime.equals("")) {
             regime = null;
         }
@@ -110,11 +107,6 @@ public class ProgressService {
             default:
                 break;
         }
-
-        progressLogger.info(" Recipes list initialized.");
-        progressLogger.info(" Number of recipes loaded: " + recipesList.size());
-        progressLogger.info(" List of recipes: " + recipesList.toString());
-
         
         String[] allergies = new String[0];
         String[] intolerances = new String[0];
@@ -135,16 +127,8 @@ public class ProgressService {
 
         recipesList = recipesProductFiltering(allergies, intolerances, prohibitedFoods, recipesList);
 
-        progressLogger.info(" Recipes list filtered.");
-        progressLogger.info(" Number of recipes loaded: " + recipesList.size());
-        progressLogger.info(" List of recipes: " + recipesList.toString());
-
         List<List<Recipes>> allRecipesLists = new ArrayList<>();
         generateCombinations(recipesList, numberOfDays * number_of_meals, 0, new ArrayList<>(), allRecipesLists);
-
-        progressLogger.info(" Recipes combinations list calculated.");
-        progressLogger.info(" Number of lists: " + allRecipesLists.size());
-        progressLogger.info(" Lists of combinations: " + allRecipesLists.toString());
 
         return allRecipesLists;
     }
@@ -155,11 +139,9 @@ public class ProgressService {
         switch (gender.toLowerCase()) {
             case "homme":
                 calorie = (13.707 * weight) + (492.3 * height / 100) - (6.673 * age) + 77.607;
-                progressLogger.info("Calories: " + calorie);
                 break;
             case "femme":
                 calorie = (9.740 * weight) + (172.9 * height / 100) - (4.737 * age) + 667.051;
-                progressLogger.info("Calories: " + calorie);
                 break;
             default:
                 break;
@@ -190,7 +172,6 @@ public class ProgressService {
             for (String allergy : allergies) {
                 if (!allergy.equals("")) {
                     if (recipe.getIngredients().toLowerCase().contains(allergy)) {
-                        progressLogger.info("Allergy found: " + allergy + " in recipe: " + recipe.toString());
                         iterator.remove();
                         break;
                     }
@@ -199,7 +180,6 @@ public class ProgressService {
             for (String intolerance : intolerances) {
                 if (!intolerance.equals("")) {
                     if (recipe.getIngredients().toLowerCase().contains(intolerance)) {
-                        progressLogger.info("Intolerance found: " + intolerance + " in recipe: " + recipe.toString());
                         iterator.remove();
                         break;
                     }
@@ -208,8 +188,6 @@ public class ProgressService {
             for (String prohibitedFood : prohibitedFoods) {
                 if (!prohibitedFood.equals("")) {
                     if (recipe.getIngredients().toLowerCase().contains(prohibitedFood)) {
-                        progressLogger
-                                .info("Prohibited food found: " + prohibitedFood + " in recipe: " + recipe.toString());
                         iterator.remove();
                         break;
                     }
@@ -223,14 +201,10 @@ public class ProgressService {
             List<List<Recipes>> allRecipesLists) {
         if (currentList.size() == n) {
             allRecipesLists.add(new ArrayList<>(currentList));
-            progressLogger.info("List of recipes added: " + currentList.toString());
             return;
         }
         for (int i = start; i < recipesList.size(); i++) {
             currentList.add(recipesList.get(i));
-            progressLogger.info("Recipe added: " + recipesList.get(i).toString());
-            progressLogger.info("Current list: " + currentList.toString());
-            progressLogger.info("Current list size: " + currentList.size());
             generateCombinations(recipesList, n, i + 1, currentList, allRecipesLists);
             currentList.remove(currentList.size() - 1);
         }
