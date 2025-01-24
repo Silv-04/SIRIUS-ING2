@@ -27,13 +27,13 @@ pipeline {
             steps {
                 sshagent(['id_rsa_jenkins']) {
                     sh """
-                    scp -r episaine-back/target/*.jar episaine@192.168.1.11:${DEPLOY_PATH}
-                    ssh episaine@192.168.1.11 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'
+                    scp -r episaine-back/target/*.jar episaine@192.168.3.31:${DEPLOY_PATH}
+                    ssh episaine@192.168.3.31 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'
                     """
                     
                     sh """
-                    scp -r episaine-front/build/ episaine@192.168.1.12:${DEPLOY_PATH}
-                    ssh episaine@192.168.1.12 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'
+                    scp -r episaine-front/build/ episaine@192.168.3.32:${DEPLOY_PATH}
+                    ssh episaine@192.168.3.32 'chmod +x ${DEPLOY_PATH}/deploy.sh && ${DEPLOY_PATH}/deploy.sh'
                     """
                 }
             }
