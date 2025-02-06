@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Button, Heading, Text} from "@chakra-ui/react";
+import {Box, Heading} from "@chakra-ui/react";
 import Navbar from "../../Pages/navbar";
 
 export default function HomeNutritionniste() {
