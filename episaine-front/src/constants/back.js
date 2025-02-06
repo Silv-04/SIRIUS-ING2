@@ -16,3 +16,15 @@ export const MALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/mal
 export const TOTAL_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/total";
 export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/api/kpis/customers/monthly-distribution';
 export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/api/kpis/customers/age-distribution';
+
+// ---------------------------------------//
+//            Endpoints (ALGO KPI)        //
+// ---------------------------------------//
+
+//export const CUSTOMER_INFORMATION = BACKEND_HOST_EPISAINE + "/api/customer/informations";
+
+export const CUSTOMER_INFORMATION = BACKEND_HOST_EPISAINE + "/customer/informations";
+
+//export const CUSTOMER_INFORMATION = BACKEND_HOST_EPISAINE + '/customer/get/informations';
+
+
