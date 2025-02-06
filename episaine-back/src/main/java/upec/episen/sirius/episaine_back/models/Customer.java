@@ -1,14 +1,10 @@
 package upec.episen.sirius.episaine_back.models;
 
 import java.sql.Date;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.util.List;
+import jakarta.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Data
@@ -16,28 +12,28 @@ import lombok.Data;
 public class Customer {
 
     @Id
-    @Column(name="customer_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer customer_id;
-    
+    @Column(name="customer_id") // Correspondance avec la base
+    private Integer customerId;
+
     @Column(name="customer_lastname")
-    private String customer_lastname;
+    private String customerLastname;
 
     @Column(name="customer_firstname")
-    private String customer_firstname;
-    
+    private String customerFirstname;
+
     @Column(name="customer_birthdate")
-    private Date customer_birthdate;
+    private Date customerBirthdate;
 
     @Column(name="gender")
     private String gender;
 
     @Column(name="customer_phone_number")
-    private String customer_phone_number;
+    private String customerPhoneNumber;
 
     @Column(name="customer_mail")
-    private String customer_mail;
-    
+    private String customerMail;
+
     @Column(name="city")
     private String city;
 
@@ -45,5 +41,9 @@ public class Customer {
     private String address;
 
     @Column(name="postal_code")
-    private String postal_code;
+    private String postalCode;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("customer") // Empêche les boucles infinies lors de la sérialisation
+    private List<Information> informations;
 }
