@@ -11,3 +11,6 @@
       - US2 : Création des fichiers de logs
       - US3 : Statistiques d'âge et de poids
       - US4 : Indicateurs de croissance sur 6 mois glissants : histogrammes pour nouveaux clients et recettes par mois
+
+Démo  : 
+![image](https://github.com/user-attachments/assets/bb45c9ff-059c-4fb8-abdd-03024352f63b)
