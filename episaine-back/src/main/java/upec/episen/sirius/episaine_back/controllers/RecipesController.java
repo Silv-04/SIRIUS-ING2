@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.OrderBy;
+import upec.episen.sirius.episaine_back.models.Informations;
 import upec.episen.sirius.episaine_back.models.Recipes;
 import upec.episen.sirius.episaine_back.services.ProgressService;
 import upec.episen.sirius.episaine_back.services.RecipesService;
@@ -74,14 +75,17 @@ public class RecipesController {
             @RequestParam(required = false) String regime,
             @RequestParam(required = false) Integer minCalories,
             @RequestParam(required = false) Integer maxCalories,
-            @RequestParam(required = false) String category) {
-        return recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime, minCalories, maxCalories, category);
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String orderOption) {
+        return recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime, minCalories, maxCalories, category, orderOption);
     }
 
     @GetMapping("/getRecipesList/{id}")
     public List<List<Recipes>> getRecipesTest(
-        @PathVariable Integer id,
-        @RequestParam(required = false) Integer numberOfDays) {
-        return progress.getRecipesForId(id, numberOfDays);
+        @PathVariable int id,
+        @RequestParam(required = false) Integer numberOfDays,
+        @RequestParam(required = false) String orderOption,
+        @RequestParam int page) {
+        return progress.getRecipesForId(id, numberOfDays, orderOption, page);
     }
 }

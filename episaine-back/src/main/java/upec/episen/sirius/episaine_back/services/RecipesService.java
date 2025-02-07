@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import upec.episen.sirius.episaine_back.models.Recipes;
@@ -49,7 +50,13 @@ public class RecipesService {
         return false;
     }
 
-    public List<Recipes> getRecipesFilteredByRegimeCaloriesCategory(String regime, Integer minCalories, Integer maxCalories, String category) {
-        return recipesRepository.findRecipesWithFilter(regime, minCalories, maxCalories, category);
+    public List<Recipes> getRecipesFilteredByRegimeCaloriesCategory(String regime, Integer minCalories, Integer maxCalories, String category, String orderOption) {
+        if (orderOption.equals("") || orderOption.isEmpty()) {
+            return recipesRepository.findRecipesWithFilter(regime, minCalories, maxCalories, category);
+        }
+        else {
+            Sort sort = Sort.by(Sort.Direction.DESC, orderOption);
+            return recipesRepository.findRecipesWithFilterAndOrder(regime, minCalories, maxCalories, category, sort);
+        }
     }
 }
