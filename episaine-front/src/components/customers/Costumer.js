@@ -26,6 +26,7 @@ export default function Customer() {
     const [error, setError] = useState(null);
 
     // Fonction pour calculer l'IMC
+    //Source :https://www.topsante.com/outils/imc
     const calculateIMC = (poids, taille) => {
         const tailleEnMetres = taille / 100;
         return tailleEnMetres > 0 ? (poids / (tailleEnMetres * tailleEnMetres)).toFixed(1) : null;
@@ -60,12 +61,12 @@ export default function Customer() {
             .finally(() => setLoading(false));
     }, []);
 
-    // Filtrer les clients en fonction du texte recherché
-    const filteredCustomers = customers.filter((client) =>
-        Object.values(client).some(value =>
-            value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        )
-    );
+    // Filtrer les clients en fonction du texte recherché (Nom et Prénom uniquement)
+    const filteredCustomers = customers.filter((client) => {
+        const nom = client.customer?.customerLastname?.toLowerCase() || "";
+        const prenom = client.customer?.customerFirstname?.toLowerCase() || "";
+        return nom.includes(searchTerm.toLowerCase()) || prenom.includes(searchTerm.toLowerCase());
+    });
 
     return (
         <Box bg="#1f2b3e" minHeight="100vh">
@@ -97,7 +98,7 @@ export default function Customer() {
                         </InputLeftElement>
                         <Input
                             type="text"
-                            placeholder="Rechercher..."
+                            placeholder="Rechercher par Nom ou Prénom..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             bg="gray.100"
