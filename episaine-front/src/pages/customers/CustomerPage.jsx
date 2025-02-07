@@ -12,7 +12,6 @@ import Paper from '@mui/material/Paper';
 import { READ_CUSTOMERS } from '../../constants/back';
 import customersTableHeader from '../../constants/customersTableHeader.json';
 import { format } from 'date-fns';
-import { styled } from '@mui/material/styles';
 import { TableSortLabel } from '@mui/material';
 
 function formatDate(dateString) {
@@ -25,58 +24,6 @@ export default function EnhancedTable() {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [customers, setCustomers] = useState([]);
     const [totalElements, setTotalElements] = useState(0);
-
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
-        [`&.${tableCellClasses.head}`]: {
-            backgroundColor: '#404040',
-            color: theme.palette.common.white,
-        },
-        [`&.${tableCellClasses.body}`]: {
-            fontSize: 14,
-        },
-    }));
-
-    const StyledTableRow = styled(TableRow)(({ theme }) => ({
-        '&:nth-of-type(odd)': {
-            backgroundColor: '#d3d3d3',
-        },
-        '&:nth-of-type(even)': {
-            backgroundColor: '#a9a9a9',
-        },
-        '&:last-child td, &:last-child th': {
-            border: 0,
-        },
-    }));
-
-    const StyledTableContainer = styled(TableContainer)({
-        maxHeight: 440,
-        '&::-webkit-scrollbar': {
-            width: '8px',
-        },
-        '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#525252',
-            borderRadius: '10px',
-        },
-        '&::-webkit-scrollbar-track': {
-            backgroundColor: '#949494',
-        },
-    });
-
-    const StyledTablePagination = styled(TablePagination)(({ theme }) => ({
-        '& .MuiTablePagination-select': {
-            backgroundColor: '#333',
-            color: 'white',
-        },
-        '& .MuiTablePagination-selectIcon': {
-            color: 'white',
-        },
-        '& .MuiTablePagination-actions button': {
-            color: 'white',
-        },
-        '& .MuiTablePagination-root': {
-            backgroundColor: '#444',
-        },
-    }));
 
     const readCustomers = async (page, size) => {
         try {
@@ -118,12 +65,12 @@ export default function EnhancedTable() {
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <StyledTableContainer sx={{ maxHeight: 440 }}>
+                <TableContainer sx={{ maxHeight: 440 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
-                            <StyledTableRow>
+                            <TableRow>
                                 {customersTableHeader.map((header) => (
-                                    <StyledTableCell 
+                                    <TableCell 
                                         key={header.value} 
                                         align="left"
                                     >
@@ -133,34 +80,34 @@ export default function EnhancedTable() {
                                             {header.label}
                                             
                                         </TableSortLabel>
-                                    </StyledTableCell>
+                                    </TableCell>
                                 ))}
-                            </StyledTableRow>
+                            </TableRow>
                         </TableHead>
                         <TableBody>
                             {customers.length > 0 ? (
                                 customers.map((customer) => (
-                                    <StyledTableRow hover key={customer.customer_id}>
+                                    <TableRow hover key={customer.customer_id}>
                                         {customersTableHeader.map(({ value }) => (
-                                            <StyledTableCell key={value} align="left">
+                                            <TableCell key={value} align="left">
                                                 {value === 'customer_birthdate' && customer[value]
                                                     ? formatDate(customer[value])
                                                     : customer[value] || 'N/A'}
-                                            </StyledTableCell>
+                                            </TableCell>
                                         ))}
-                                    </StyledTableRow>
+                                    </TableRow>
                                 ))
                             ) : (
-                                <StyledTableRow>
-                                    <StyledTableCell colSpan={customersTableHeader.length} align="center">
+                                <TableRow>
+                                    <TableCell colSpan={customersTableHeader.length} align="center">
                                         Aucun client trouvé .
-                                    </StyledTableCell>
-                                </StyledTableRow>
+                                    </TableCell>
+                                </TableRow>
                             )}
                         </TableBody>
                     </Table>
-                </StyledTableContainer>
-                <StyledTablePagination
+                </TableContainer>
+                <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={totalElements}

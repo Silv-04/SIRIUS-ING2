@@ -5,9 +5,11 @@ import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,118 +24,145 @@ import upec.episen.sirius.episaine_back.models.Recipes;
 public class ProgressService {
     protected static Logger progressLogger = LogManager.getLogger(ProgressService.class);
 
-    private InformationsService informationsService;
     private RecipesService recipesService;
+    private InformationsService informationsService;
     private CustomerService customerService;
 
     private int perte_min = 100;
     private int perte_max = 300;
-    private int gain_min = 300;
+    private int gain_min = 100;
 
-    public ProgressService(InformationsService informationsService, RecipesService recipesService,
-            CustomerService customerService) throws IOException {
+    public ProgressService(RecipesService recipesService,
+            CustomerService customerService, InformationsService informationsService) throws IOException {
         this.informationsService = informationsService;
         this.recipesService = recipesService;
         this.customerService = customerService;
     }
 
-    public List<List<Recipes>> getRecipesForId(int id, Integer numberOfDays) {
+    public List<List<Recipes>> getRecipesForId(int id, Integer numberOfDays, String orderOption, int page) {
         List<Recipes> recipesList = new ArrayList<>();
 
-        // 1. Get client's informations
-        Customer customer = customerService.findByIdCustomer(id);
         Informations informations = informationsService.findByIdCustomer(id);
-        String goal = informations.getHealth_goal();
-        int weight = informations.getWeight();
-        int height = informations.getHeight();
+        // 1. Get client's informations
+        Customer customer = customerService.findByIdCustomer(informations.getFk_customer_id());
 
         DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         int today = Integer.parseInt(formatter.format(new Date()));
         int birthday = Integer.parseInt(formatter.format(customer.getCustomer_birthdate()));
         int age = (today - birthday) / 10000;
-        int number_of_meals = informations.getMeals_per_day();
-        String gender = customer.getGender();
-        String regime = informations.getDietary_regime();
-        String[] categories = informations.getCuisine_type().split(", ");
 
-        double calories = avgCalories(weight, height, age, gender, number_of_meals);
-        
-        if (regime.equals("")) {
-            regime = null;
+        String gender = customer.getGender();
+
+        String[] allergiesArray, intolerancesArray, prohibitedFoodsArray, categoriesArray = new String[0];
+
+        String allergies = informations.getAllergies();
+        String intolerances = informations.getIntolerances();
+        String prohibitedFoods = informations.getProhibited_food();
+        String categories = informations.getCuisine_type();
+        String regime = informations.getDietary_regime();
+        int nbOfMealsPerDay = informations.getMeals_per_day();
+
+        if (allergies.equals("") || allergies == null) {
+            allergiesArray = null;
+        } else {
+            allergiesArray = normalize(allergies.toLowerCase().split(", "));
+        }
+        if (intolerances.equals("") || intolerances == null) {
+            intolerancesArray = null;
+        } else {
+            intolerancesArray = normalize(intolerances.toLowerCase().split(", "));
+        }
+        if (prohibitedFoods.equals("") || prohibitedFoods == null) {
+            prohibitedFoodsArray = null;
+        } else {
+            prohibitedFoodsArray = normalize(prohibitedFoods.toLowerCase().split(", "));
+        }
+        if (categories.equals("") || categories == null) {
+            categoriesArray = null;
+        } else {
+            categoriesArray = normalize(categories.toLowerCase().split(", "));
         }
 
-        // 2. Get recipes according to client's goals
-        switch (goal.toLowerCase()) {
+        double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, nbOfMealsPerDay);
+
+        progressLogger.info("Calories: " + calories + ", objective: " + informations.getHealth_goal() + ", nb of days: "
+                + numberOfDays + ", nb of meals:" + nbOfMealsPerDay + ", regime:" + regime);
+
+        // 2. Get recipes according to client's goals (health goal, regime, cuisine
+        // type)
+        switch (informations.getHealth_goal().toLowerCase()) {
             case "gain de poids":
                 double gainCalories = calories + gain_min;
-
-                for (String category : categories) {
-                    if (category.equals("")) {
+                if (!(categoriesArray == null)) {
+                    for (String category : categoriesArray) {
                         recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(gainCalories), null, null));
-                    } else {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(gainCalories), null, category));
+                                (int) Math.floor(gainCalories), null, category, orderOption));
                     }
+                    progressLogger.info("non nul");
+                } else {
+                    recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                            (int) Math.floor(gainCalories), null, null, orderOption));
+                    progressLogger.info("nul");
                 }
                 break;
             case "perte de poids":
                 double minLostCalories = calories - perte_min;
                 double maxLostCalories = calories - perte_max;
-
-                for (String category : categories) {
-                    if (category.equals("")) {
+                if (!(categoriesArray == null)) {
+                    for (String category : categoriesArray) {
                         recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), null));
-                    } else {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), category));
+                                (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), category,
+                                orderOption));
                     }
+                } else {
+                    recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                            (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), null,
+                            orderOption));
                 }
                 break;
             case "maintien de poids":
                 double infCalories = calories - perte_min;
                 double supCalories = calories + gain_min;
-                for (String category : categories) {
-                    if (category.equals("")) {
+                if (!(categoriesArray == null)) {
+                    for (String category : categoriesArray) {
                         recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(infCalories), (int) Math.floor(supCalories), null));
-                    } else {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(infCalories), (int) Math.floor(supCalories), category));
+                                (int) Math.floor(infCalories), (int) Math.floor(supCalories), category, orderOption));
                     }
+                } else {
+                    recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                            (int) Math.floor(infCalories), (int) Math.floor(supCalories), null, orderOption));
                 }
                 break;
             default:
                 break;
         }
-        
-        String[] allergies = new String[0];
-        String[] intolerances = new String[0];
-        String[] prohibitedFoods = new String[0];
-        
-        String allergiesArray = informations.getAllergies();
-        if (allergiesArray != null && !allergiesArray.isEmpty()) {
-            allergies = normalize(allergiesArray.split(", "));
-        }
-        String intolerancesArray = informations.getIntolerances();
-        if (intolerancesArray != null && !intolerancesArray.isEmpty()) {
-            intolerances = normalize(intolerancesArray.split(", "));
-        }
-        String prohibitedFoodsArray = informations.getProhibited_food();
-        if (prohibitedFoodsArray != null && !prohibitedFoodsArray.isEmpty()) {
-            prohibitedFoods = normalize(prohibitedFoodsArray.split(", "));
-        }
 
-        recipesList = recipesProductFiltering(allergies, intolerances, prohibitedFoods, recipesList);
+        progressLogger.info("Current list:" + recipesList);
+        // 3. Filter recipes according to client's allergies, intolerances and
+        // prohibited foods
+        recipesList = recipesProductFiltering(allergiesArray, intolerancesArray, prohibitedFoodsArray, recipesList);
+        progressLogger.info("Filtered list:" + recipesList);
 
+        // 4. Generate combinations of recipes lists with list of days*mealsPerDay
+        // recipes (10 per page)
         List<List<Recipes>> allRecipesLists = new ArrayList<>();
-        generateCombinations(recipesList, numberOfDays * number_of_meals, 0, new ArrayList<>(), allRecipesLists);
+
+        int combinationSize = numberOfDays * nbOfMealsPerDay;
+        int pageSize = 10;
+        long startIndex = (long) page * pageSize;
+
+        for (int i = 0; i < pageSize; i++) {
+            long index = startIndex + i;
+            List<Recipes> combination = getCombination(recipesList, combinationSize, index);
+            progressLogger.info("Added recipe: " + combination.toString());
+            allRecipesLists.add(combination);
+        }
 
         return allRecipesLists;
     }
 
-    //source : https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
+    // source :
+    // https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
     public double avgCalories(int weight, int height, int age, String gender, int number_of_meals) {
         double calorie = -1;
         switch (gender.toLowerCase()) {
@@ -149,6 +178,7 @@ public class ProgressService {
         return calorie / number_of_meals;
     }
 
+    // found in stackoverflow
     public String[] normalize(String[] stringArray) {
         for (int i = 0; i < stringArray.length; i++) {
             String str = stringArray[i];
@@ -169,27 +199,33 @@ public class ProgressService {
         Iterator<Recipes> iterator = recipesList.iterator();
         while (iterator.hasNext()) {
             Recipes recipe = iterator.next();
-            for (String allergy : allergies) {
-                if (!allergy.equals("")) {
-                    if (recipe.getIngredients().toLowerCase().contains(allergy)) {
-                        iterator.remove();
-                        break;
+            if (allergies != null) {
+                for (String allergy : allergies) {
+                    if (!allergy.equals("")) {
+                        if (recipe.getIngredients().toLowerCase().contains(allergy)) {
+                            iterator.remove();
+                            break;
+                        }
                     }
                 }
             }
-            for (String intolerance : intolerances) {
-                if (!intolerance.equals("")) {
-                    if (recipe.getIngredients().toLowerCase().contains(intolerance)) {
-                        iterator.remove();
-                        break;
+            if (intolerances != null) {
+                for (String intolerance : intolerances) {
+                    if (!intolerance.equals("")) {
+                        if (recipe.getIngredients().toLowerCase().contains(intolerance)) {
+                            iterator.remove();
+                            break;
+                        }
                     }
                 }
             }
-            for (String prohibitedFood : prohibitedFoods) {
-                if (!prohibitedFood.equals("")) {
-                    if (recipe.getIngredients().toLowerCase().contains(prohibitedFood)) {
-                        iterator.remove();
-                        break;
+            if (prohibitedFoods != null) {
+                for (String prohibitedFood : prohibitedFoods) {
+                    if (!prohibitedFood.equals("")) {
+                        if (recipe.getIngredients().toLowerCase().contains(prohibitedFood)) {
+                            iterator.remove();
+                            break;
+                        }
                     }
                 }
             }
@@ -197,16 +233,15 @@ public class ProgressService {
         return recipesList;
     }
 
-    public static void generateCombinations(List<Recipes> recipesList, int n, int start, List<Recipes> currentList,
-            List<List<Recipes>> allRecipesLists) {
-        if (currentList.size() == n) {
-            allRecipesLists.add(new ArrayList<>(currentList));
-            return;
-        }
-        for (int i = start; i < recipesList.size(); i++) {
-            currentList.add(recipesList.get(i));
-            generateCombinations(recipesList, n, i + 1, currentList, allRecipesLists);
-            currentList.remove(currentList.size() - 1);
-        }
+    // via chatgpt
+    private List<Recipes> getCombination(List<Recipes> recipes, int combinationSize, long index) {
+        List<Recipes> shuffledRecipes = new ArrayList<>(recipes);
+
+        Random rand = new Random(index);
+        Collections.shuffle(shuffledRecipes, rand);
+
+        int end = Math.min(combinationSize, shuffledRecipes.size());
+
+        return shuffledRecipes.subList(0, end);
     }
 }

@@ -14,7 +14,6 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TableSortLabel,
     TextField,
     ThemeProvider
 } from '@mui/material';
@@ -35,21 +34,27 @@ function RecipesListInput() {
     const [selectedTables, setSelectedTables] = useState({});
     const [recipesList, setRecipesList] = useState([]);
     const [sortValue, setSortValue] = useState('none');
+    const [page, setPage] = useState(1);
     const location = useLocation();
     const navigate = useNavigate();
 
     const theme = createTheme();
 
+
     // fetched recipes 
     const getRecipes = async () => {
         try {
-            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays);
+            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays + "&orderOption=" + sortValue + "&page=" + page);
             console.log("Recipes fetched:", response.data);
-            setAllRecipesList(response.data);
+            const tempRecipesList = response.data;
+
+            const recipes = handleSort(tempRecipesList);
+            setAllRecipesList(recipes);
         } catch (error) {
             console.error("Error while reading data:", error);
         }
     };
+
 
     // save recipes selected by the checkbox
     const handleSelectAll = (tableIndex, isChecked) => {
@@ -75,21 +80,23 @@ function RecipesListInput() {
     };
 
     // handle the sort according to the chosen option
-    const handleSort = () => {
-        if (sortValue === 'none') {
-            return;
-        }
+    const handleSort = (tempRecipesList) => {
+        if (sortValue === 'none') return;
 
-        if (sortValue === 'calories') {
-            const sortedRecipesGroups = [...allRecipesList].sort((groupA, groupB) => {
+        let sortedRecipesGroups = [...tempRecipesList];
+
+        if (sortValue === 'calorie_count') {
+            sortedRecipesGroups = sortedRecipesGroups.map(group => [...group].sort((a, b) => (b.calorieCount || 0) - (a.calorieCount || 0))
+            );
+
+            sortedRecipesGroups.sort((groupA, groupB) => {
                 const avgA = calculateAverageCalories(groupA);
                 const avgB = calculateAverageCalories(groupB);
                 return avgB - avgA;
             });
-
-            setAllRecipesList(sortedRecipesGroups.map(group => [...group]));
-            console.log("Recettes triées :", sortedRecipesGroups);
         }
+
+        return sortedRecipesGroups;
     };
 
     // receive id from previous page
@@ -102,65 +109,67 @@ function RecipesListInput() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Box sx={{paddingLeft:"50px", paddingTop:"50px"}}>
+            <Box sx={{ paddingLeft: "50px", paddingTop: "50px" }}>
                 <div className="input">
                     <Grid container spacing={2}>
                         <Grid sx={{ width: "40%" }}>
                             <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
-                                <TextField
-                                    fullWidth
-                                    margin='normal'
-                                    label='Nombre de jours'
-                                    variant='outlined'
-                                    value={numberOfDays}
-                                    onChange={(e) => setNumberOfDays(e.target.value)}
-                                    type='number'
-                                />
+                                <Grid container spacing={2}>
+                                    <Grid>
+                                        <TextField
+                                            fullWidth
+                                            margin='normal'
+                                            label='Nombre de jours'
+                                            variant='outlined'
+                                            value={numberOfDays}
+                                            onChange={(e) => setNumberOfDays(e.target.value)}
+                                            type='number'
+                                        />
+                                    </Grid>
+                                    <Grid>
+                                        <FormControl fullWidth margin='normal'>
+                                            <InputLabel>Trier par</InputLabel>
+                                            <Select
+                                                fullWidth
+                                                onChange={(e) => setSortValue(e.target.value)}
+                                                value={sortValue}
+                                                label="Trier par"
+                                                MenuProps={{
+                                                    PaperProps: {
+                                                        style: {
+                                                            maxHeight: 200,
+                                                        },
+                                                    },
+                                                }}
+                                            >
+                                                {sortRecipesTableOptions.map((option) => (
+                                                    <MenuItem key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+
+                                    </Grid>
+                                </Grid>
                                 <Button
                                     variant='contained'
                                     color='primary'
                                     type='submit'
-                                >Obtenir les listes de recettes</Button>
+                                >Obtenir les listes de recettes
+                                    {console.log(sortValue)}</Button>
                             </form>
-                        </Grid>
-                        <Grid sx={{ width: "40%" }}>
-                            <FormControl fullWidth margin='normal'>
-                                <InputLabel>Trier par</InputLabel>
-                                <Select
-                                    fullWidth
-                                    onChange={(e) => setSortValue(e.target.value)}
-                                    value={sortValue}
-                                    label="Trier par"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    {sortRecipesTableOptions.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <Button
-                                variant='contained'
-                                color='primary'
-                                onClick={handleSort}
-                            >Trier</Button>
                         </Grid>
                     </Grid>
                 </div>
                 <div className='recipesTable'>
 
                     <TableContainer sx={{ maxHeight: "500px", overflowY: "auto" }}>
-                        <Table stickyHeader>
+                        <Table>
                             <TableBody>
-                                {allRecipesList.map((recipesListGroup, tableIndex) => (
+                                {Array.isArray(allRecipesList) && allRecipesList.length > 0 && allRecipesList.map((recipesListGroup, tableIndex) => (
                                     <Table key={tableIndex}>
+                                        <caption style={{ captionSide: "top", textAlign: "center", fontWeight: "bold", fontSize: "30px", paddingTop: "100px" }}>Liste numéro {tableIndex + 1}</caption>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>
@@ -171,19 +180,18 @@ function RecipesListInput() {
                                                 </TableCell>
                                                 {recipesListTableHeader.map((header) => (
                                                     <TableCell key={header.value}>
-                                                        <TableSortLabel />
                                                         {header.label}
                                                     </TableCell>
                                                 ))}
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {recipesListGroup.map((recipes) => (
+                                            {recipesListGroup.map((recipes, recipeIndex) => (
                                                 <TableRow key={recipes.recipe_id} selected={selectedTables[tableIndex] || false}>
                                                     <TableCell />
                                                     {recipesListTableHeader.map(({ value }) => (
                                                         <TableCell key={value}>
-                                                            {recipes[value] || 'N/A'}
+                                                            {value === 'recipeId' ? (recipeIndex + 1) : (recipes[value] || 'N/A')}
                                                         </TableCell>
                                                     ))}
                                                 </TableRow>
