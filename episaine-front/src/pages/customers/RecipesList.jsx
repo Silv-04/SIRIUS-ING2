@@ -86,9 +86,6 @@ function RecipesListInput() {
         let sortedRecipesGroups = [...tempRecipesList];
 
         if (sortValue === 'calorie_count') {
-            sortedRecipesGroups = sortedRecipesGroups.map(group => [...group].sort((a, b) => (b.calorieCount || 0) - (a.calorieCount || 0))
-            );
-
             sortedRecipesGroups.sort((groupA, groupB) => {
                 const avgA = calculateAverageCalories(groupA);
                 const avgB = calculateAverageCalories(groupB);
