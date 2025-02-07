@@ -68,7 +68,6 @@ public class KPICustomerController {
         return ResponseEntity.ok(ageDistribution);
     }
     // API for monthly distribution ( per gender)
-
     @GetMapping("/monthly-distribution")
     public ResponseEntity<List<Map<String, Object>>> getMonthlyDistribution() {
         List<Object[]> results = kpiCustomerRepository.getMonthlyDistribution();
