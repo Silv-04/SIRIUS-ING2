@@ -231,7 +231,7 @@ public class ProgressService {
         return recipesList;
     }
 
-    // generate a combination of recipes
+    // generate a combination of recipes helped by : https://www.geeksforgeeks.org/print-all-possible-combinations-of-r-elements-in-a-given-array-of-size-n/
     public static List<Recipes> getCombination(List<Recipes> recipes, int combinationSize, long index) {
         int n = recipes.size();
         List<Recipes> combination = new ArrayList<>();
