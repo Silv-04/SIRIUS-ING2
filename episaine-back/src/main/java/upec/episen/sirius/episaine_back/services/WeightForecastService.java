@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.javatuples.Pair;
 
 import upec.episen.sirius.episaine_back.models.Recipes;
@@ -20,15 +22,18 @@ public class WeightForecastService {
      * For a given weight, a given number of taken calories, and the calories the person should take daily, return the new weight
      * source : https://www.charles.co/blog/poids/1000-calories-en-kg/
     */
+    
+    protected static Logger forecastLogger = LogManager.getLogger(WeightForecastService.class);
 
     public int calculateNewWeight(int weight, int takenCalories, int dailyCalories) {
         int caloriesTaken = dailyCalories - takenCalories;
         int caloriesToWeight = Math.round(caloriesTaken / 7700);
+        forecastLogger.info("New weight: " + weight+caloriesToWeight);
         return weight + caloriesToWeight;
     }
     
     /*
-     * Given a recipes lists, and the day associated to each recipe, return a map (day, number of calories taken) 
+     * Given a recipes lists, and the day associated to each recipe, return a map (day, number of calories taken)
      */
     public Map<Integer, Integer> recipesToCaloriesList(List<Pair<Integer, Recipes>> recipesList, int nbOfDays, int nbOfRecipesPerDay) {
         Map<Integer, Integer> caloriesListPerDay = new HashMap<Integer, Integer>();
@@ -57,6 +62,7 @@ public class WeightForecastService {
             default:
                 break;
         }
+        forecastLogger.info("Calories per day: " + calorie);
         return calorie;
     }
 
@@ -79,7 +85,9 @@ public class WeightForecastService {
 
     public Map<Integer, Integer> getRecipesTest(int height, int age, String gender, int number_of_meals, int nbOfDays, int weight, List<Pair<Integer, Recipes>> recipesList) {
         Map<Integer, Integer> caloriesListPerDay = recipesToCaloriesList(recipesList, nbOfDays, number_of_meals);
-        Map<Integer, Integer> weightEachDay = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);
-        return weightEachDay;
+        forecastLogger.info("Calories list per day: " + caloriesListPerDay.toString());
+        Map<Integer, Integer> weights = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);
+        forecastLogger.info("Weight list: " + weights.toString());
+        return weights;
     }
 }

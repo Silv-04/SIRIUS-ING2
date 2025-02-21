@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.persistence.OrderBy;
-import upec.episen.sirius.episaine_back.models.Informations;
 import upec.episen.sirius.episaine_back.models.Recipes;
 import upec.episen.sirius.episaine_back.services.ProgressService;
 import upec.episen.sirius.episaine_back.services.RecipesService;
