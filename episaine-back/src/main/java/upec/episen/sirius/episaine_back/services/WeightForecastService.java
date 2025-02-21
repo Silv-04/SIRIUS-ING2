@@ -8,7 +8,7 @@ import org.javatuples.Pair;
 
 import upec.episen.sirius.episaine_back.models.Recipes;
 
-public class WeightForecast {
+public class WeightForecastService {
     /* TODO : 
     * Récupérer une liste de recettes avec le numéro du jour associé, et renvoyer une liste sous forme de (numéro de jour, calories totaux du jour)
     * Prendre les informations du client
@@ -21,9 +21,9 @@ public class WeightForecast {
      * source : https://www.charles.co/blog/poids/1000-calories-en-kg/
     */
 
-    public Integer calculateNewWeight(Integer weight, Integer takenCalories, Integer dailyCalories) {
-        Integer caloriesTaken = dailyCalories - takenCalories;
-        Integer caloriesToWeight = (int) caloriesTaken / 7700;
+    public int calculateNewWeight(int weight, int takenCalories, int dailyCalories) {
+        int caloriesTaken = dailyCalories - takenCalories;
+        int caloriesToWeight = Math.round(caloriesTaken / 7700);
         return weight + caloriesToWeight;
     }
     
@@ -35,7 +35,7 @@ public class WeightForecast {
         for (Pair<Integer, Recipes> temp : recipesList) {
             int key = temp.getValue0();
             if (caloriesListPerDay.containsKey(key)) {
-                caloriesListPerDay.put(temp.getValue0() ,temp.getValue1().getCalorieCount() + caloriesListPerDay.get(key));
+                caloriesListPerDay.put(temp.getValue0(), temp.getValue1().getCalorieCount() + caloriesListPerDay.get(key));
             }
             else {
                 caloriesListPerDay.put(temp.getValue0(), temp.getValue1().getCalorieCount());
@@ -44,7 +44,8 @@ public class WeightForecast {
         return caloriesListPerDay;
     }
 
-    public double avgCalories(int weight, int height, int age, String gender, int number_of_meals) {
+    // source : https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
+    public double caloriesPerDay(int weight, int height, int age, String gender, int number_of_meals) {
         double calorie = -1;
         switch (gender.toLowerCase()) {
             case "homme":
@@ -56,7 +57,7 @@ public class WeightForecast {
             default:
                 break;
         }
-        return calorie / number_of_meals;
+        return calorie;
     }
 
     /*
@@ -68,11 +69,17 @@ public class WeightForecast {
 
         for (int i = 1; i < caloriesListPerDay.size(); i++) {
             int prevWeight = weightList.get(i-1);
-            double avgCalories = avgCalories(prevWeight, height, age, gender, number_of_meals);
-            int newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) avgCalories);
+            double avgCalories = caloriesPerDay(prevWeight, height, age, gender, number_of_meals);
+            int newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) Math.round(avgCalories));
             weightList.put(i, newWeight);
         }
 
         return weightList;
+    }
+
+    public Map<Integer, Integer> getRecipesTest(int height, int age, String gender, int number_of_meals, int nbOfDays, int weight, List<Pair<Integer, Recipes>> recipesList) {
+        Map<Integer, Integer> caloriesListPerDay = recipesToCaloriesList(recipesList, nbOfDays, number_of_meals);
+        Map<Integer, Integer> weightEachDay = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);
+        return weightEachDay;
     }
 }
