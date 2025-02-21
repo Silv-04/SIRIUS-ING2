@@ -45,7 +45,6 @@ function ExistingCustomerOrNot() {
                         <Text fontWeight={"bold"} textAlign={"center"}>Client existant</Text>
                         <Input
                             placeholder="Numéro client"
-                            textAlign={"center"}
                             value={customerNumber}
                             onChange={handleChange}
                             fullWidth
