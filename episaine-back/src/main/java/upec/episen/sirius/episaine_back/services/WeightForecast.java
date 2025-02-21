@@ -20,12 +20,13 @@ public class WeightForecast {
      * For a given weight, a given number of taken calories, and the calories the person should take daily, return the new weight
      * source : https://www.charles.co/blog/poids/1000-calories-en-kg/
     */
+
     public Integer calculateNewWeight(Integer weight, Integer takenCalories, Integer dailyCalories) {
         Integer caloriesTaken = dailyCalories - takenCalories;
         Integer caloriesToWeight = (int) caloriesTaken / 7700;
         return weight + caloriesToWeight;
     }
-
+    
     /*
      * Given a recipes lists, and the day associated to each recipe, return a map (day, number of calories taken) 
      */
@@ -41,5 +42,37 @@ public class WeightForecast {
             }
         }
         return caloriesListPerDay;
+    }
+
+    public double avgCalories(int weight, int height, int age, String gender, int number_of_meals) {
+        double calorie = -1;
+        switch (gender.toLowerCase()) {
+            case "homme":
+                calorie = (13.707 * weight) + (492.3 * height / 100) - (6.673 * age) + 77.607;
+                break;
+            case "femme":
+                calorie = (9.740 * weight) + (172.9 * height / 100) - (4.737 * age) + 667.051;
+                break;
+            default:
+                break;
+        }
+        return calorie / number_of_meals;
+    }
+
+    /*
+     * Given an initial weight, and a list of calories taken/lost per day, return a list of weights per day
+     */
+    public Map<Integer, Integer> weightEachDay(int height, int age, String gender, int number_of_meals, Integer weight, Map<Integer, Integer> caloriesListPerDay) {
+        Map<Integer, Integer> weightList = new HashMap<Integer, Integer>();
+        weightList.put(0, weight);
+
+        for (int i = 1; i < caloriesListPerDay.size(); i++) {
+            int prevWeight = weightList.get(i-1);
+            double avgCalories = avgCalories(prevWeight, height, age, gender, number_of_meals);
+            int newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) avgCalories);
+            weightList.put(i, newWeight);
+        }
+
+        return weightList;
     }
 }
