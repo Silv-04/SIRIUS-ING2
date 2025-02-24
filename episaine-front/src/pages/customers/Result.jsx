@@ -1,6 +1,6 @@
-import { Box, Button, createTheme, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider } from "@mui/material";
+import { Box, Button, Container, createTheme, Grid2, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LeftMenu from "../../components/customers/LeftMenu";
 import recipesListTableHeader from "../../constants/recipesListTableHeader.json";
 import jsPDF from "jspdf";
@@ -12,6 +12,7 @@ function ResultPage() {
     const location = useLocation();
     const pdfRef = useRef();
     const theme = createTheme();
+    const navigate = useNavigate();
 
     // generate a pdf
     const generatePDF = () => {
@@ -34,6 +35,12 @@ function ResultPage() {
         }
     }, [location.state]);
 
+    // handle the validation of the recipes list
+    const handleValidate = () => {
+        console.log("Recipes List: ", recipesList);
+        navigate("/client/recettes/informations/choix/resultat/projection/", { state: { inputValue: recipesList } });
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <Box sx={{ paddingLeft: "20px", paddingTop: "20px" }}>
@@ -43,27 +50,33 @@ function ResultPage() {
                             <TableRow>
                                 {recipesListTableHeader.map((header) => (
                                     <TableCell key={header.value} align="left">
-                                        {header.label}
+                                        {header.value === 'recipeId' ? 'Numéro de jour' : header.label}
                                     </TableCell>
                                 ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {recipesList.flat().map((recipe, index) => (
-                                <TableRow key={index}>
-                                    {recipesListTableHeader.map(({ value }) => (
-                                        <TableCell key={value} align="left">
-                                            {recipe[value] || 'N/A'}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
+                            {recipesList.map((recipes, index) => (
+                                recipes[0].map((recipe) => (
+                                    <TableRow key={index}>
+                                        {recipesListTableHeader.map(({ value }) => (
+                                            <TableCell key={value} align="left">
+                                                {value === 'recipeId' ? recipes[1] : (recipe[value] || 'N/A')}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+
+                                ))
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <Button variant="contained" color="primary" onClick={generatePDF}>
-                    Enregistrer en PDF
-                </Button>
+                <Grid2 paddingTop={5} gap={5} container>
+                    <Button variant="contained" color="primary" onClick={generatePDF}>
+                        Enregistrer en PDF
+                    </Button>
+                    <Button variant="contained" color="primary" onClick={handleValidate}>Obtenir la projection</Button>
+                </Grid2>
             </Box>
         </ThemeProvider>
     )

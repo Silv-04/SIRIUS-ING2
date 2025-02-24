@@ -40,7 +40,6 @@ function RecipesListInput() {
 
     const theme = createTheme();
 
-
     // fetched recipes 
     const getRecipes = async () => {
         try {
@@ -61,7 +60,8 @@ function RecipesListInput() {
         setSelectedTables((prev) => ({ ...prev, [tableIndex]: isChecked }));
 
         if (isChecked) {
-            setRecipesList((prev) => [...prev, allRecipesList[tableIndex]]);
+            const tempTuple = [allRecipesList[tableIndex], tableIndex + 1];
+            setRecipesList((prev) => [...prev, tempTuple]);
         } else {
             setRecipesList((prev) => prev.filter((_, index) => index !== tableIndex));
         }
@@ -154,7 +154,7 @@ function RecipesListInput() {
                                     color='primary'
                                     type='submit'
                                 >Obtenir les listes de recettes
-                                    {console.log(sortValue)}</Button>
+                                </Button>
                             </form>
                         </Grid>
                     </Grid>
