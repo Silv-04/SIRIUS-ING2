@@ -42,17 +42,19 @@ function ExistingCustomerOrNot() {
                         <Divider orientation="vertical" />
                     </GridItem>
                     <GridItem>
-                        <Text fontWeight={"bold"} textAlign={"center"}>Client existant</Text>
-                        <Input
-                            placeholder="Numéro client"
-                            value={customerNumber}
-                            onChange={handleChange}
-                            fullWidth
-                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                        />
-                        <Grid align={"center"} templateColumns={"repeat(2, 1fr"}>
-                            <GridItem gridColumn={1}><Button bgColor={"#bbf7d0"} onClick={handleValidate}>Valider</Button></GridItem>
-                            <GridItem gridColumn={2}><Button bgColor={"#fca5a5"} onClick={handleReset}>Annuler</Button></GridItem>
+                        <Grid gap={3}>
+                            <Text fontWeight={"bold"} textAlign={"center"}>Client existant</Text>
+                            <Input
+                                placeholder="Numéro client"
+                                value={customerNumber}
+                                onChange={handleChange}
+                                fullWidth
+                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                            />
+                            <Grid align={"center"} templateColumns={"repeat(2, 1fr"}>
+                                <GridItem gridColumn={1}><Button bgColor={"#bbf7d0"} onClick={handleValidate}>Valider</Button></GridItem>
+                                <GridItem gridColumn={2}><Button bgColor={"#fca5a5"} onClick={handleReset}>Annuler</Button></GridItem>
+                            </Grid>
                         </Grid>
                     </GridItem>
                 </Grid>
