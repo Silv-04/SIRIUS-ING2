@@ -7,9 +7,11 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javatuples.Pair;
+import org.springframework.stereotype.Service;
 
 import upec.episen.sirius.episaine_back.models.Recipes;
 
+@Service
 public class WeightForecastService {
     /* TODO : 
     * Récupérer une liste de recettes avec le numéro du jour associé, et renvoyer une liste sous forme de (numéro de jour, calories totaux du jour)
