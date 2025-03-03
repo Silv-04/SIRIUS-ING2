@@ -10,6 +10,8 @@ import ExistingCustomer from "./customers/ExistingCustomer";
 import InformationsPage from "./customers/InformationsPage";
 import CustomerParameter from "./customers/Parameter"
 import Result from "./customers/Result";
+import Projection from "./customers/Projection";
+
 import Dashboard from "./nutritionniste/Dashboard";
 import Rdv from "./nutritionniste/rdv"
 import Recipe from "./nutritionniste/recipe"
@@ -29,6 +31,7 @@ function App() {
                     <Route path="/client/recettes/informations/choix/resultat/" element={<Result />} />
                     <Route path="/client/recettes/creation_profil/" element={<CreateCustomers />} />
                     <Route path="/client/parametre/" element={<CustomerParameter />} />
+                    <Route path="/client/recettes/informations/projection/" element={<Projection />} />
 
                     <Route path="/nutritionniste/" element={<HomeNutritionniste />} />
                     <Route path="/indicateurPerformance/" element={<IndicateurPerformance />} />

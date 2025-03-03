@@ -13,7 +13,7 @@ export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/api/kpis/customers/age
 export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/api/kpis/customers/monthly-distribution'
 
 export const GET_RECIPES_BY_CUSTOMER = BACKEND_HOST_EPISAINE + '/recipes/getRecipesList';
-
 export const GET_INFORMATIONS_BY_CUSTOMER_ID = BACKEND_HOST_EPISAINE + '/informations/get';
 export const UPDATE_INFORMATIONS = BACKEND_HOST_EPISAINE + '/informations/update';
 export const CREATE_INFORMATIONS = BACKEND_HOST_EPISAINE + '/informations/add';
+export const GET_PROJECTION_VALUES = BACKEND_HOST_EPISAINE + '/weight-forecast/getWeightValues';

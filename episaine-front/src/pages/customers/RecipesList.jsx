@@ -34,7 +34,6 @@ function RecipesListInput() {
     const [selectedTables, setSelectedTables] = useState({});
     const [recipesList, setRecipesList] = useState([]);
     const [sortValue, setSortValue] = useState('none');
-    const [page, setPage] = useState(1);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -43,7 +42,7 @@ function RecipesListInput() {
     // fetched recipes 
     const getRecipes = async () => {
         try {
-            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays + "&orderOption=" + sortValue + "&page=" + page);
+            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays + "&orderOption=" + sortValue + "&n=" + 10);
             console.log("Recipes fetched:", response.data);
             const tempRecipesList = response.data;
 
