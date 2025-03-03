@@ -1,4 +1,4 @@
 [
-    {"value": "calorie_count", "label": "Calories"},
-    {"value": "", "label": "Aucun"}
+    {"value": "", "label": "Aucun"},
+    {"value": "calorie_count", "label": "Calories"}
 ]
