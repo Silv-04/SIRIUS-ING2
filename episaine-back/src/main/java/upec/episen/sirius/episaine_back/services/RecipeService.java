@@ -4,8 +4,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import upec.episen.sirius.episaine_back.repositories.RecipeRepository;
+import upec.episen.sirius.episaine_back.models.Product;
 import upec.episen.sirius.episaine_back.models.Recipe;
+import upec.episen.sirius.episaine_back.repositories.ProductRepository;
+import upec.episen.sirius.episaine_back.repositories.RecipeRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +18,9 @@ public class RecipeService {
 
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -30,7 +35,7 @@ public class RecipeService {
 
     /**
      * Generates a random recipe using random products from specified categories.
-     * Saves the generated recipe to the database.
+     * Calculates the total calorie count based on selected products and saves the recipe.
      * @return The generated and saved Recipe object.
      */
     public Recipe generateAndSaveRecipe() {
@@ -41,22 +46,29 @@ public class RecipeService {
                 "eaux et autres boissons"
         );
 
-        String sql = "SELECT nom_produit FROM products WHERE nom_groupe = :category ORDER BY RANDOM() LIMIT 1";
-        Query query = entityManager.createNativeQuery(sql);
+        String sql = "SELECT * FROM products WHERE nom_groupe = :category ORDER BY RANDOM() LIMIT 1";
+        Query query = entityManager.createNativeQuery(sql, Product.class);
 
         Recipe recipe = new Recipe();
         recipe.setRecipeName("Recette Aléatoire");
         recipe.setDietaryRegime("Omnivore");
         recipe.setIngredients(new ArrayList<>());
 
+        int totalCalories = 0;
+
         for (String category : categories) {
             query.setParameter("category", category);
-            List<String> result = query.getResultList();
+            List<Product> result = query.getResultList();
             if (!result.isEmpty()) {
-                recipe.getIngredients().add(result.get(0));
+                Product product = result.get(0);
+                recipe.getIngredients().add(product.getNomProduit());
+                totalCalories += product.getenergie_ue_kcal() != null ? product.getenergie_ue_kcal() : 0;
             }
         }
+
+        recipe.setCalorieCount(totalCalories);
         recipe.setInstructions("Mélangez les ingrédients et dégustez !");
+
         return recipeRepository.save(recipe);
     }
 }
