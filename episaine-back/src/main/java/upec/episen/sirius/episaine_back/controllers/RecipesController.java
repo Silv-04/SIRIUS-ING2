@@ -85,7 +85,7 @@ public class RecipesController {
         @PathVariable int id,
         @RequestParam(required = false) Integer numberOfDays,
         @RequestParam(required = false) String orderOption,
-        @RequestParam int page) {
-        return progress.getRecipesForId(id, numberOfDays, orderOption, page);
+        @RequestParam int n) {
+        return progress.getRecipesForId(id, numberOfDays, orderOption, n);
     }
 }

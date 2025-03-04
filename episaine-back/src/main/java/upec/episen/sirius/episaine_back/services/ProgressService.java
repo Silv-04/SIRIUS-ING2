@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -38,7 +37,7 @@ public class ProgressService {
         this.customerService = customerService;
     }
 
-    public List<List<Recipes>> getRecipesForId(int id, Integer numberOfDays, String orderOption, int page) {
+    public List<List<Recipes>> getRecipesForId(int id, Integer numberOfDays, String orderOption, int n) {
         List<Recipes> recipesList = new ArrayList<>();
 
         Informations informations = informationsService.findByIdCustomer(id);
@@ -138,28 +137,24 @@ public class ProgressService {
 
         progressLogger.info("Current list:" + recipesList);
 
-        // 3. Filter recipes according to client's allergies, intolerances and prohibited foods
+        // 3. Filter recipes according to client's allergies, intolerances and
+        // prohibited foods
         recipesList = recipesProductFiltering(allergiesArray, intolerancesArray, prohibitedFoodsArray, recipesList);
         progressLogger.info("Filtered list:" + recipesList);
 
-        // 4. Generate combinations of recipes lists with list of days*mealsPerDay recipes (10 per page)
+        // 4. Generate combinations of recipes lists with list of days*mealsPerDay
+        // recipes (10 per page)
         List<List<Recipes>> allRecipesLists = new ArrayList<>();
-
         int combinationSize = numberOfDays * nbOfMealsPerDay;
-        int pageSize = 10;
-        long startIndex = (long) page * pageSize;
+        getCombination(recipesList, combinationSize, 0, 0, n, new ArrayList<>(), allRecipesLists);
 
-        for (int i = 0; i < pageSize; i++) {
-            long index = startIndex + i;
-            List<Recipes> combination = getCombination(recipesList, combinationSize, index);
-            progressLogger.info("Added recipe: " + combination.toString());
-            allRecipesLists.add(combination);
-        }
+        progressLogger.info("All recipes lists:" + allRecipesLists);
 
         return allRecipesLists;
     }
 
-    // source : https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
+    // source :
+    // https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
     public double avgCalories(int weight, int height, int age, String gender, int number_of_meals) {
         double calorie = -1;
         switch (gender.toLowerCase()) {
@@ -175,7 +170,8 @@ public class ProgressService {
         return calorie / number_of_meals;
     }
 
-    // found in stackoverflow : https://stackoverflow.com/questions/4122170/java-change-áéőűú-to-aeouu
+    // found in stackoverflow :
+    // https://stackoverflow.com/questions/4122170/java-change-áéőűú-to-aeouu
     public String[] normalize(String[] stringArray) {
         for (int i = 0; i < stringArray.length; i++) {
             String str = stringArray[i];
@@ -231,25 +227,25 @@ public class ProgressService {
     }
 
     // generate a combination of recipes
-    public static List<Recipes> getCombination(List<Recipes> recipes, int combinationSize, long index) {
-        int n = recipes.size();
-        List<Recipes> combination = new ArrayList<>();
-
-        if (combinationSize > n || combinationSize <= 0) {
-            return combination;
+    public static int getCombination(List<Recipes> recipesList, int k, int start, int cpt, int n,
+            List<Recipes> currentList, List<List<Recipes>> allRecipesLists) {
+        if (cpt >= n) {
+            return cpt;
         }
 
-        long currentIndex = index;
-        for (int i = 0; i < combinationSize; i++) {
-            int remainingElements = n - (i + 1);
-
-            int chosenIndex = (int) (currentIndex % (remainingElements + 1));
-            combination.add(recipes.get(chosenIndex));
-
-            Collections.swap(recipes, chosenIndex, remainingElements);
-            currentIndex /= (remainingElements + 1);
+        if (currentList.size() == k) {
+            allRecipesLists.add(new ArrayList<>(currentList));
+            progressLogger.info("New recipes list:" + allRecipesLists + ", number:" + cpt);
+            cpt++; // Incrémentation du compteur après l'ajout
         }
 
-        return combination;
+        for (int i = start; i < recipesList.size(); i++) {
+            currentList.add(recipesList.get(i));
+            cpt = getCombination(recipesList, k, i + 1, cpt, n, currentList, allRecipesLists);
+            currentList.remove(currentList.size() - 1);
+        }
+
+        return cpt;
     }
+
 }
