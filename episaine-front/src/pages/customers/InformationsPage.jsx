@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CREATE_INFORMATIONS, GET_INFORMATIONS_BY_CUSTOMER_ID, UPDATE_INFORMATIONS } from '../../constants/back';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import allergyOptions from '../../constants/allergyOptions';
 import intoleranceOptions from '../../constants/intoleranceOptions';
 import regimeOptions from '../../constants/regimeOptions';
@@ -9,12 +7,15 @@ import temperatureOptions from '../../constants/temperatureOptions';
 import cuisineTypeOptions from '../../constants/cuisineTypeOptions';
 import LeftMenu from '../../components/customers/LeftMenu';
 import healthGoalOptions from '../../constants/healthGoalOptions';
-import { Box, Button, createTheme, FormControl, Grid, InputLabel, MenuItem, Select, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Button, Grid, GridItem, Input, Select, Text } from '@chakra-ui/react';
+import { MultiSelect } from 'chakra-multiselect';
+import { updateCustomerInformation, createCustomerInformation, getCustomerInformationByCustomerId } from '../../api/customerAPI';
 
 // path="/client/recettes/informations/"
 // page to display and update the customer's informations if needed
 function InformationsPageInputs() {
     const [informations, setInformations] = useState();
+    const [new_information, setNewInformation] = useState();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -38,8 +39,8 @@ function InformationsPageInputs() {
         const new_information = {
             information_id: informationId,
             health_goal: healthGoal,
-            allergies: Array.isArray(allergies) ? allergies.join(",") : "",
             intolerances: Array.isArray(intolerances) ? intolerances.join(",") : "",
+            allergies: Array.isArray(allergies) ? allergies.join(",") : "",
             dietary_regime: dietaryRegime,
             meals_per_day: mealsPerDay,
             weight: weight,
@@ -52,25 +53,24 @@ function InformationsPageInputs() {
 
         if (informations && JSON.stringify(informations) === JSON.stringify(new_information)) {
             console.log("No changes detected");
-            navigate("/client/recettes/informations/choix/", { state: { inputValue: informations.fk_customer_id } });
+            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } })
             return;
         }
-
-        try {
-            if (informations) {
-                console.log("Changes in informations detected");
-                await axios.post(UPDATE_INFORMATIONS, new_information);
-                console.log("Informations updated");
-            } else {
-                console.log("No information found, creating new data");
-                await axios.post(CREATE_INFORMATIONS, new_information);
-                console.log("Informations created");
+        else {
+            try {
+                if (informations) {
+                    console.log("Changes in informations detected");
+                    await updateCustomerInformation(new_information);
+                    console.log("Informations updated");
+                } else {
+                    console.log("No information found, creating new data");
+                    await createCustomerInformation(new_information);
+                    console.log("Informations created");
+                }
+            } catch (error) {
+                console.error("Error while updating or creating data:", error);
             }
-
-            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } });
-
-        } catch (error) {
-            console.error("Error while updating or creating data:", error);
+            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } })
         }
     };
 
@@ -78,20 +78,18 @@ function InformationsPageInputs() {
     const handleReset = () => {
         setAllergies([]);
         setIntolerances([]);
-        setHealthGoal('');
+        setHealthGoal('maintien de poids');
         setDietaryRegime('');
         setMealsPerDay('');
         setWeight('');
         setHeight('');
         setFoodToAvoid('');
-        setFoodTemperature('');
+        setFoodTemperature('aucune préférence');
         setCuisineType([]);
-        setCustomerId('');
-        setInformationId('');
     };
-    
 
-    // get data sent from the previous page
+
+    // get data sent from the previous page (customer ID number)
     useEffect(() => {
         if (location.state?.inputValue) {
             setCustomerId(location.state.inputValue);
@@ -102,7 +100,7 @@ function InformationsPageInputs() {
     useEffect(() => {
         const readInformations = async () => {
             try {
-                const response = await axios.get(GET_INFORMATIONS_BY_CUSTOMER_ID + "/" + customerId);
+                const response = await getCustomerInformationByCustomerId(customerId);
                 console.log("Informations fetched", response.data);
                 setInformations(response.data);
             } catch (error) {
@@ -133,188 +131,147 @@ function InformationsPageInputs() {
         }
     }, [informations]);
 
+    const handleChangeMealsPerDay = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setMealsPerDay(value);
+        }
+    };
+    const handleChangeWeight = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setWeight(value);
+        }
+    };
+    const handleChangeHeight = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setHeight(value);
+        }
+    };
+
     return (
-        <Grid>
-            <Grid container justifyContent="center" alignItems="center" style={{ marginTop: "20px" }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Informations client
-                </Typography>
-            </Grid>
-            <form onSubmit={handleSubmit} autoComplete='off'>
-                <Box>
-                    <Grid container spacing={2} sx={{ width: '90%', height: 'auto', marginLeft: "50px" }}>
-                        <Grid item xs={12} sm={6} sx={{ width: '30%', height: 'auto', paddingRight: "20px" }}>
-                            <FormControl fullWidth margin='normal' sx={{ height: 'auto' }}>
-                                <InputLabel>Objectif de santé</InputLabel>
+        <Grid gap={4} padding={4} >
+            <GridItem>
+                <Text textAlign={"center"} fontWeight={"bold"} fontSize={50}>Informations client</Text>
+            </GridItem>
+            <GridItem>
+                <form autoComplete='off'>
+                    <Grid templateColumns={"repeat(2, 1fr)"} gap={4} padding={4} >
+                        <Grid templateRows={"repeat(5, 1fr)"} gap={4} padding={4}>
+                            <GridItem>
+                                <Text>Objectif de santé</Text>
                                 <Select
                                     value={healthGoal}
-                                    onChange={(e) => setHealthGoal(e.target.value)}
-                                    label="Objectif de santé"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
+                                    onChange={(e) => setHealthGoal(e.target.value)}>
                                     {healthGoalOptions.map((healthGoal) => (
-                                        <MenuItem key={healthGoal.key} value={healthGoal.label}>{healthGoal.label}</MenuItem>
+                                        <option key={healthGoal.key} value={healthGoal.label}>{healthGoal.label}</option>
                                     ))}
                                 </Select>
-                            </FormControl>
-                            <FormControl fullWidth margin='normal' sx={{ height: 'auto' }}>
-                                <InputLabel>Allergies</InputLabel>
-                                <Select
-                                    multiple
+                            </GridItem>
+                            <GridItem>
+                                <Text>Allergies</Text>
+                                <MultiSelect
+                                    options={allergyOptions.map((allergy) => ({ value: allergy.name, label: allergy.name }))}
+                                    onChange={(e) => setAllergies(e)}
                                     value={Array.isArray(allergies) ? allergies : []}
-                                    onChange={(e) => setAllergies(e.target.value)}
-                                    label="Allergies"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    {allergyOptions.map((allergy) => (
-                                        <MenuItem key={allergy.id} value={allergy.name}>{allergy.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl fullWidth margin='normal' sx={{ height: 'auto' }}>
-                                <InputLabel>Intolérances</InputLabel>
-                                <Select
-                                    multiple
+                                />
+                            </GridItem>
+                            <GridItem>
+                                <Text>Intolérences</Text>
+                                <MultiSelect
+                                    options={intoleranceOptions.map((intolerance) => ({ value: intolerance.name, label: intolerance.name }))}
+                                    onChange={(e) => setIntolerances(e)}
                                     value={Array.isArray(intolerances) ? intolerances : []}
-                                    onChange={(e) => setIntolerances(e.target.value)}
-                                    label="Intolérances"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    {intoleranceOptions.map((intolerance) => (
-                                        <MenuItem key={intolerance.id} value={intolerance.name}>{intolerance.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl fullWidth margin='normal' sx={{ height: 'auto' }}>
-                                <InputLabel>Régime alimentaire</InputLabel>
+                                />
+                            </GridItem>
+                            <GridItem>
+                                <Text>Régime alimentaire</Text>
                                 <Select
                                     value={dietaryRegime}
-                                    onChange={(e) => setDietaryRegime(e.target.value)}
-                                    label="Régime alimentaire"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
+                                    onChange={(e) => setDietaryRegime(e.target.value)}>
                                     {regimeOptions.map((regime) => (
-                                        <MenuItem key={regime.id} value={regime.name}>{regime.name}</MenuItem>
+                                        <option key={regime.id} value={regime.name}>{regime.name}</option>
                                     ))}
                                 </Select>
-                            </FormControl>
-                            <TextField
-                                label="Nombre de repas par jour"
-                                variant='outlined'
-                                InputLabelProps={{ shrink: true }}
-                                type="number"
-                                fullWidth
-                                margin='normal'
-                                value={mealsPerDay}
-                                onChange={(e) => setMealsPerDay(e.target.value)}
-                            />
+                            </GridItem>
+                            <GridItem>
+                                <Text>Nombre de repas par jour</Text>
+                                <Input
+                                    value={mealsPerDay}
+                                    onChange={handleChangeMealsPerDay}
+                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}>
+                                </Input>
+                            </GridItem>
                         </Grid>
-                        <Grid item xs={12} sm={6} sx={{ width: '30%', height: 'auto', paddingLeft: "20px" }}>
-                            <TextField
-                                label="Poids (kg)"
-                                variant='outlined'
-                                InputLabelProps={{ shrink: true }}
-                                type="number"
-                                fullWidth
-                                margin='normal'
-                                value={weight}
-                                onChange={(e) => setWeight(e.target.value)}
-                            /><TextField
-                                label="Taille (cm)"
-                                variant='outlined'
-                                InputLabelProps={{ shrink: true }}
-                                type="number"
-                                fullWidth
-                                margin='normal'
-                                value={height}
-                                onChange={(e) => setHeight(e.target.value)}
-                            />
-                            <TextField
-                                label="Nourriture à éviter"
-                                variant='outlined'
-                                InputLabelProps={{ shrink: true }}
-                                fullWidth
-                                margin='normal'
-                                value={foodToAvoid}
-                                onChange={(e) => setFoodToAvoid(e.target.value)}
-                            />
-                            <FormControl fullWidth margin='normal' sx={{ height: 'auto' }}>
-                                <InputLabel>Température de plat</InputLabel>
+                        <Grid templateRows={"repeat(5, 1fr)"} gap={4} padding={4}>
+                            <GridItem>
+                                <Text>Poids (kg)</Text>
+                                <Input
+                                    value={weight}
+                                    onChange={handleChangeWeight}
+                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}>
+                                </Input>
+                            </GridItem>
+                            <GridItem>
+                                <Text>Taille (cm)</Text>
+                                <Input
+                                    value={height}
+                                    onChange={handleChangeHeight}
+                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}>
+                                </Input>
+                            </GridItem>
+                            <GridItem>
+                                <Text>Nourriture à éviter</Text>
+                                <Input
+                                    value={foodToAvoid}
+                                    onChange={(e) => setFoodToAvoid(e.target.value)}>
+                                </Input>
+                            </GridItem>
+                            <GridItem>
+                                <Text>Température de plat</Text>
                                 <Select
                                     value={foodTemperature}
-                                    onChange={(e) => setFoodTemperature(e.target.value)}
-                                    label="Température de plat"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
+                                    onChange={(e) => setFoodTemperature(e.target.value)}>
                                     {temperatureOptions.map((temperature) => (
-                                        <MenuItem key={temperature.key} value={temperature.label}>{temperature.label}</MenuItem>
+                                        <option key={temperature.key} value={temperature.label}>{temperature.label}</option>
                                     ))}
                                 </Select>
-                            </FormControl>
-                            <FormControl fullWidth margin='normal' sx={{ height: 'auto' }}>
-                                <InputLabel>Spécialité culinaire</InputLabel>
-                                <Select
-                                    multiple
+                            </GridItem>
+                            <GridItem>
+                                <Text>Spécialité culinaire</Text>
+                                <MultiSelect
+                                    options={cuisineTypeOptions.map((cuisineType) => ({ value: cuisineType.name, label: cuisineType.name }))}
+                                    onChange={(e) => setCuisineType(e)}
                                     value={Array.isArray(cuisineType) ? cuisineType : []}
-                                    onChange={(e) => setCuisineType(e.target.value)}
-                                    label="Spécialité culinaire"
-                                    MenuProps={{
-                                        PaperProps: {
-                                            style: {
-                                                maxHeight: 200,
-                                            },
-                                        },
-                                    }}
-                                >
-                                    {cuisineTypeOptions.map((cuisineType) => (
-                                        <MenuItem key={cuisineType.id} value={cuisineType.name}>{cuisineType.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                                />
+                            </GridItem>
                         </Grid>
                     </Grid>
-                    <Grid container justifyContent="center" alignItems="center" spacing={5} paddingLeft={4} marginTop={3}>
-                        <Button type="submit" variant="contained" color="primary" sx={{ marginRight: '10px' }}>Valider</Button>
-                        <Button variant="contained" color="secondary" onClick={handleReset} sx={{ marginLeft: '10px' }}>Annuler</Button>
+                    <Grid rowSpan={3} templateColumns={"repeat(3, 1fr)"} gap={4} padding={4}>
+                        <Button
+                            _hover={{ bg: "#4d648d" }}
+                            color="white"
+                            bg="#2C3A4F"
+                            onClick={handleSubmit}>Choisir mes recettes</Button>
+                        <Button
+                            _hover={{ bg: "#4d648d" }}
+                            color="white"
+                            bg="#2C3A4F"
+                            onClick={handleReset}>Vider les champs</Button>
+                        <Button
+                            _hover={{ bg: "#4d648d" }}
+                            color="white"
+                            bg="#2C3A4F"
+                        >Obtenir un programme</Button>
                     </Grid>
-                </Box>
-            </form>
+                </form>
+            </GridItem>
         </Grid>
     );
 }
 
 export default function InformationsPage() {
-    const theme = createTheme();
     return (
         <div style={{ display: 'flex', height: '100vh' }}>
             <div style={{ width: '250px' }}>
@@ -322,9 +279,7 @@ export default function InformationsPage() {
             </div>
 
             <div style={{ flexGrow: 1 }}>
-                <ThemeProvider theme={theme}>
-                    <InformationsPageInputs />
-                </ThemeProvider>
+                <InformationsPageInputs />
             </div>
         </div>
     )

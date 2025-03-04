@@ -17,9 +17,18 @@ import Rdv from "./nutritionniste/rdv"
 import Recipe from "./nutritionniste/recipe"
 import Customer from "./nutritionniste/Customer"
 import ParametreNutritionist from "./nutritionniste/Parametre"
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import { MultiSelectTheme } from "chakra-multiselect";
 
 function App() {
+    const theme = extendTheme({
+        components: {
+            MultiSelect: MultiSelectTheme
+        }
+    })
     return (
+
+        <ChakraProvider theme={theme}>
             <Router basename="/episaine">
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -42,6 +51,7 @@ function App() {
                     <Route path="/components/nutritionniste/Parametre/" element={<ParametreNutritionist />} />
                 </Routes>
             </Router>
+        </ChakraProvider>
     );
 }
 

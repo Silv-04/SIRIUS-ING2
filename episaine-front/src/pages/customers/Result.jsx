@@ -1,17 +1,16 @@
-import { Box, Button, Container, createTheme, Grid2, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import LeftMenu from "../../components/customers/LeftMenu";
 import recipesListTableHeader from "../../constants/recipesListTableHeader.json";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { Box, Button, Center, Grid, GridItem, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
 // path="/client/recettes/informations/choix/resultat/"
 function ResultPage() {
     const [recipesList, setRecipesList] = useState([]);
     const location = useLocation();
     const pdfRef = useRef();
-    const theme = createTheme();
     const navigate = useNavigate();
 
     // generate a pdf
@@ -42,43 +41,38 @@ function ResultPage() {
     }
 
     return (
-        <ThemeProvider theme={theme}>
-            <Box sx={{ paddingLeft: "20px", paddingTop: "20px" }}>
-                <TableContainer sx={{ maxHeight: "400px", overflowY: "auto" }}>
-                    <Table stickyHeader ref={pdfRef}>
-                        <TableHead>
-                            <TableRow>
-                                {recipesListTableHeader.map((header) => (
-                                    <TableCell key={header.value} align="left">
-                                        {header.value === 'recipeId' ? 'Numéro de jour' : header.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {recipesList.map((recipes, index) => (
-                                recipes[0].map((recipe) => (
-                                    <TableRow key={index}>
-                                        {recipesListTableHeader.map(({ value }) => (
-                                            <TableCell key={value} align="left">
-                                                {value === 'recipeId' ? recipes[1] : (recipe[value] || 'N/A')}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-
-                                ))
+        <Box sx={{ paddingLeft: "20px", paddingTop: "20px" }}>
+            <TableContainer sx={{ overflowY: "auto" }} height={"50vh"} width={"100%"}>
+                <Table ref={pdfRef} width={"100%"} layout={"fixed"}>
+                    <Thead position={"sticky"} top={0} zIndex={1} background={"white"}>
+                        <Tr>
+                            {recipesListTableHeader.map((header) => (
+                                <Th key={header.value} align="left">
+                                    {header.value === 'recipeId' ? 'Numéro de jour' : header.label}
+                                </Th>
                             ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <Grid2 paddingTop={5} gap={5} container>
-                    <Button variant="contained" color="primary" onClick={generatePDF}>
-                        Enregistrer en PDF
-                    </Button>
-                    <Button variant="contained" color="primary" onClick={handleValidate}>Obtenir la projection</Button>
-                </Grid2>
-            </Box>
-        </ThemeProvider>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {recipesList.map((recipes, index) => (
+                            recipes[0].map((recipe) => (
+                                <Tr key={index}>
+                                    {recipesListTableHeader.map(({ value }) => (
+                                        <Td key={value} align="left" style={{ whiteSpace: 'pre-wrap' }}>
+                                            {value === 'recipeId' ? recipes[1] : (recipe[value] || 'N/A')}
+                                        </Td>
+                                    ))}
+                                </Tr>
+
+                            ))
+                        ))}
+                    </Tbody>
+                </Table>
+            </TableContainer>
+            <Center><Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" onClick={generatePDF}>
+                Enregistrer en PDF
+            </Button></Center>
+        </Box>
     )
 }
 
