@@ -24,7 +24,7 @@ public class Product {
     private String nomProduit;
 
     /** Energy value in kilocalories */
-    private Double energieKcal;
+    private Double energie_ue_kcal;
 
     /**
      * Default constructor.
@@ -38,14 +38,14 @@ public class Product {
      * @param nomSousgroupe The sub-group name
      * @param nomSoussousgroupe The sub-sub-group name
      * @param nomProduit The name of the product
-     * @param energieKcal The energy in kcal
+     * @param energie_ue_kcal The energy in kcal
      */
-    public Product(String nomGroupe, String nomSousgroupe, String nomSoussousgroupe, String nomProduit, Double energieKcal) {
+    public Product(String nomGroupe, String nomSousgroupe, String nomSoussousgroupe, String nomProduit, Double energie_ue_kcal) {
         this.nomGroupe = nomGroupe;
         this.nomSousgroupe = nomSousgroupe;
         this.nomSoussousgroupe = nomSoussousgroupe;
         this.nomProduit = nomProduit;
-        this.energieKcal = energieKcal;
+        this.energie_ue_kcal  = energie_ue_kcal ;
     }
 
     /**
@@ -66,6 +66,6 @@ public class Product {
     public String getNomProduit() { return nomProduit; }
     public void setNomProduit(String nomProduit) { this.nomProduit = nomProduit; }
 
-    public Double getEnergieKcal() { return energieKcal; }
-    public void setEnergieKcal(Double energieKcal) { this.energieKcal = energieKcal; }
+    public Double getenergie_ue_kcal () { return energie_ue_kcal ; }
+    public void setenergie_ue_kcal (Double energie_ue_kcal ) { this.energie_ue_kcal  = this.energie_ue_kcal; }
 }
