@@ -36,7 +36,7 @@ function InformationsPageInputs() {
     // submit the new informations, check whether or not the informations was updated, and move to the next page
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const temp_new_information = {
+        const new_information = {
             information_id: informationId,
             health_goal: healthGoal,
             intolerances: Array.isArray(intolerances) ? intolerances.join(",") : "",
@@ -50,10 +50,10 @@ function InformationsPageInputs() {
             cuisine_type: Array.isArray(cuisineType) ? cuisineType.join(",") : "",
             fk_customer_id: customerId
         };
-        setNewInformation(temp_new_information);
 
         if (informations && JSON.stringify(informations) === JSON.stringify(new_information)) {
             console.log("No changes detected");
+            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } })
             return;
         }
         else {
@@ -70,13 +70,9 @@ function InformationsPageInputs() {
             } catch (error) {
                 console.error("Error while updating or creating data:", error);
             }
+            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } })
         }
     };
-
-    const handleSubmitChoice = () => {
-        handleSubmit();
-        navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } });
-    }
 
     // empty each input field
     const handleReset = () => {
@@ -257,7 +253,7 @@ function InformationsPageInputs() {
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"
-                            onClick={handleSubmitChoice}>Choisir mes recettes</Button>
+                            onClick={handleSubmit}>Choisir mes recettes</Button>
                         <Button
                             _hover={{ bg: "#4d648d" }}
                             color="white"

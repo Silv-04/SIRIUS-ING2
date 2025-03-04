@@ -5,7 +5,7 @@ import LeftMenu from '../../components/customers/LeftMenu';
 import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
 import { useLocation, useNavigate } from 'react-router-dom';
 import sortRecipesTableOptions from '../../constants/sortRecipesTableOptions.json';
-import { Box, Button, Grid, GridItem, Input, Select, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Checkbox, Grid, GridItem, Input, Select, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 
 // path="/client/recettes/informations/choix/"
 // page to display each recipes according to the customer's informations
@@ -16,7 +16,6 @@ function RecipesListInput() {
     const [selectedTables, setSelectedTables] = useState({});
     const [recipesList, setRecipesList] = useState([]);
     const [sortValue, setSortValue] = useState('none');
-    const [page, setPage] = useState(1);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -46,6 +45,8 @@ function RecipesListInput() {
         } else {
             setRecipesList((prev) => prev.filter((_, index) => index !== tableIndex));
         }
+
+        console.log("Selected recipes: ", recipesList);
     };
 
     // sent saved recipes to the next page
@@ -93,14 +94,14 @@ function RecipesListInput() {
     };
 
     return (
-        <Box>
-            <form>
+        <Box p={4} width={"80vw"} height={"80vh"}>
+            <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
                 <Grid templateColumns={"repeat(1, 1fr)"} gap={4} p={4} justifyContent={"center"} alignItems={"center"}>
                     <GridItem colSpan={1}>
                         <Grid templateRows={"repeat(2, 1fr"}>
                             <Text>Nombre de jour</Text>
                             <Input
-                                placeholder="Numéro client"
+                                placeholder="Nombre de jour"
                                 value={numberOfDays}
                                 onChange={handleChange}
                                 inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
@@ -118,8 +119,51 @@ function RecipesListInput() {
                             ))}
                         </Select>
                     </GridItem>
-                    <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F">Générer la liste</Button>
+                    <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit'>Générer la liste</Button>
                 </Grid>
+            </form>
+            <form onSubmit={(e) => { e.preventDefault(); handleValidate(); }} noValidate autoComplete='off'>
+                <TableContainer sx={{ overflowY: "auto" }} height={"50vh"} width={"100%"}>
+                    <Table size='sm'>
+                        <Tbody>
+                            {Array.isArray(allRecipesList) && allRecipesList.length > 0 && allRecipesList.map((recipesListGroup, index) => (
+                                <Table size='sm' width={"100%"} layout={"fixed"}>
+                                    <caption style={{ captionSide: "top", textAlign: "center", fontWeight: "bold", fontSize: "30px", paddingTop: "50px" }}>Liste numéro {index + 1}</caption>
+                                    <Thead>
+                                        <Tr>
+                                            <Th>
+                                                <Checkbox
+                                                    checked={selectedTables[index] || false}
+                                                    onChange={(e) => handleSelectAll(index, e.target.checked)}
+                                                />
+                                            </Th>
+                                            {recipesListTableHeader.map((header) => (
+                                                <Th key={header.value}>
+                                                    {header.label}
+                                                </Th>
+                                            ))}
+                                        </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                        {recipesListGroup.map((recipes, recipeIndex) => (
+                                            <Tr key={recipes.recipe_id} selected={selectedTables[index] || false}>
+                                                <Td />
+                                                {recipesListTableHeader.map((headerValue) => (
+                                                    <Td key={headerValue} style={{ whiteSpace: 'pre-wrap' }}>
+                                                        {headerValue.value === 'recipeId' ? (recipeIndex + 1) : recipes[headerValue.value] || 'N/A'}
+                                                    </Td>
+                                                ))}
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                            ))}
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+                <Center>
+                    <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit'>Valider mon choix</Button>
+                </Center>
             </form>
         </Box>
     );
