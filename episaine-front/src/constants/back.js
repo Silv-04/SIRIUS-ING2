@@ -17,3 +17,9 @@ export const GET_RECIPES_BY_CUSTOMER = BACKEND_HOST_EPISAINE + '/recipes/getReci
 export const GET_INFORMATIONS_BY_CUSTOMER_ID = BACKEND_HOST_EPISAINE + '/informations/get';
 export const UPDATE_INFORMATIONS = BACKEND_HOST_EPISAINE + '/informations/update';
 export const CREATE_INFORMATIONS = BACKEND_HOST_EPISAINE + '/informations/add';
+
+export const GET_RECIPES_LIST = BACKEND_HOST_EPISAINE + "/recipes/getRecipesList";
+export const GENERATE_RECIPE = BACKEND_HOST_EPISAINE + "/recipe/generaterandom";
+
+
+
