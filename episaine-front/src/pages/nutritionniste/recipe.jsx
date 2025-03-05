@@ -15,6 +15,7 @@ export default function Recipe() {
     // Number of recipes per page
     const recipesPerPage = 8;
 
+
     // Fetch recipes from the API when the component mounts
     useEffect(() => {
         setLoading(true);
