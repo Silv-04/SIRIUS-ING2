@@ -25,33 +25,58 @@ public class RecipeService {
     @Autowired
     private EntityManager entityManager;
 
-    /**
-     * Retrieves all recipes from the database.
-     * @return A list of all recipes.
-     */
     public List<Recipe> getAllRecipes() {
         return recipeRepository.findAll();
     }
 
-    /**
-     * Generates a random recipe using random products from specified categories.
-     * Calculates the total calorie count based on selected products and saves the recipe.
-     * @return The generated and saved Recipe object.
-     */
-    public Recipe generateAndSaveRecipe() {
+    public Recipe generateAndSaveRecipe(String dietaryRegime) {
         List<String> categories = Arrays.asList(
                 "entrees et plats composes",
                 "produits cerealiers",
                 "viandes, œufs, poissons et assimilés",
+                "fruits, legumes, legumineuses et oleagineux",
                 "eaux et autres boissons"
         );
 
-        String sql = "SELECT * FROM products WHERE nom_groupe = :category ORDER BY RANDOM() LIMIT 1";
+        String sql = "SELECT * FROM products WHERE nom_groupe = :category ";
+
+        switch (dietaryRegime.toLowerCase()) {
+            case "vegetarien":
+                sql += "AND nom_soussousgroupe NOT IN ('abats', 'agneau et mouton', 'bœuf et veau', 'gibier', 'porc', 'poulet', 'dinde', 'autres viandes') ";
+                break;
+            case "vegane":
+            case "vegetalien":
+                sql += "AND nom_soussousgroupe NOT IN ('abats', 'agneau et mouton', 'bœuf et veau', 'gibier', 'porc', 'poulet', 'dinde', 'autres viandes', "
+                        + "'œufs crus', 'œufs cuits', 'fromages a pate molle', 'fromages blancs', "
+                        + "'laits de vaches liquides (non concentres)', 'desserts lactes', "
+                        + "'yaourts et specialites laitieres type yaourt') ";
+                break;
+            case "pescetarien":
+                sql += "AND nom_soussousgroupe NOT IN ('abats', 'agneau et mouton', 'bœuf et veau', 'gibier', 'porc', 'poulet', 'dinde', 'autres viandes') ";
+                break;
+            case "halal":
+                sql += "AND alcool = 0 AND nom_soussousgroupe NOT LIKE '%porc%' ";
+                break;
+            case "casher":
+                sql += "AND alcool = 0 AND nom_soussousgroupe NOT IN ('porc', 'saucisses et assimiles', 'rillettes', 'saucisson secs') ";
+                break;
+            case "sans gluten":
+                sql += "AND (glucides = 0 OR glucides IS NULL)";
+                break;
+            case "sans lactose":
+                sql += "AND (lactose = 0 OR lactose IS NULL)";
+                break;
+            default:
+                break;
+        }
+
+        sql += " ORDER BY RANDOM() LIMIT 1";
+
         Query query = entityManager.createNativeQuery(sql, Product.class);
 
         Recipe recipe = new Recipe();
-        recipe.setRecipeName("Recette Aléatoire");
-        recipe.setDietaryRegime("Omnivore");
+        recipe.setRecipeName("Recette " + dietaryRegime + " Aléatoire");
+        recipe.setDietaryRegime(dietaryRegime);
         recipe.setIngredients(new ArrayList<>());
 
         int totalCalories = 0;
