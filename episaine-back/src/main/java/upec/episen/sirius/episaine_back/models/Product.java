@@ -26,6 +26,11 @@ public class Product {
     /** Energy value in kilocalories */
     private Double energie_ue_kcal;
 
+    /** Additional nutritional values */
+    private Double glucides;
+    private Double amidon;
+    private Double lactose;
+
     /**
      * Default constructor.
      */
@@ -39,13 +44,19 @@ public class Product {
      * @param nomSoussousgroupe The sub-sub-group name
      * @param nomProduit The name of the product
      * @param energie_ue_kcal The energy in kcal
+     * @param glucides the detail of the product
+     * @param amidon the detail of the product
+     * @param lactose the detail of the product
      */
-    public Product(String nomGroupe, String nomSousgroupe, String nomSoussousgroupe, String nomProduit, Double energie_ue_kcal) {
+    public Product(String nomGroupe, String nomSousgroupe, String nomSoussousgroupe, String nomProduit, Double energie_ue_kcal,Double glucides, Double amidon, Double lactose) {
         this.nomGroupe = nomGroupe;
         this.nomSousgroupe = nomSousgroupe;
         this.nomSoussousgroupe = nomSoussousgroupe;
         this.nomProduit = nomProduit;
         this.energie_ue_kcal  = energie_ue_kcal ;
+        this.glucides = glucides;
+        this.amidon = amidon;
+        this.lactose = lactose;
     }
 
     /**
@@ -68,4 +79,12 @@ public class Product {
 
     public Double getenergie_ue_kcal () { return energie_ue_kcal ; }
     public void setenergie_ue_kcal (Double energie_ue_kcal ) { this.energie_ue_kcal  = this.energie_ue_kcal; }
+    public Double getGlucides() { return glucides; }
+    public void setGlucides(Double glucides) { this.glucides = glucides; }
+
+    public Double getAmidon() { return amidon; }
+    public void setAmidon(Double amidon) { this.amidon = amidon; }
+
+    public Double getLactose() { return lactose; }
+    public void setLactose(Double lactose) { this.lactose = lactose; }
 }
