@@ -11,6 +11,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     /** Name of the main food group */
     private String nomGroupe;
 
