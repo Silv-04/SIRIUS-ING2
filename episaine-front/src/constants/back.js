@@ -18,13 +18,7 @@ export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/api/kpis/custome
 export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/api/kpis/customers/age-distribution';
 
 // ---------------------------------------//
-//            Endpoints (ALGO KPI)        //
+//            Endpoints (ALGO IMC)        //
 // ---------------------------------------//
 
-//export const CUSTOMER_INFORMATION = BACKEND_HOST_EPISAINE + "/api/customer/informations";
-
 export const CUSTOMER_INFORMATION = BACKEND_HOST_EPISAINE + "/customer/informations";
-
-//export const CUSTOMER_INFORMATION = BACKEND_HOST_EPISAINE + '/customer/get/informations';
-
-
