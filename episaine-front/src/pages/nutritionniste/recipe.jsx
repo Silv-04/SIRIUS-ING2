@@ -15,22 +15,6 @@ export default function Recipe() {
     // Number of recipes per page of pagination
     const recipesPerPage = 8;
 
-
-    // Fetch recipes from the API when the component mounts
-    useEffect(() => {
-        setLoading(true);
-        fetch(GET_RECIPES_LIST)
-            .then((response) => response.json())
-            .then((data) => {
-                setRecipes(data); // Save recipes data to state
-                setLoading(false); // Stop loading spinner
-            })
-            .catch((err) => {
-                console.error("Error loading recipes:", err);
-                setLoading(false);
-            });
-    }, []);
-
     // Function to generate a new recipe
     const generateRecipe = () => {
         setLoading(true);
