@@ -1,5 +1,9 @@
 package upec.episen.sirius.episaine_back.services;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,8 +11,11 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.javatuples.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import upec.episen.sirius.episaine_back.models.Customer;
+import upec.episen.sirius.episaine_back.models.Informations;
 import upec.episen.sirius.episaine_back.models.Recipes;
 
 @Service
@@ -27,17 +34,23 @@ public class WeightForecastService {
     
     protected static Logger forecastLogger = LogManager.getLogger(WeightForecastService.class);
 
-    public int calculateNewWeight(int weight, int takenCalories, int dailyCalories) {
-        int caloriesTaken = dailyCalories - takenCalories;
-        int caloriesToWeight = Math.round(caloriesTaken / 7700);
-        forecastLogger.info("New weight: " + weight+caloriesToWeight);
+    @Autowired
+    private InformationsService informationsService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private ProgressService progressService;
+
+    public double calculateNewWeight(double weight, int takenCalories, int dailyCalories) {
+        double caloriesTaken = takenCalories - dailyCalories;
+        double caloriesToWeight = caloriesTaken / 7700;
         return weight + caloriesToWeight;
     }
     
     /*
      * Given a recipes lists, and the day associated to each recipe, return a map (day, number of calories taken)
      */
-    public Map<Integer, Integer> recipesToCaloriesList(List<Pair<Integer, Recipes>> recipesList, int nbOfDays, int nbOfRecipesPerDay) {
+    public Map<Integer, Integer> recipesToCaloriesList(List<Pair<Integer, Recipes>> recipesList) {
         Map<Integer, Integer> caloriesListPerDay = new HashMap<Integer, Integer>();
         for (Pair<Integer, Recipes> temp : recipesList) {
             int key = temp.getValue0();
@@ -52,7 +65,7 @@ public class WeightForecastService {
     }
 
     // source : https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
-    public double caloriesPerDay(int weight, int height, int age, String gender, int number_of_meals) {
+    public double caloriesPerDay(double weight, int height, int age, String gender, int number_of_meals) {
         double calorie = -1;
         switch (gender.toLowerCase()) {
             case "homme":
@@ -64,31 +77,87 @@ public class WeightForecastService {
             default:
                 break;
         }
-        forecastLogger.info("Calories per day: " + calorie);
         return calorie;
     }
 
     /*
      * Given an initial weight, and a list of calories taken/lost per day, return a list of weights per day
      */
-    public Map<Integer, Integer> weightEachDay(int height, int age, String gender, int number_of_meals, Integer weight, Map<Integer, Integer> caloriesListPerDay) {
-        Map<Integer, Integer> weightList = new HashMap<Integer, Integer>();
+    public Map<Integer, Double> weightEachDay(int height, int age, String gender, int number_of_meals, double weight, Map<Integer, Integer> caloriesListPerDay) {
+        Map<Integer, Double> weightList = new HashMap<Integer, Double>();
         weightList.put(0, weight);
 
         for (int i = 1; i < caloriesListPerDay.size(); i++) {
-            int prevWeight = weightList.get(i-1);
+            double prevWeight = weightList.get(i-1);
             double avgCalories = caloriesPerDay(prevWeight, height, age, gender, number_of_meals);
-            int newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) Math.round(avgCalories));
+            double newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) Math.round(avgCalories));
             weightList.put(i, newWeight);
         }
 
         return weightList;
     }
 
-    public Map<Integer, Integer> getRecipesTest(int height, int age, String gender, int number_of_meals, int nbOfDays, int weight, List<Pair<Integer, Recipes>> recipesList) {
-        Map<Integer, Integer> caloriesListPerDay = recipesToCaloriesList(recipesList, nbOfDays, number_of_meals);
-        forecastLogger.info("Calories list per day: " + caloriesListPerDay.toString());
-        Map<Integer, Integer> weights = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);
+    public List<Pair<Integer, Recipes>> formatRecipesList(List<List<Recipes>> recipesList) {
+        List<Pair<Integer, Recipes>> recipesListWithDay = new ArrayList<Pair<Integer, Recipes>>();
+        for (int i = 0; i < recipesList.size(); i++) {
+            for (int j = 0; j < recipesList.get(i).size(); j++) {
+                recipesListWithDay.add(new Pair<Integer, Recipes>(i, recipesList.get(i).get(j)));
+            }
+        }
+        return recipesListWithDay;
+    }
+
+    public Map<Integer, Double> getWeightList(int id, int objective) {
+        Informations informations = informationsService.findByIdCustomer(id);
+        Customer customer = customerService.findByIdCustomer(id);
+
+        int height = informations.getHeight();
+        DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        int today = Integer.parseInt(formatter.format(new Date()));
+        int birthday = Integer.parseInt(formatter.format(customer.getCustomer_birthdate()));
+        int age = (today - birthday) / 10000;
+        String gender = customer.getGender();
+        int number_of_meals = informations.getMeals_per_day();
+        int weight = informations.getWeight();
+
+        forecastLogger.info("Original weight: " + weight);
+
+        boolean satisfied = false;
+        List<List<Recipes>> recipesList = new ArrayList<List<Recipes>>();
+        List<Pair<Integer, Recipes>> recipesListWithDay = new ArrayList<Pair<Integer, Recipes>>();
+        Map<Integer, Integer> caloriesListPerDay = new HashMap<Integer, Integer>();
+        Map<Integer, Double> weights = new HashMap<Integer, Double>();
+        
+        int nbOfDays = 1;
+
+        while (!satisfied) {
+            recipesList = progressService.getRecipesForId(id, 1, "calorie_count", nbOfDays*30);
+            recipesListWithDay = formatRecipesList(recipesList);
+            caloriesListPerDay = recipesToCaloriesList(recipesListWithDay);
+            weights = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);
+            forecastLogger.info("Weight list: " + weights.toString());
+            switch (informations.getHealth_goal().toLowerCase()) {
+                case "gain de poids":
+                    if (weights.get(weights.size()-1) > objective) {
+                        satisfied = true;
+                    }
+                    else {
+                        nbOfDays += 1;
+                    }
+                    break;
+                case "perte de poids":
+                    if (weights.get(weights.size()-1) < objective) {
+                        satisfied = true;
+                    }
+                    else {
+                        nbOfDays += 1;
+                    }
+                break;
+                default:
+                        nbOfDays += 1;
+                    break;
+            }
+        }
         forecastLogger.info("Weight list: " + weights.toString());
         return weights;
     }

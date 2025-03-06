@@ -27,7 +27,7 @@ public class ProgressService {
     private CustomerService customerService;
 
     private int perte_min = 100;
-    private int perte_max = 300;
+    private int perte_max = 500;
     private int gain_min = 100;
 
     public ProgressService(RecipesService recipesService,
@@ -109,12 +109,12 @@ public class ProgressService {
                 if (!(categoriesArray == null)) {
                     for (String category : categoriesArray) {
                         recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), category,
+                                (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories), category,
                                 orderOption));
                     }
                 } else {
                     recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                            (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), null,
+                            (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories), null,
                             orderOption));
                 }
                 break;
@@ -134,22 +134,18 @@ public class ProgressService {
             default:
                 break;
         }
-
-        progressLogger.info("Current list:" + recipesList);
+        //progressLogger.info("Current list:" + recipesList);
 
         // 3. Filter recipes according to client's allergies, intolerances and
         // prohibited foods
         recipesList = recipesProductFiltering(allergiesArray, intolerancesArray, prohibitedFoodsArray, recipesList);
-        progressLogger.info("Filtered list:" + recipesList);
-
+        //progressLogger.info("Filtered list:" + recipesList);
         // 4. Generate combinations of recipes lists with list of days*mealsPerDay
         // recipes (10 per page)
         List<List<Recipes>> allRecipesLists = new ArrayList<>();
         int combinationSize = numberOfDays * nbOfMealsPerDay;
         getCombination(recipesList, combinationSize, 0, 0, n, new ArrayList<>(), allRecipesLists);
-
-        progressLogger.info("All recipes lists:" + allRecipesLists);
-
+        //progressLogger.info("All recipes lists:" + allRecipesLists);
         return allRecipesLists;
     }
 
@@ -227,6 +223,8 @@ public class ProgressService {
     }
 
     // generate a combination of recipes
+    // source :
+    // https://www.geeksforgeeks.org/print-all-possible-combinations-of-r-elements-in-a-given-array-of-size-n/
     public static int getCombination(List<Recipes> recipesList, int k, int start, int cpt, int n,
             List<Recipes> currentList, List<List<Recipes>> allRecipesLists) {
         if (cpt >= n) {
@@ -235,8 +233,7 @@ public class ProgressService {
 
         if (currentList.size() == k) {
             allRecipesLists.add(new ArrayList<>(currentList));
-            progressLogger.info("New recipes list:" + allRecipesLists + ", number:" + cpt);
-            cpt++; // Incrémentation du compteur après l'ajout
+            cpt++;
         }
 
         for (int i = start; i < recipesList.size(); i++) {
@@ -247,6 +244,5 @@ public class ProgressService {
 
         return cpt;
     }
-
 
 }
