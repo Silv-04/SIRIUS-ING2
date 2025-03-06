@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { GET_RECIPES_BY_CUSTOMER } from '../../constants/back';
 import LeftMenu from '../../components/customers/LeftMenu';
 import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
 import { useLocation, useNavigate } from 'react-router-dom';
 import sortRecipesTableOptions from '../../constants/sortRecipesTableOptions.json';
 import { Box, Button, Center, Checkbox, Grid, GridItem, Input, Select, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { generateRecipesList } from '../../api/customerAPI';
 
 // path="/client/recettes/informations/choix/"
 // page to display each recipes according to the customer's informations
@@ -20,10 +19,10 @@ function RecipesListInput() {
     const navigate = useNavigate();
 
 
-    // fetched recipes 
+    // fetched recipes
     const getRecipes = async () => {
         try {
-            const response = await axios.get(GET_RECIPES_BY_CUSTOMER + "/" + id + "?numberOfDays=" + numberOfDays + "&orderOption=" + sortValue + "&n=" + 10);
+            const response = await generateRecipesList(id, numberOfDays, sortValue, 10);
             console.log("Recipes fetched:", response.data);
             const tempRecipesList = response.data;
 

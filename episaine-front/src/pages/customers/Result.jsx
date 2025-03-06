@@ -1,17 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import LeftMenu from "../../components/customers/LeftMenu";
 import recipesListTableHeader from "../../constants/recipesListTableHeader.json";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { Box, Button, Center, Grid, GridItem, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Box, Button, Center, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 
 // path="/client/recettes/informations/choix/resultat/"
 function ResultPage() {
     const [recipesList, setRecipesList] = useState([]);
     const location = useLocation();
     const pdfRef = useRef();
-    const navigate = useNavigate();
 
     // generate a pdf
     const generatePDF = () => {
@@ -33,12 +32,6 @@ function ResultPage() {
             setRecipesList(location.state.inputValue);
         }
     }, [location.state]);
-
-    // handle the validation of the recipes list
-    const handleValidate = () => {
-        console.log("Recipes List: ", recipesList);
-        navigate("/client/recettes/informations/choix/resultat/projection/", { state: { inputValue: recipesList } });
-    }
 
     return (
         <Box sx={{ paddingLeft: "20px", paddingTop: "20px" }}>

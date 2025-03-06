@@ -15,7 +15,6 @@ import { updateCustomerInformation, createCustomerInformation, getCustomerInform
 // page to display and update the customer's informations if needed
 function InformationsPageInputs() {
     const [informations, setInformations] = useState();
-    const [new_information, setNewInformation] = useState();
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -33,8 +32,8 @@ function InformationsPageInputs() {
     const [customerId, setCustomerId] = useState("");
     const [informationId, setInformationId] = useState("");
 
-    // submit the new informations, check whether or not the informations was updated, and move to the next page
-    const handleSubmit = async (e) => {
+    // submit the new informations, check whether the informations was updated, and move to the next page
+    const handleSubmitChoice = async (e) => {
         e.preventDefault();
         const new_information = {
             information_id: informationId,
@@ -71,6 +70,45 @@ function InformationsPageInputs() {
                 console.error("Error while updating or creating data:", error);
             }
             navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } })
+        }
+    };
+
+    const handleSubmitProjection = async (e) => {
+        e.preventDefault();
+        const new_information = {
+            information_id: informationId,
+            health_goal: healthGoal,
+            intolerances: Array.isArray(intolerances) ? intolerances.join(",") : "",
+            allergies: Array.isArray(allergies) ? allergies.join(",") : "",
+            dietary_regime: dietaryRegime,
+            meals_per_day: mealsPerDay,
+            weight: weight,
+            height: height,
+            prohibited_food: foodToAvoid,
+            recipe_temperature: foodTemperature,
+            cuisine_type: Array.isArray(cuisineType) ? cuisineType.join(",") : "",
+            fk_customer_id: customerId
+        };
+
+        if (informations && JSON.stringify(informations) === JSON.stringify(new_information)) {
+            console.log("No changes detected");
+            navigate("/client/recettes/informations/projection/", { state: { inputValue: new_information.fk_customer_id}})
+        }
+        else {
+            try {
+                if (informations) {
+                    console.log("Changes in informations detected");
+                    await updateCustomerInformation(new_information);
+                    console.log("Informations updated");
+                } else {
+                    console.log("No information found, creating new data");
+                    await createCustomerInformation(new_information);
+                    console.log("Informations created");
+                }
+            } catch (error) {
+                console.error("Error while updating or creating data:", error);
+            }
+            navigate("/client/recettes/informations/projection/", { state: { inputValue: new_information.fk_customer_id } })
         }
     };
 
@@ -253,7 +291,7 @@ function InformationsPageInputs() {
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"
-                            onClick={handleSubmit}>Choisir mes recettes</Button>
+                            onClick={handleSubmitChoice}>Choisir mes recettes</Button>
                         <Button
                             _hover={{ bg: "#4d648d" }}
                             color="white"
@@ -263,7 +301,7 @@ function InformationsPageInputs() {
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"
-                        >Obtenir un programme</Button>
+                            onClick={handleSubmitProjection}>Obtenir un programme</Button>
                     </Grid>
                 </form>
             </GridItem>

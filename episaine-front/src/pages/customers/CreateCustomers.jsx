@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { CREATE_CUSTOMER } from "../../constants/back";
 import genderOptions from '../../constants/genderOptions.json';
 import LeftMenu from "../../components/customers/LeftMenu";
 import { useNavigate } from "react-router-dom";
 import { FaPhoneAlt, FaArrowRight } from "react-icons/fa";
 import { Button, Container, Grid, GridItem, Input, InputGroup, InputLeftElement, Select, Text } from "@chakra-ui/react";
+import { createCustomer } from "../../api/customerAPI";
 
 // path="/client/recettes/creation_profil/" 
 // page used to create a customer
@@ -83,7 +82,7 @@ function Customers() {
         try {
             const date_creation = new Date().toISOString().split('T')[0];
             console.log("Date de création du client : ", date_creation);
-            const response = await axios.post(CREATE_CUSTOMER, {
+            const response = await createCustomer(
                 customer_lastname,
                 customer_firstname,
                 customer_birthdate,
@@ -93,8 +92,7 @@ function Customers() {
                 city,
                 address,
                 postal_code,
-                date_creation
-            });
+                date_creation)
 
             console.log("ID du client créé : ", response.data);
             navigate("/client/recettes/informations/", { state: { inputValue: response.data } });
@@ -103,8 +101,8 @@ function Customers() {
         }
     };
 
-    
-    // Retiré parce que apparemment c'est suspect alors que ça marche a moitié ...
+
+    // Retiré parce que apparemment c'est suspect alors que ça marche a moitié
 
     // const handleBlur = useCallback((field) => {
     //     setErrors((prevErrors) => {
