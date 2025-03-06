@@ -1,6 +1,6 @@
 [
-    {"value": "recipeId", "label": "Numéro de recette"},
-    {"value": "recipeName", "label": "Nom de recette"},
+    {"value": "recipeId", "label": "Numéro"},
+    {"value": "recipeName", "label": "Nom"},
     {"value": "calorieCount", "label": "Calories"},
     {"value": "ingredients", "label": "Ingrédients"},
     {"value": "instructions", "label": "Instructions"},

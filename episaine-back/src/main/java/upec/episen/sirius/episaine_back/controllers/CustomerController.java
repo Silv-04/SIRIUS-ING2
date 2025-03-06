@@ -26,21 +26,41 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    
+    /** 
+     * @param customer : given a customer
+     * @return int : return the id of the customer
+     */
     @PostMapping("/add")
     public int addCustomer(@RequestBody Customer customer) {
         return customerService.saveCustomer(customer);
     }
 
+    
+    /** 
+     * @param id given an id
+     * @return Customer return the customer with the given id
+     */
     @GetMapping("/get/{id}")
     public Customer getCustomerById(@PathVariable Integer id) {
         return customerService.findByIdCustomer(id);
     }
 
+    
+    /** 
+     * @return List<Customer> return all customers
+     */
     @GetMapping("/get/all")
     public List<Customer> getAllCustomers() {
         return customerService.findAllCustomers();
     }
 
+    
+    /** 
+     * @param page : given a page
+     * @param size : given a size
+     * @return Page<Customer> : return a page of customers with the given page and size
+     */
     @GetMapping("/get")
     @OrderBy
     public Page<Customer> getPage(
@@ -49,6 +69,12 @@ public class CustomerController {
         return customerService.findCustomers(page, size);
     }
 
+    
+    
+    /** 
+     * @param id : given an id
+     * @return String : return a log message whether the customer is deleted or not
+     */
     @DeleteMapping("/delete/{id}")
     public String deleteCustomer(@PathVariable Integer id) {
         boolean isRemoved = customerService.deleteCustomer(id);

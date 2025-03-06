@@ -16,124 +16,110 @@ import org.springframework.stereotype.Service;
 
 import upec.episen.sirius.episaine_back.models.Customer;
 import upec.episen.sirius.episaine_back.models.Informations;
-import upec.episen.sirius.episaine_back.models.Recipes;
+import upec.episen.sirius.episaine_back.models.Recipe;
 
 @Service
 public class ProgressService {
     protected static Logger progressLogger = LogManager.getLogger(ProgressService.class);
 
+    private RecipeService recipeService;
     private InformationsService informationsService;
-    private RecipesService recipesService;
     private CustomerService customerService;
 
     private int perte_min = 100;
-    private int perte_max = 300;
-    private int gain_min = 300;
+    private int perte_max = 500;
+    private int gain_min = 100;
 
-    public ProgressService(InformationsService informationsService, RecipesService recipesService,
-            CustomerService customerService) throws IOException {
+    public ProgressService(RecipeService recipeService,
+            CustomerService customerService, InformationsService informationsService) throws IOException {
         this.informationsService = informationsService;
-        this.recipesService = recipesService;
+        this.recipeService = recipeService;
         this.customerService = customerService;
     }
 
-    public List<List<Recipes>> getRecipesForId(int id, Integer numberOfDays) {
-        List<Recipes> recipesList = new ArrayList<>();
+    public List<List<Recipe>> getRecipesForId(int id, Integer numberOfDays, String orderOption, int n) {
+        List<Recipe> recipesList = new ArrayList<>();
 
-        // 1. Get client's informations
-        Customer customer = customerService.findByIdCustomer(id);
         Informations informations = informationsService.findByIdCustomer(id);
-        String goal = informations.getHealth_goal();
-        int weight = informations.getWeight();
-        int height = informations.getHeight();
+        // 1. Get client's informations
+        Customer customer = customerService.findByIdCustomer(informations.getFk_customer_id());
 
         DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         int today = Integer.parseInt(formatter.format(new Date()));
         int birthday = Integer.parseInt(formatter.format(customer.getCustomer_birthdate()));
         int age = (today - birthday) / 10000;
-        int number_of_meals = informations.getMeals_per_day();
-        String gender = customer.getGender();
-        String regime = informations.getDietary_regime();
-        String[] categories = informations.getCuisine_type().split(", ");
 
-        double calories = avgCalories(weight, height, age, gender, number_of_meals);
-        
-        if (regime.equals("")) {
-            regime = null;
+        String gender = customer.getGender();
+
+        String[] allergiesArray, intolerancesArray, prohibitedFoodsArray = new String[0];
+
+        String allergies = informations.getAllergies();
+        String intolerances = informations.getIntolerances();
+        String prohibitedFoods = informations.getProhibited_food();
+        String regime = informations.getDietary_regime();
+        int nbOfMealsPerDay = informations.getMeals_per_day();
+
+        if (allergies.equals("") || allergies == null) {
+            allergiesArray = null;
+        } else {
+            allergiesArray = normalize(allergies.toLowerCase().split(", "));
+        }
+        if (intolerances.equals("") || intolerances == null) {
+            intolerancesArray = null;
+        } else {
+            intolerancesArray = normalize(intolerances.toLowerCase().split(", "));
+        }
+        if (prohibitedFoods.equals("") || prohibitedFoods == null) {
+            prohibitedFoodsArray = null;
+        } else {
+            prohibitedFoodsArray = normalize(prohibitedFoods.toLowerCase().split(", "));
         }
 
-        // 2. Get recipes according to client's goals
-        switch (goal.toLowerCase()) {
+        double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, nbOfMealsPerDay);
+
+        progressLogger.info("Calories: " + calories + ", objective: " + informations.getHealth_goal() + ", nb of days: "
+                + numberOfDays + ", nb of meals:" + nbOfMealsPerDay + ", regime:" + regime);
+
+        // 2. Get recipes according to client's goals (health goal, regime, cuisine
+        // type)
+        switch (informations.getHealth_goal().toLowerCase()) {
             case "gain de poids":
                 double gainCalories = calories + gain_min;
-
-                for (String category : categories) {
-                    if (category.equals("")) {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(gainCalories), null, null));
-                    } else {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(gainCalories), null, category));
-                    }
-                }
+                recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
+                        (int) Math.floor(gainCalories), null, orderOption));
                 break;
             case "perte de poids":
                 double minLostCalories = calories - perte_min;
                 double maxLostCalories = calories - perte_max;
-
-                for (String category : categories) {
-                    if (category.equals("")) {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), null));
-                    } else {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(minLostCalories), (int) Math.floor(maxLostCalories), category));
-                    }
-                }
+                recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
+                        (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories),
+                        orderOption));
                 break;
             case "maintien de poids":
                 double infCalories = calories - perte_min;
                 double supCalories = calories + gain_min;
-                for (String category : categories) {
-                    if (category.equals("")) {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(infCalories), (int) Math.floor(supCalories), null));
-                    } else {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(infCalories), (int) Math.floor(supCalories), category));
-                    }
-                }
-                break;
+                recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
+                        (int) Math.floor(infCalories), (int) Math.floor(supCalories), orderOption));
             default:
                 break;
         }
-        
-        String[] allergies = new String[0];
-        String[] intolerances = new String[0];
-        String[] prohibitedFoods = new String[0];
-        
-        String allergiesArray = informations.getAllergies();
-        if (allergiesArray != null && !allergiesArray.isEmpty()) {
-            allergies = normalize(allergiesArray.split(", "));
-        }
-        String intolerancesArray = informations.getIntolerances();
-        if (intolerancesArray != null && !intolerancesArray.isEmpty()) {
-            intolerances = normalize(intolerancesArray.split(", "));
-        }
-        String prohibitedFoodsArray = informations.getProhibited_food();
-        if (prohibitedFoodsArray != null && !prohibitedFoodsArray.isEmpty()) {
-            prohibitedFoods = normalize(prohibitedFoodsArray.split(", "));
-        }
+        // progressLogger.info("Current list:" + recipesList);
 
-        recipesList = recipesProductFiltering(allergies, intolerances, prohibitedFoods, recipesList);
-
-        List<List<Recipes>> allRecipesLists = new ArrayList<>();
-        generateCombinations(recipesList, numberOfDays * number_of_meals, 0, new ArrayList<>(), allRecipesLists);
-
+        // 3. Filter recipes according to client's allergies, intolerances and
+        // prohibited foods
+        recipesList = recipesProductFiltering(allergiesArray, intolerancesArray, prohibitedFoodsArray, recipesList);
+        progressLogger.info("Filtered list:" + recipesList);
+        // 4. Generate combinations of recipes lists with list of days*mealsPerDay
+        // recipes (10 per page)
+        List<List<Recipe>> allRecipesLists = new ArrayList<>();
+        int combinationSize = numberOfDays * nbOfMealsPerDay;
+        getCombination(recipesList, combinationSize, 0, 0, n, new ArrayList<>(), allRecipesLists);
+        progressLogger.info("All recipes lists:" + allRecipesLists);
         return allRecipesLists;
     }
 
-    //source : https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
+    // source :
+    // https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
     public double avgCalories(int weight, int height, int age, String gender, int number_of_meals) {
         double calorie = -1;
         switch (gender.toLowerCase()) {
@@ -149,6 +135,8 @@ public class ProgressService {
         return calorie / number_of_meals;
     }
 
+    // found in stackoverflow :
+    // https://stackoverflow.com/questions/4122170/java-change-áéőűú-to-aeouu
     public String[] normalize(String[] stringArray) {
         for (int i = 0; i < stringArray.length; i++) {
             String str = stringArray[i];
@@ -164,49 +152,72 @@ public class ProgressService {
     }
 
     // remove recipes that contain prohibited ingredients
-    public List<Recipes> recipesProductFiltering(String[] allergies, String[] intolerances, String[] prohibitedFoods,
-            List<Recipes> recipesList) {
-        Iterator<Recipes> iterator = recipesList.iterator();
+    public List<Recipe> recipesProductFiltering(String[] allergies, String[] intolerances, String[] prohibitedFoods,
+            List<Recipe> recipeList) {
+        Iterator<Recipe> iterator = recipeList.iterator();
         while (iterator.hasNext()) {
-            Recipes recipe = iterator.next();
-            for (String allergy : allergies) {
-                if (!allergy.equals("")) {
-                    if (recipe.getIngredients().toLowerCase().contains(allergy)) {
-                        iterator.remove();
-                        break;
+            Recipe recipe = iterator.next();
+            if (allergies != null) {
+                for (String allergy : allergies) {
+                    if (!allergy.equals("")) {
+                        for (String ingredient : recipe.getIngredients()) {
+                            if (ingredient.toLowerCase().contains(allergy)) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
                     }
                 }
             }
-            for (String intolerance : intolerances) {
-                if (!intolerance.equals("")) {
-                    if (recipe.getIngredients().toLowerCase().contains(intolerance)) {
-                        iterator.remove();
-                        break;
+            if (intolerances != null) {
+                for (String intolerance : intolerances) {
+                    if (!intolerance.equals("")) {
+                        for (String ingredient : recipe.getIngredients()) {
+                            if (ingredient.toLowerCase().contains(intolerance)) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
                     }
                 }
             }
-            for (String prohibitedFood : prohibitedFoods) {
-                if (!prohibitedFood.equals("")) {
-                    if (recipe.getIngredients().toLowerCase().contains(prohibitedFood)) {
-                        iterator.remove();
-                        break;
+            if (prohibitedFoods != null) {
+                for (String prohibitedFood : prohibitedFoods) {
+                    if (!prohibitedFood.equals("")) {
+                        for (String ingredient : recipe.getIngredients()) {
+                            if (ingredient.toLowerCase().contains(prohibitedFood)) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
                     }
                 }
             }
         }
-        return recipesList;
+        return recipeList;
     }
 
-    public static void generateCombinations(List<Recipes> recipesList, int n, int start, List<Recipes> currentList,
-            List<List<Recipes>> allRecipesLists) {
-        if (currentList.size() == n) {
-            allRecipesLists.add(new ArrayList<>(currentList));
-            return;
+    // generate a combination of recipes
+    // source :
+    // https://www.geeksforgeeks.org/print-all-possible-combinations-of-r-elements-in-a-given-array-of-size-n/
+    public static int getCombination(List<Recipe> recipesList, int k, int start, int cpt, int n,
+            List<Recipe> currentList, List<List<Recipe>> allRecipesLists) {
+        if (cpt >= n) {
+            return cpt;
         }
+
+        if (currentList.size() == k) {
+            allRecipesLists.add(new ArrayList<>(currentList));
+            cpt++;
+        }
+
         for (int i = start; i < recipesList.size(); i++) {
             currentList.add(recipesList.get(i));
-            generateCombinations(recipesList, n, i + 1, currentList, allRecipesLists);
+            cpt = getCombination(recipesList, k, i + 1, cpt, n, currentList, allRecipesLists);
             currentList.remove(currentList.size() - 1);
         }
+
+        return cpt;
     }
+
 }

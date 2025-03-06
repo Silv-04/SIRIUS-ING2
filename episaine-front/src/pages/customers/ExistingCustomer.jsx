@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography, TextField, Button, Divider, ThemeProvider, createTheme } from "@mui/material";
 import LeftMenu from "../../components/customers/LeftMenu";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { Box, Button, Divider, Grid, GridItem, Input, Text } from "@chakra-ui/react";
 
 // path="/client/recettes/
 // page to redirect whether we want to create a customer or fetch informations from an existing customer
 function ExistingCustomerOrNot() {
     const [customerNumber, setCustomerNumber] = useState("");
     const navigate = useNavigate();
-
-    const theme = createTheme();
 
     // handle the action of allowing only numbers in textfield
     const handleChange = (e) => {
@@ -28,55 +26,57 @@ function ExistingCustomerOrNot() {
     const handleValidate = () => {
         if (customerNumber) {
             console.log("Customer number: ", customerNumber);
-            navigate("/client/recettes/informations/", { state: {inputValue: customerNumber} });
+            navigate("/client/recettes/informations/", { state: { inputValue: customerNumber } });
         }
     }
 
     return (
-        <ThemeProvider theme={theme}>
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            <Grid container sx={{ width: "70%", padding: 4 }}>
-
-                <Grid sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <Button variant="contained" color="primary" size="large" component={RouterLink} to="/client/recettes/creation_profil/">Création d'un profil client</Button>
-                </Grid>
-
-                <Grid sx={{marginX: 10}}>
-                    <Divider orientation="vertical" sx={{ height: "100%" }} />
-                </Grid>
-
-                <Grid sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <Typography variant="h6" gutterBottom>Client existant</Typography>
-                    <TextField
-                        label="Numéro de client"
-                        variant="outlined"
-                        value={customerNumber}
-                        onChange={handleChange}
-                        fullWidth
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                    />
-                    <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%", marginTop: 2 }}>
-                        <Button variant="contained" color="success" onClick={handleValidate}>Valider</Button>
-                        <Button variant="outlined" color="error" onClick={handleReset}>Annuler</Button>
-                    </Box>
+            <Grid templateRows={"repeat(2, 1fr)"} gap={6}>
+                <Text fontSize={"30"} fontWeight={"bold"} textAlign={"center"}>Choix de connexion</Text>
+                <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+                    <GridItem paddingTop={8}>
+                        <Button
+                            _hover={{ bg: "#4d648d" }}
+                            color="white"
+                            bg="#2C3A4F"
+                            as={RouterLink} to="/client/recettes/creation_profil/">Création d'un profil client</Button>
+                    </GridItem>
+                    <GridItem paddingLeft={20}>
+                        <Divider orientation="vertical" />
+                    </GridItem>
+                    <GridItem>
+                        <form onSubmit={handleValidate}>
+                            <Text fontWeight={"bold"} textAlign={"center"}>Client existant</Text>
+                            <Input
+                                placeholder="Numéro client"
+                                value={customerNumber}
+                                onChange={handleChange}
+                                fullWidth
+                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                            />
+                            <Grid align={"center"} templateColumns={"repeat(2, 1fr"}>
+                                <GridItem gridColumn={1}><Button bgColor={"#bbf7d0"} type={"submit"}>Valider</Button></GridItem>
+                                <GridItem gridColumn={2}><Button bgColor={"#fca5a5"} onClick={handleReset}>Annuler</Button></GridItem>
+                            </Grid>
+                        </form>
+                    </GridItem>
                 </Grid>
             </Grid>
         </Box>
-
-        </ThemeProvider>
     );
 }
 
 export default function ExistingCustomer() {
     return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-        <div style={{ width: '250px' }}>
-            <LeftMenu />
-        </div>
+        <div style={{ display: 'flex', height: '100vh' }}>
+            <div style={{ width: '250px' }}>
+                <LeftMenu />
+            </div>
 
-        <div style={{ flexGrow: 1 }}>
-            <ExistingCustomerOrNot />
+            <div style={{ flexGrow: 1 }}>
+                <ExistingCustomerOrNot />
+            </div>
         </div>
-    </div>
     );
 }

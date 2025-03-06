@@ -18,9 +18,6 @@ public class Informations {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer information_id;
 
-    @Column(name="age")
-    private Integer age;
-
     @Column(name="health_goal")
     private String health_goal;
 
@@ -42,9 +39,6 @@ public class Informations {
     @Column(name="height")
     private Integer height;
 
-    @Column(name="activity_level")
-    private String activity_level;
-
     @Column(name="prohibited_food")
     private String prohibited_food;
 
@@ -53,12 +47,6 @@ public class Informations {
 
     @Column(name="cuisine_type")
     private String cuisine_type;
-
-    @Column(name="preparation_time")
-    private String preparation_time;
-
-    @Column(name="cooking_level")
-    private String cooking_level;
 
     @Column(name="fk_customer_id")
     private Integer fk_customer_id;

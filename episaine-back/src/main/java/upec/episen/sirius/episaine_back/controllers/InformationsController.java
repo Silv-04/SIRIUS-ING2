@@ -25,17 +25,32 @@ public class InformationsController {
     @Autowired
     private InformationsService informationsService;
 
+    
+    /** 
+     * @param informations : given informations
+     * @return String : return a log message
+     */
     @PostMapping("/add")
     public String addInformations(@RequestBody Informations informations) { 
         informationsService.saveInformations(informations);
         return "Informations added successfully";
     }
 
+    
+    /** 
+     * @return List<Informations> : return all informations from the database
+     */
     @GetMapping("/get/all")
     public List<Informations> getAllInformations() {
         return informationsService.findAllInformations();
     }
 
+    
+    /** 
+     * @param page : given a page
+     * @param size : given a size
+     * @return Page<Informations> : return a page of informations
+     */
     @GetMapping("/get")
     public Page<Informations> getPage(
         @RequestParam int page,
@@ -43,11 +58,22 @@ public class InformationsController {
         return informationsService.findInformations(page, size);
     }
 
+    
+    
+    /** 
+     * @param id : given an id
+     * @return Informations : return the informations from the given id
+     */
     @GetMapping("/get/{id}")
     public Informations getInformationsByCustomerId(@PathVariable Integer id) {
         return informationsService.findByIdCustomer(id);
     }
 
+    
+    /** 
+     * @param id : given an id
+     * @return String : return a log message whether the informations is deleted or not
+     */
     @DeleteMapping("/delete/{id}")
     public String deleteInformations(@PathVariable Integer id) {
         boolean isRemoved = informationsService.deleteInformations(id);
@@ -57,6 +83,12 @@ public class InformationsController {
         return "Informations not found";
     }
 
+    
+    
+    /** 
+     * @param informations : given informations
+     * @return String : return a log message whether the informations is updated or not
+     */
     @PostMapping("/update")
     public String updateInformations(@RequestBody Informations informations) {
         boolean isUpdated = informationsService.updateInformations(informations);
