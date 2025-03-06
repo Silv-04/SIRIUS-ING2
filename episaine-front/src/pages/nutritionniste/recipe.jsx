@@ -12,7 +12,7 @@ export default function Recipe() {
     const [loading, setLoading] = useState(false);
     // Current page for pagination
     const [currentPage, setCurrentPage] = useState(1);
-    // Number of recipes per page
+    // Number of recipes per page of pagination
     const recipesPerPage = 8;
 
 
