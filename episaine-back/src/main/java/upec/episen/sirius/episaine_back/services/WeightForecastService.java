@@ -20,12 +20,6 @@ import upec.episen.sirius.episaine_back.models.Recipes;
 
 @Service
 public class WeightForecastService {
-    /* TODO : 
-    * Récupérer une liste de recettes avec le numéro du jour associé, et renvoyer une liste sous forme de (numéro de jour, calories totaux du jour)
-    * Prendre les informations du client
-    * Calculer le poids du client gagné/perdu/rien en fonction des calories du jour J et du poids du client J-1
-    * Stocker toutes les valeurs dans une liste sur Y jours
-    */
 
     /*
      * For a given weight, a given number of taken calories, and the calories the person should take daily, return the new weight
@@ -41,14 +35,23 @@ public class WeightForecastService {
     @Autowired
     private ProgressService progressService;
 
+    
+    /** 
+     * @param weight : given a weight
+     * @param takenCalories : given the number of taken calories
+     * @param dailyCalories : given the number of daily calories
+     * @return double : return the new weight
+     */
     public double calculateNewWeight(double weight, int takenCalories, int dailyCalories) {
         double caloriesTaken = takenCalories - dailyCalories;
         double caloriesToWeight = caloriesTaken / 7700;
         return weight + caloriesToWeight;
     }
     
-    /*
-     * Given a recipes lists, and the day associated to each recipe, return a map (day, number of calories taken)
+    
+    /** 
+     * @param recipesList : given a list of pair of recipes and their corresponding day
+     * @return Map<Integer, Integer> : return a map of calories per day
      */
     public Map<Integer, Integer> recipesToCaloriesList(List<Pair<Integer, Recipes>> recipesList) {
         Map<Integer, Integer> caloriesListPerDay = new HashMap<Integer, Integer>();
@@ -65,6 +68,14 @@ public class WeightForecastService {
     }
 
     // source : https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
+    /**
+     * @param weight : given a weight
+     * @param height : given a height
+     * @param age : given an age
+     * @param gender : given a gender
+     * @param number_of_meals : given a number of meals
+     * @return double : return the calculated number of calories per day
+     */
     public double caloriesPerDay(double weight, int height, int age, String gender, int number_of_meals) {
         double calorie = -1;
         switch (gender.toLowerCase()) {
@@ -83,6 +94,15 @@ public class WeightForecastService {
     /*
      * Given an initial weight, and a list of calories taken/lost per day, return a list of weights per day
      */
+    /** 
+     * @param height : given a height
+     * @param age : given an age
+     * @param gender : given a gender
+     * @param number_of_meals : given a number of meals
+     * @param weight : given a weight
+     * @param caloriesListPerDay : given a list of calories per day
+     * @return Map<Integer, Double> : return a map of weights per day
+     */
     public Map<Integer, Double> weightEachDay(int height, int age, String gender, int number_of_meals, double weight, Map<Integer, Integer> caloriesListPerDay) {
         Map<Integer, Double> weightList = new HashMap<Integer, Double>();
         weightList.put(0, weight);
@@ -97,6 +117,11 @@ public class WeightForecastService {
         return weightList;
     }
 
+    
+    /** 
+     * @param recipesList : given a list of recipes
+     * @return List<Pair<Integer, Recipes>> : return a list of pair of recipes and their corresponding day
+     */
     public List<Pair<Integer, Recipes>> formatRecipesList(List<List<Recipes>> recipesList) {
         List<Pair<Integer, Recipes>> recipesListWithDay = new ArrayList<Pair<Integer, Recipes>>();
         for (int i = 0; i < recipesList.size(); i++) {
@@ -107,6 +132,12 @@ public class WeightForecastService {
         return recipesListWithDay;
     }
 
+    
+    /** 
+     * @param id : given a customer id
+     * @param objective : given the customer's objective
+     * @return Map<Integer, Double> : return a map of weight values per day
+     */
     public Map<Integer, Double> getWeightList(int id, int objective) {
         Informations informations = informationsService.findByIdCustomer(id);
         Customer customer = customerService.findByIdCustomer(id);

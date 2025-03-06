@@ -23,6 +23,12 @@ public class WeightForecastController {
         this.weightForecastService = weightForecastService;
     }
 
+    
+    /** 
+     * @param id : given a customer id
+     * @param objective : given an objective
+     * @return Map<Integer, Double> : return a map of weight values
+     */
     @GetMapping("/getWeightValues")
     public Map<Integer, Double> getRecipesTest(@RequestParam int id, @RequestParam int objective) {
         return weightForecastService.getWeightList(id, objective);
