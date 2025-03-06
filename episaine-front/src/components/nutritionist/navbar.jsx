@@ -33,7 +33,7 @@ export default function Navbar() {
             <VStack align="start" spacing={4}>
                 <Button
                     as={RouterLink}
-                    to="/dashboard"
+                    to="/dashboard/"
                     variant="ghost"
                     justifyContent="flex-start"
                     leftIcon={<Icon as={FaWallet} />}
@@ -47,7 +47,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                     as={RouterLink}
-                    to="/components/nutritionniste/customer"
+                    to="/components/nutritionniste/customer/"
                     variant="ghost"
                     justifyContent="flex-start"
                     leftIcon={<Icon as={FaUsers} />}
@@ -61,7 +61,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                     as={RouterLink}
-                    to="/components/nutritionniste/rdv"
+                    to="/components/nutritionniste/rdv/"
                     variant="ghost"
                     justifyContent="flex-start"
                     leftIcon={<Icon as={FaCalendarAlt} />}
@@ -75,7 +75,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                     as={RouterLink}
-                    to="/components/nutritionniste/recipe"
+                    to="/components/nutritionniste/recipe/"
                     variant="ghost"
                     justifyContent="flex-start"
                     leftIcon={<Icon as={FaBook} />}
@@ -89,7 +89,7 @@ export default function Navbar() {
                 </Button>
                 <Button
                     as={RouterLink}
-                    to="/IndicateurPerformance"
+                    to="/IndicateurPerformance/"
                     variant="ghost"
                     justifyContent="flex-start"
                     leftIcon={<Icon as={FaChartLine} />}
@@ -107,7 +107,7 @@ export default function Navbar() {
 
             <Button
                 as={RouterLink}
-                to="/components/nutritionniste/Parametre"
+                to="/components/nutritionniste/Parametre/"
                 variant="ghost"
                 justifyContent="flex-start"
                 leftIcon={<Icon as={FaCog} />}
