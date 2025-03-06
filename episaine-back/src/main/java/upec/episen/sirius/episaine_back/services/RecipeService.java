@@ -104,15 +104,15 @@ public class RecipeService {
      * @param maxCalories : given a maximum number of calories
      * @param category : given a category of recipe
      * @param orderOption : given an order option
-     * @return List<Recipe> : return a list of recipes filtered by regime, calories, category and ordered by the order option
+     * @return List<Recipe> : return a list of recipes filtered by regime, calories and ordered by the order option
      */
-    public List<Recipe> getRecipesFilteredByRegimeCaloriesCategory(String regime, Integer minCalories, Integer maxCalories, String category, String orderOption) {
+    public List<Recipe> getRecipesFilteredByRegimeCalories(String regime, Integer minCalories, Integer maxCalories, String orderOption) {
         if (orderOption.equals("") || orderOption.isEmpty()) {
-            return recipeRepository.findRecipesWithFilter(regime, minCalories, maxCalories, category);
+            return recipeRepository.findRecipesWithFilter(regime, minCalories, maxCalories);
         }
         else {
             Sort sort = Sort.by(Sort.Direction.DESC, orderOption);
-            return recipeRepository.findRecipesWithFilterAndOrder(regime, minCalories, maxCalories, category, sort);
+            return recipeRepository.findRecipesWithFilterAndOrder(regime, minCalories, maxCalories, sort);
         }
     }
 }

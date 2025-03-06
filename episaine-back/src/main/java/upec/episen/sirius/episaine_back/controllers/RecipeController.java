@@ -83,9 +83,8 @@ public class RecipeController {
             @RequestParam(required = false) String regime,
             @RequestParam(required = false) Integer minCalories,
             @RequestParam(required = false) Integer maxCalories,
-            @RequestParam(required = false) String category,
             @RequestParam(required = false) String orderOption) {
-        return recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime, minCalories, maxCalories, category, orderOption);
+        return recipeService.getRecipesFilteredByRegimeCalories(regime, minCalories, maxCalories, orderOption);
     }
 
     
