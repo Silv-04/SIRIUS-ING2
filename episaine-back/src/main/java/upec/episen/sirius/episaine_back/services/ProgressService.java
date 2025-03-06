@@ -51,12 +51,11 @@ public class ProgressService {
 
         String gender = customer.getGender();
 
-        String[] allergiesArray, intolerancesArray, prohibitedFoodsArray, categoriesArray = new String[0];
+        String[] allergiesArray, intolerancesArray, prohibitedFoodsArray = new String[0];
 
         String allergies = informations.getAllergies();
         String intolerances = informations.getIntolerances();
         String prohibitedFoods = informations.getProhibited_food();
-        String categories = informations.getCuisine_type();
         String regime = informations.getDietary_regime();
         int nbOfMealsPerDay = informations.getMeals_per_day();
 
@@ -75,11 +74,6 @@ public class ProgressService {
         } else {
             prohibitedFoodsArray = normalize(prohibitedFoods.toLowerCase().split(", "));
         }
-        if (categories.equals("") || categories == null) {
-            categoriesArray = null;
-        } else {
-            categoriesArray = normalize(categories.toLowerCase().split(", "));
-        }
 
         double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, nbOfMealsPerDay);
 
@@ -91,46 +85,21 @@ public class ProgressService {
         switch (informations.getHealth_goal().toLowerCase()) {
             case "gain de poids":
                 double gainCalories = calories + gain_min;
-                if (!(categoriesArray == null)) {
-                    for (String category : categoriesArray) {
-                        recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(gainCalories), null, category, orderOption));
-                    }
-                    progressLogger.info("non nul");
-                } else {
-                    recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                            (int) Math.floor(gainCalories), null, null, orderOption));
-                    progressLogger.info("nul");
-                }
+                recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
+                        (int) Math.floor(gainCalories), null, orderOption));
                 break;
             case "perte de poids":
                 double minLostCalories = calories - perte_min;
                 double maxLostCalories = calories - perte_max;
-                if (!(categoriesArray == null)) {
-                    for (String category : categoriesArray) {
-                        recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories), category,
-                                orderOption));
-                    }
-                } else {
-                    recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                            (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories), null,
-                            orderOption));
-                }
+                recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
+                        (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories),
+                        orderOption));
                 break;
             case "maintien de poids":
                 double infCalories = calories - perte_min;
                 double supCalories = calories + gain_min;
-                if (!(categoriesArray == null)) {
-                    for (String category : categoriesArray) {
-                        recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                                (int) Math.floor(infCalories), (int) Math.floor(supCalories), category, orderOption));
-                    }
-                } else {
-                    recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
-                            (int) Math.floor(infCalories), (int) Math.floor(supCalories), null, orderOption));
-                }
-                break;
+                recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
+                        (int) Math.floor(infCalories), (int) Math.floor(supCalories), orderOption));
             default:
                 break;
         }

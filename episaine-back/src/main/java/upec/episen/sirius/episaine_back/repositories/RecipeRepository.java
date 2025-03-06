@@ -15,24 +15,20 @@ import upec.episen.sirius.episaine_back.models.Recipe;
  */
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    @Query(value = "SELECT * FROM recipes WHERE (dietary_regime = :regime or :regime IS NULL)" +
-            "AND (:minCalories IS NULL or calorie_count > :minCalories)" +
-            "AND (:maxCalories IS NULL or calorie_count < :maxCalories)" +
-            "AND (:category IS NULL or category = :category)", nativeQuery = true)
-    List<Recipe> findRecipesWithFilterAndOrder(
-            @RequestParam("regime") String regime,
-            @RequestParam("minCalories") Integer minCalories,
-            @RequestParam("maxCalories") Integer maxCalories,
-            @RequestParam("category") String category,
-            Sort sort);
+        @Query(value = "SELECT * FROM recipes WHERE (dietary_regime = :regime or :regime IS NULL)" +
+                        "AND (:minCalories IS NULL or calorie_count > :minCalories)" +
+                        "AND (:maxCalories IS NULL or calorie_count < :maxCalories)", nativeQuery = true)
+        List<Recipe> findRecipesWithFilterAndOrder(
+                        @RequestParam("regime") String regime,
+                        @RequestParam("minCalories") Integer minCalories,
+                        @RequestParam("maxCalories") Integer maxCalories,
+                        Sort sort);
 
-    @Query(value = "SELECT * FROM recipes WHERE (dietary_regime = :regime or :regime IS NULL)" +
-            "AND (:minCalories IS NULL or calorie_count > :minCalories)" +
-            "AND (:maxCalories IS NULL or calorie_count < :maxCalories)" +
-            "AND (:category IS NULL or category = :category)", nativeQuery = true)
-    List<Recipe> findRecipesWithFilter(
-            @RequestParam("regime") String regime,
-            @RequestParam("minCalories") Integer minCalories,
-            @RequestParam("maxCalories") Integer maxCalories,
-            @RequestParam("category") String category);
+        @Query(value = "SELECT * FROM recipes WHERE (dietary_regime = :regime or :regime IS NULL)" +
+                        "AND (:minCalories IS NULL or calorie_count > :minCalories)" +
+                        "AND (:maxCalories IS NULL or calorie_count < :maxCalories)", nativeQuery = true)
+        List<Recipe> findRecipesWithFilter(
+                        @RequestParam("regime") String regime,
+                        @RequestParam("minCalories") Integer minCalories,
+                        @RequestParam("maxCalories") Integer maxCalories);
 }
