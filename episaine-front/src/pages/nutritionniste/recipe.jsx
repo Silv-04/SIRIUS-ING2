@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {Box, Flex, Heading, Spinner, Table, Thead, Tbody, Tr, Th, Td, Button} from "@chakra-ui/react";
 import Navbar from "../../components/nutritionist/navbar";
-import { GET_RECIPES_LIST, GENERATE_RECIPE } from "../../constants/back";
+import { GENERATE_RECIPE } from "../../constants/back";
 
 // Main component to display the list of recipes
 export default function Recipe() {
@@ -14,22 +14,6 @@ export default function Recipe() {
     const [currentPage, setCurrentPage] = useState(1);
     // Number of recipes per page of pagination
     const recipesPerPage = 8;
-
-
-    // Fetch recipes from the API when the component mounts
-    useEffect(() => {
-        setLoading(true);
-        fetch(GET_RECIPES_LIST)
-            .then((response) => response.json())
-            .then((data) => {
-                setRecipes(data); // Save recipes data to state
-                setLoading(false); // Stop loading spinner
-            })
-            .catch((err) => {
-                console.error("Error loading recipes:", err);
-                setLoading(false);
-            });
-    }, []);
 
     // Function to generate a new recipe
     const generateRecipe = () => {
