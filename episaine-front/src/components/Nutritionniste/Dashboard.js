@@ -46,7 +46,7 @@ const partnerships = [
         logo: LogoLeclerc,
         description: "Supermarché de proximité",
         products: "Produits de saison et bio",
-        details: "G20 favorise les circuits courts et met en avant des producteurs régionaux pour une consommation responsable."
+        details: "E leclerc favorise les circuits courts et met en avant des producteurs régionaux pour une consommation responsable."
     }
 ];
 
@@ -76,7 +76,7 @@ const features = [
 
 export default function Dashboard() {
     return (
-        <Box bg="#1f2b3e" minHeight="100vh">
+        <Box bg="#1f2b3e" minHeight="auto">
             <Flex height="100vh" color="white">
                 {/* Navbar FIXE */}
                 <Navbar />
@@ -124,28 +124,6 @@ export default function Dashboard() {
                                 </Box>
                             ))}
                         </SimpleGrid>
-                    </Box>
-
-                    {/* Section Devenir Partenaire */}
-                    <Box
-                        bgGradient="linear(to-r, teal.500, emerald.600)"
-                        p={6}
-                        rounded="xl"
-                        shadow="lg"
-                        textAlign="center"
-                        color="white"
-                        mt={12}
-                    >
-                        <Heading size="md" mb={4}>Devenir Partenaire</Heading>
-                        <Text fontSize="sm" mb={4}>
-                            Rejoignez notre réseau et participez à la promotion d’une alimentation saine et responsable.
-                        </Text>
-                        <Box textAlign="center">
-                            <Text fontSize="xs">✓ Accès à une clientèle engagée</Text>
-                            <Text fontSize="xs">✓ Support marketing personnalisé</Text>
-                            <Text fontSize="xs">✓ Visibilité accrue</Text>
-                            <Text fontSize="xs">✓ Engagement durable</Text>
-                        </Box>
                     </Box>
                 </Box>
             </Flex>
