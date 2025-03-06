@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CREATE_INFORMATIONS, GET_INFORMATIONS_BY_CUSTOMER_ID, UPDATE_INFORMATIONS, GET_PROJECTION_VALUES, GET_RECIPES_BY_CUSTOMER } from '../constants/back';
+import { CREATE_CUSTOMER, CREATE_INFORMATIONS, GET_INFORMATIONS_BY_CUSTOMER_ID, UPDATE_INFORMATIONS, GET_PROJECTION_VALUES, GET_RECIPES_BY_CUSTOMER } from '../constants/back';
 
 export async function updateCustomerInformation(information) {
     return await axios.post(UPDATE_INFORMATIONS, information);

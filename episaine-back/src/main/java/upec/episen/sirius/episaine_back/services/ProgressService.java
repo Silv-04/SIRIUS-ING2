@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 
 import upec.episen.sirius.episaine_back.models.Customer;
 import upec.episen.sirius.episaine_back.models.Informations;
-import upec.episen.sirius.episaine_back.models.Recipes;
+import upec.episen.sirius.episaine_back.models.Recipe;
 
 @Service
 public class ProgressService {
     protected static Logger progressLogger = LogManager.getLogger(ProgressService.class);
 
-    private RecipesService recipesService;
+    private RecipeService recipeService;
     private InformationsService informationsService;
     private CustomerService customerService;
 
@@ -30,32 +30,29 @@ public class ProgressService {
     private int perte_max = 500;
     private int gain_min = 100;
 
-    public ProgressService(RecipesService recipesService,
+    public ProgressService(RecipeService recipeService,
             CustomerService customerService, InformationsService informationsService) throws IOException {
         this.informationsService = informationsService;
-        this.recipesService = recipesService;
+        this.recipeService = recipeService;
         this.customerService = customerService;
     }
 
-    /**
-     * @param id : given a customer id
-     * @param numberOfDays : given a number of days requested
-     * @param orderOption : given an order option
-     * @param n : given a number of list of recipes
-     * @return List<List<Recipes>> : return a list of list of recipes that match the client's informations with a length of n
-     */
-    public List<List<Recipes>> getRecipesForId(int id, Integer numberOfDays, String orderOption, int n) {
-        List<Recipes> recipesList = new ArrayList<>();
-        Informations informations = informationsService.findByIdCustomer(id);
+    public List<List<Recipe>> getRecipesForId(int id, Integer numberOfDays, String orderOption, int n) {
+        List<Recipe> recipesList = new ArrayList<>();
 
+        Informations informations = informationsService.findByIdCustomer(id);
         // 1. Get client's informations
         Customer customer = customerService.findByIdCustomer(informations.getFk_customer_id());
+
         DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         int today = Integer.parseInt(formatter.format(new Date()));
         int birthday = Integer.parseInt(formatter.format(customer.getCustomer_birthdate()));
         int age = (today - birthday) / 10000;
+
         String gender = customer.getGender();
+
         String[] allergiesArray, intolerancesArray, prohibitedFoodsArray, categoriesArray = new String[0];
+
         String allergies = informations.getAllergies();
         String intolerances = informations.getIntolerances();
         String prohibitedFoods = informations.getProhibited_food();
@@ -85,22 +82,25 @@ public class ProgressService {
         }
 
         double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, nbOfMealsPerDay);
-        progressLogger.info("Calories per meal:" + calories);
+
+        progressLogger.info("Calories: " + calories + ", objective: " + informations.getHealth_goal() + ", nb of days: "
+                + numberOfDays + ", nb of meals:" + nbOfMealsPerDay + ", regime:" + regime);
 
         // 2. Get recipes according to client's goals (health goal, regime, cuisine
         // type)
-        progressLogger.info("Health goal:" + informations.getHealth_goal());
         switch (informations.getHealth_goal().toLowerCase()) {
             case "gain de poids":
                 double gainCalories = calories + gain_min;
                 if (!(categoriesArray == null)) {
                     for (String category : categoriesArray) {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                        recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
                                 (int) Math.floor(gainCalories), null, category, orderOption));
                     }
+                    progressLogger.info("non nul");
                 } else {
-                    recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                    recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
                             (int) Math.floor(gainCalories), null, null, orderOption));
+                    progressLogger.info("nul");
                 }
                 break;
             case "perte de poids":
@@ -108,12 +108,12 @@ public class ProgressService {
                 double maxLostCalories = calories - perte_max;
                 if (!(categoriesArray == null)) {
                     for (String category : categoriesArray) {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                        recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
                                 (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories), category,
                                 orderOption));
                     }
                 } else {
-                    recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                    recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
                             (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories), null,
                             orderOption));
                 }
@@ -123,18 +123,18 @@ public class ProgressService {
                 double supCalories = calories + gain_min;
                 if (!(categoriesArray == null)) {
                     for (String category : categoriesArray) {
-                        recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                        recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
                                 (int) Math.floor(infCalories), (int) Math.floor(supCalories), category, orderOption));
                     }
                 } else {
-                    recipesList.addAll(recipesService.getRecipesFilteredByRegimeCaloriesCategory(regime,
+                    recipesList.addAll(recipeService.getRecipesFilteredByRegimeCaloriesCategory(regime,
                             (int) Math.floor(infCalories), (int) Math.floor(supCalories), null, orderOption));
                 }
                 break;
             default:
                 break;
         }
-        progressLogger.info("Current list:" + recipesList);
+        // progressLogger.info("Current list:" + recipesList);
 
         // 3. Filter recipes according to client's allergies, intolerances and
         // prohibited foods
@@ -142,21 +142,13 @@ public class ProgressService {
         progressLogger.info("Filtered list:" + recipesList);
         // 4. Generate combinations of recipes lists with list of days*mealsPerDay
         // recipes (10 per page)
-        List<List<Recipes>> allRecipesLists = new ArrayList<>();
+        List<List<Recipe>> allRecipesLists = new ArrayList<>();
         int combinationSize = numberOfDays * nbOfMealsPerDay;
         getCombination(recipesList, combinationSize, 0, 0, n, new ArrayList<>(), allRecipesLists);
         progressLogger.info("All recipes lists:" + allRecipesLists);
         return allRecipesLists;
     }
 
-    /** 
-     * @param weight : given a weight
-     * @param height : given a height
-     * @param age : given an age
-     * @param gender : given a gender
-     * @param number_of_meals : given a number of meals
-     * @return double : return the average calories the person should take per meal
-     */
     // source :
     // https://www.tf1info.fr/sante/la-formule-magique-pour-savoir-a-combien-de-calories-vous-avez-le-droit-par-jour-2268080.html
     public double avgCalories(int weight, int height, int age, String gender, int number_of_meals) {
@@ -176,10 +168,6 @@ public class ProgressService {
 
     // found in stackoverflow :
     // https://stackoverflow.com/questions/4122170/java-change-áéőűú-to-aeouu
-    /**
-     * @param stringArray : given a string array
-     * @return String[] : return a normalized string array
-     */
     public String[] normalize(String[] stringArray) {
         for (int i = 0; i < stringArray.length; i++) {
             String str = stringArray[i];
@@ -194,25 +182,20 @@ public class ProgressService {
         return stringArray;
     }
 
-    
-    /** 
-     * @param allergies : given allergies
-     * @param intolerances : given intolerances
-     * @param prohibitedFoods : given prohibited foods
-     * @param recipesList : given a list of recipes
-     * @return List<Recipes> : return a list of recipes that do not contain the prohibited ingredients
-     */
-    public List<Recipes> recipesProductFiltering(String[] allergies, String[] intolerances, String[] prohibitedFoods,
-            List<Recipes> recipesList) {
-        Iterator<Recipes> iterator = recipesList.iterator();
+    // remove recipes that contain prohibited ingredients
+    public List<Recipe> recipesProductFiltering(String[] allergies, String[] intolerances, String[] prohibitedFoods,
+            List<Recipe> recipeList) {
+        Iterator<Recipe> iterator = recipeList.iterator();
         while (iterator.hasNext()) {
-            Recipes recipe = iterator.next();
+            Recipe recipe = iterator.next();
             if (allergies != null) {
                 for (String allergy : allergies) {
                     if (!allergy.equals("")) {
-                        if (recipe.getIngredients().toLowerCase().contains(allergy)) {
-                            iterator.remove();
-                            break;
+                        for (String ingredient : recipe.getIngredients()) {
+                            if (ingredient.toLowerCase().contains(allergy)) {
+                                iterator.remove();
+                                break;
+                            }
                         }
                     }
                 }
@@ -220,9 +203,11 @@ public class ProgressService {
             if (intolerances != null) {
                 for (String intolerance : intolerances) {
                     if (!intolerance.equals("")) {
-                        if (recipe.getIngredients().toLowerCase().contains(intolerance)) {
-                            iterator.remove();
-                            break;
+                        for (String ingredient : recipe.getIngredients()) {
+                            if (ingredient.toLowerCase().contains(intolerance)) {
+                                iterator.remove();
+                                break;
+                            }
                         }
                     }
                 }
@@ -230,32 +215,24 @@ public class ProgressService {
             if (prohibitedFoods != null) {
                 for (String prohibitedFood : prohibitedFoods) {
                     if (!prohibitedFood.equals("")) {
-                        if (recipe.getIngredients().toLowerCase().contains(prohibitedFood)) {
-                            iterator.remove();
-                            break;
+                        for (String ingredient : recipe.getIngredients()) {
+                            if (ingredient.toLowerCase().contains(prohibitedFood)) {
+                                iterator.remove();
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
-        return recipesList;
+        return recipeList;
     }
 
-    
     // generate a combination of recipes
     // source :
     // https://www.geeksforgeeks.org/print-all-possible-combinations-of-r-elements-in-a-given-array-of-size-n/
-    /** 
-     * @param recipesList : given a list of recipes
-     * @param k : given a number of recipes
-     * @param start : given a start index
-     * @param cpt : given a counter
-     * @param n : given a number of list of recipes
-     * @param allRecipesLists : given a list of list of recipes
-     * @return int : return the counter
-     */
-    public static int getCombination(List<Recipes> recipesList, int k, int start, int cpt, int n,
-            List<Recipes> currentList, List<List<Recipes>> allRecipesLists) {
+    public static int getCombination(List<Recipe> recipesList, int k, int start, int cpt, int n,
+            List<Recipe> currentList, List<List<Recipe>> allRecipesLists) {
         if (cpt >= n) {
             return cpt;
         }
