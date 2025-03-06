@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import React, { useEffect, useState } from "react";
 import {Box, Flex, Heading, Spinner, Table, Thead, Tbody, Tr, Th, Td, Input, InputGroup, InputLeftElement, Icon, Button} from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import Navbar from "../../Pages/navbar";
@@ -47,12 +46,10 @@ export default function Customer() {
     // Reference: https://react.dev/reference/react/useEffect
     useEffect(() => {
         setLoading(true); // Enable loading spinner
-        // Fetch data from API
-        fetch(CUSTOMER_INFORMATION)
+        fetch(CUSTOMER_INFORMATION) // Fetch data from API
             .then((response) => {
                 if (response.ok) {
-                    // Parse response as JSON
-                    return response.json();
+                    return response.json(); // Parse response as JSON
                 }
                 throw new Error("Problème dans le chargement des données");
             })
