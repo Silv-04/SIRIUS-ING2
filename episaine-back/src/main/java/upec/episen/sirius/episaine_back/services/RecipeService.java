@@ -3,6 +3,7 @@ package upec.episen.sirius.episaine_back.services;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import upec.episen.sirius.episaine_back.models.Product;
 import upec.episen.sirius.episaine_back.models.Recipe;
@@ -95,5 +96,23 @@ public class RecipeService {
         recipe.setInstructions("Mélangez les ingrédients et dégustez !");
 
         return recipeRepository.save(recipe);
+    }
+
+    /** 
+     * @param regime : given a regime type
+     * @param minCalories : given a minimum number of calories
+     * @param maxCalories : given a maximum number of calories
+     * @param category : given a category of recipe
+     * @param orderOption : given an order option
+     * @return List<Recipe> : return a list of recipes filtered by regime, calories, category and ordered by the order option
+     */
+    public List<Recipe> getRecipesFilteredByRegimeCaloriesCategory(String regime, Integer minCalories, Integer maxCalories, String category, String orderOption) {
+        if (orderOption.equals("") || orderOption.isEmpty()) {
+            return recipeRepository.findRecipesWithFilter(regime, minCalories, maxCalories, category);
+        }
+        else {
+            Sort sort = Sort.by(Sort.Direction.DESC, orderOption);
+            return recipeRepository.findRecipesWithFilterAndOrder(regime, minCalories, maxCalories, category, sort);
+        }
     }
 }

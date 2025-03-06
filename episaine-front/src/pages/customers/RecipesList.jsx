@@ -126,7 +126,7 @@ function RecipesListInput() {
                     <Table size='sm'>
                         <Tbody>
                             {Array.isArray(allRecipesList) && allRecipesList.length > 0 && allRecipesList.map((recipesListGroup, index) => (
-                                <Table size='sm' width={"100%"} layout={"fixed"}>
+                                <Table size='sm' width={"100%"} layout={"fixed"} key={index}>
                                     <caption style={{ captionSide: "top", textAlign: "center", fontWeight: "bold", fontSize: "30px", paddingTop: "50px" }}>Liste numéro {index + 1}</caption>
                                     <Thead>
                                         <Tr>
