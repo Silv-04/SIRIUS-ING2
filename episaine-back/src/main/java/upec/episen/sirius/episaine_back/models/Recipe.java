@@ -73,4 +73,16 @@ public class Recipe {
 
     public String getDietaryRegime() { return dietaryRegime; }
     public void setDietaryRegime(String dietaryRegime) { this.dietaryRegime = dietaryRegime; }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "recipeId=" + recipeId +
+                ", recipeName='" + recipeName + '\'' +
+                ", calorieCount=" + calorieCount +
+                ", ingredients=" + ingredients +
+                ", instructions='" + instructions + '\'' +
+                ", dietaryRegime='" + dietaryRegime + '\'' +
+                '}';
+    }
 }
