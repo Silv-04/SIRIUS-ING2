@@ -108,7 +108,7 @@ public class ProgressService {
         // 3. Filter recipes according to client's allergies, intolerances and
         // prohibited foods
         recipesList = recipesProductFiltering(allergiesArray, intolerancesArray, prohibitedFoodsArray, recipesList);
-        progressLogger.info("Filtered list:" + recipesList);
+        
         // 4. Generate combinations of recipes lists with list of days*mealsPerDay
         // recipes (10 per page)
         List<List<Recipe>> allRecipesLists = new ArrayList<>();
