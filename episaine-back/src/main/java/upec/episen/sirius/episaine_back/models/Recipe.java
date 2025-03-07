@@ -76,13 +76,6 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return "Recipe{" +
-                "recipeId=" + recipeId +
-                ", recipeName='" + recipeName + '\'' +
-                ", calorieCount=" + calorieCount +
-                ", ingredients=" + ingredients +
-                ", instructions='" + instructions + '\'' +
-                ", dietaryRegime='" + dietaryRegime + '\'' +
-                '}';
+        return "Recipe{" + recipeName + '}';
     }
 }
