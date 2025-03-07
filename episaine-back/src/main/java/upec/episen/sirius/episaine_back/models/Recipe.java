@@ -76,6 +76,6 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return "Recipe{" + recipeName + '}';
+        return "Recipe{" + recipeId + ", " + recipeName + '}';
     }
 }
