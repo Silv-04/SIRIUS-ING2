@@ -107,13 +107,13 @@ public class RecipeService {
         List<Recipe> recipes = new ArrayList<>();
         Random random = new Random();
 
-        for (int i = 0; i < count; i++) { // Boucle bien `count` fois
+        for (int i = 0; i < count; i++) {
             String randomDietaryRegime = dietaryRegimes.get(random.nextInt(dietaryRegimes.size()));
             Recipe newRecipe = generateAndSaveRecipe(randomDietaryRegime); // Réutilise ton algorithme actuel
-            recipes.add(newRecipe); // Ajoute chaque recette générée à la liste
+            recipes.add(newRecipe);
         }
 
-        return recipes; // Retourne une liste contenant plusieurs recettes
+        return recipes;
     }
 
 }
