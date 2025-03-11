@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
-import {Box, Flex, Heading, Spinner, Table, Thead, Tbody, Tr, Th, Td, Button} from "@chakra-ui/react";
+import { Box, Flex, Heading, Spinner, Table, Thead, Tbody, Tr, Th, Td, Button, Input } from "@chakra-ui/react";
 import Navbar from "../../components/nutritionist/navbar";
 import { GET_RECIPES_LIST, GENERATE_RECIPE } from "../../constants/back";
 
 // Main component to display the list of recipes
 export default function Recipe() {
     // State variables :
-    // Store the list of recipes
     const [recipes, setRecipes] = useState([]);
-    // Loading state
     const [loading, setLoading] = useState(false);
-    // Current page for pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    // Number of recipes per page of pagination
-    const recipesPerPage = 8;
-
+    const [recipeCount, setRecipeCount] = useState(1); // Default number of recipes to generate
 
     // Fetch recipes from the API when the component mounts
     useEffect(() => {
@@ -22,8 +16,8 @@ export default function Recipe() {
         fetch(GET_RECIPES_LIST)
             .then((response) => response.json())
             .then((data) => {
-                setRecipes(data); // Save recipes data to state
-                setLoading(false); // Stop loading spinner
+                setRecipes(data);
+                setLoading(false);
             })
             .catch((err) => {
                 console.error("Error loading recipes:", err);
@@ -31,16 +25,20 @@ export default function Recipe() {
             });
     }, []);
 
-    // Function to generate a new recipe
+    // Function to generate new recipes
     const generateRecipe = () => {
         setLoading(true);
         fetch(GENERATE_RECIPE, {
             method: "POST",
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(recipeCount) // Envoie juste le nombre
         })
             .then((response) => response.json())
-            .then((newRecipe) => {
-                setRecipes((prevRecipes) => [...prevRecipes, newRecipe]); // Add new recipe to the list
+            .then((newRecipes) => {
+                if (!Array.isArray(newRecipes)) {
+                    newRecipes = [newRecipes]; // Si la réponse est un seul objet, on le met dans un tableau
+                }
+                setRecipes([...newRecipes]); // Remplace toutes les recettes par les nouvelles générées
                 setLoading(false);
             })
             .catch((err) => {
@@ -48,12 +46,6 @@ export default function Recipe() {
                 setLoading(false);
             });
     };
-
-    // Pagination
-    const indexOfLastRecipe = currentPage * recipesPerPage;
-    const indexOfFirstRecipe = indexOfLastRecipe - recipesPerPage;
-    const currentRecipes = recipes.slice(indexOfFirstRecipe, indexOfLastRecipe);
-    const totalPages = Math.ceil(recipes.length / recipesPerPage);
 
     return (
         <Box bg="#1f2b3e" minHeight="100vh">
@@ -67,9 +59,23 @@ export default function Recipe() {
                     Bibliothèque de Recettes
                 </Heading>
 
-                {/* Button to generate a new recipe */}
+                {/* Input to specify the number of recipes */}
+                <Flex alignItems="center" mb={4}>
+                    <label style={{ marginRight: "10px" }}>Nombre de recettes :</label>
+                    <Input
+                        type="number"
+                        min="1"
+                        value={recipeCount}
+                        onChange={(e) => setRecipeCount(Math.max(1, Number(e.target.value)))}
+                        width="80px"
+                        textAlign="center"
+                        mr={3}
+                    />
+                </Flex>
+
+                {/* Button to generate new recipes */}
                 <Button onClick={generateRecipe} isLoading={loading} colorScheme="teal" mb={6}>
-                    Générer une Nouvelle Recette
+                    Générer {recipeCount} Recette(s)
                 </Button>
 
                 {loading ? (
@@ -77,7 +83,6 @@ export default function Recipe() {
                 ) : (
                     <Table variant="simple">
                         <Thead bg="gray.100">
-                            {/* Table to select Recipe genreted only */}
                             <Tr>
                                 <Th textAlign="center">Nom de la Recette</Th>
                                 <Th textAlign="center">Calories (kcal)</Th>
@@ -87,7 +92,7 @@ export default function Recipe() {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {currentRecipes.map((recipe, index) => (
+                            {recipes.map((recipe, index) => (
                                 <Tr key={index}>
                                     <Td textAlign="center">{recipe.recipeName}</Td>
                                     <Td textAlign="center">{recipe.calorieCount}</Td>
@@ -101,23 +106,6 @@ export default function Recipe() {
                         </Tbody>
                     </Table>
                 )}
-
-                {/* Pagination controls */}
-                <Flex justifyContent="center" mt={4}>
-                    <Button
-                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                        isDisabled={currentPage === 1}
-                        mx={2}
-                    >
-                        Précédent
-                    </Button>
-                    <Button
-                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                        isDisabled={currentPage === totalPages}
-                        mx={2}>
-                        Suivant
-                    </Button>
-                </Flex>
             </Box>
         </Box>
     );

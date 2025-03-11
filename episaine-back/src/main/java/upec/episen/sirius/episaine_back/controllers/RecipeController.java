@@ -35,17 +35,31 @@ public class RecipeController {
     @PostMapping("/generaterandom")
     public ResponseEntity<Recipe> generateRandomRecipe() {
         try {
-            // List of possible dietary regimes
             List<String> dietaryRegimes = Arrays.asList(
                     "Omnivore", "Vegetarien", "Vegane", "Pescetarien",
                     "Halal", "Casher", "Sans gluten", "Sans lactose"
             );
 
-            // Select a random dietary regime
             String randomDietaryRegime = dietaryRegimes.get(new Random().nextInt(dietaryRegimes.size()));
 
             Recipe recipe = recipeService.generateAndSaveRecipe(randomDietaryRegime);
             return ResponseEntity.ok(recipe);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     * Generates multiple recipes based on user input.
+     * @param count The number of recipes to generate.
+     * @return ResponseEntity with a list of generated recipes.
+     */
+    @PostMapping("/generate")
+    public ResponseEntity<List<Recipe>> generateMultipleRecipes(@RequestBody int count) {
+        try {
+            List<Recipe> recipes = recipeService.generateAndSaveMultipleRecipes(count);
+            System.out.println("Recettes générées : " + recipes.size());
+            return ResponseEntity.ok(recipes);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

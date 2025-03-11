@@ -1,4 +1,3 @@
-
 package upec.episen.sirius.episaine_back.services;
 
 import jakarta.persistence.EntityManager;
@@ -13,6 +12,7 @@ import upec.episen.sirius.episaine_back.repositories.RecipeRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 @Service
 public class RecipeService {
@@ -97,4 +97,23 @@ public class RecipeService {
 
         return recipeRepository.save(recipe);
     }
+
+    public List<Recipe> generateAndSaveMultipleRecipes(int count) {
+        List<String> dietaryRegimes = Arrays.asList(
+                "Omnivore", "Vegetarien", "Vegane", "Pescetarien",
+                "Halal", "Casher", "Sans gluten", "Sans lactose"
+        );
+
+        List<Recipe> recipes = new ArrayList<>();
+        Random random = new Random();
+
+        for (int i = 0; i < count; i++) { // Boucle bien `count` fois
+            String randomDietaryRegime = dietaryRegimes.get(random.nextInt(dietaryRegimes.size()));
+            Recipe newRecipe = generateAndSaveRecipe(randomDietaryRegime); // Réutilise ton algorithme actuel
+            recipes.add(newRecipe); // Ajoute chaque recette générée à la liste
+        }
+
+        return recipes; // Retourne une liste contenant plusieurs recettes
+    }
+
 }
