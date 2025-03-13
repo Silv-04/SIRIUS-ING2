@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Service class responsible for handling recipe-related logic, including
+ * generating recipes based on dietary requirements and filtering invalid recipes.
+ */
 @Service
 public class RecipeService {
 
@@ -26,10 +30,22 @@ public class RecipeService {
     @Autowired
     private EntityManager entityManager;
 
+    /**
+     * Retrieves all recipes stored in the database.
+     *
+     * @return A list of all available recipes.
+     */
     public List<Recipe> getAllRecipes() {
         return recipeRepository.findAll();
     }
 
+    /**
+     * Generates a single recipe based on the selected dietary regime.
+     * If the total calorie count is 0, the recipe is ignored.
+     *
+     * @param dietaryRegime The dietary regime for the recipe.
+     * @return The generated recipe or null if it has 0 calories.
+     */
     public Recipe generateAndSaveRecipe(String dietaryRegime) {
         List<String> categories = Arrays.asList(
                 "entrees et plats composes",
@@ -74,14 +90,12 @@ public class RecipeService {
         sql += " ORDER BY RANDOM() LIMIT 1";
 
         Query query = entityManager.createNativeQuery(sql, Product.class);
-
         Recipe recipe = new Recipe();
         recipe.setRecipeName("Recette " + dietaryRegime + " Aléatoire");
         recipe.setDietaryRegime(dietaryRegime);
         recipe.setIngredients(new ArrayList<>());
 
         int totalCalories = 0;
-
         for (String category : categories) {
             query.setParameter("category", category);
             List<Product> result = query.getResultList();
@@ -92,28 +106,34 @@ public class RecipeService {
             }
         }
 
+        if (totalCalories == 0) {
+            return null; // Ignore recipes with 0 calories
+        }
+
         recipe.setCalorieCount(totalCalories);
         recipe.setInstructions("Mélangez les ingrédients et dégustez !");
 
         return recipeRepository.save(recipe);
     }
 
-    public List<Recipe> generateAndSaveMultipleRecipes(int count) {
-        List<String> dietaryRegimes = Arrays.asList(
-                "Omnivore", "Vegetarien", "Vegane", "Pescetarien",
-                "Halal", "Casher", "Sans gluten", "Sans lactose"
-        );
-
+    /**
+     * Generates multiple recipes based on the selected dietary regime.
+     * Ensures that only recipes with non-zero calorie values are included.
+     *
+     * @param dietaryRegime The dietary regime for the recipes.
+     * @param count The number of recipes to generate.
+     * @return A list of valid generated recipes.
+     */
+    public List<Recipe> generateAndSaveMultipleRecipes(String dietaryRegime, int count) {
         List<Recipe> recipes = new ArrayList<>();
-        Random random = new Random();
 
-        for (int i = 0; i < count; i++) {
-            String randomDietaryRegime = dietaryRegimes.get(random.nextInt(dietaryRegimes.size()));
-            Recipe newRecipe = generateAndSaveRecipe(randomDietaryRegime); // Réutilise ton algorithme actuel
-            recipes.add(newRecipe);
+        while (recipes.size() < count) {
+            Recipe newRecipe = generateAndSaveRecipe(dietaryRegime);
+            if (newRecipe != null) {
+                recipes.add(newRecipe);
+            }
         }
 
         return recipes;
     }
-
 }
