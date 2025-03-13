@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Flex, Heading, Spinner, Table, Thead, Tbody, Tr, Th, Td, Button, Input } from "@chakra-ui/react";
+import { Box, Flex, Heading, Spinner, Table, Thead, Tbody, Tr, Th, Td, Button, Select } from "@chakra-ui/react";
 import Navbar from "../../components/nutritionist/navbar";
 import { GET_RECIPES_LIST, GENERATE_RECIPE } from "../../constants/back";
 
-// Main component to display the list of recipes
 export default function Recipe() {
-    // State variables :
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [recipeCount, setRecipeCount] = useState(1); // Default number of recipes to generate
+    const [recipeCount, setRecipeCount] = useState(1);
+    const [dietaryRegime, setDietaryRegime] = useState("");
 
-    // Fetch recipes from the API when the component mounts
     useEffect(() => {
         setLoading(true);
         fetch(GET_RECIPES_LIST)
@@ -25,31 +23,33 @@ export default function Recipe() {
             });
     }, []);
 
-    // Function to generate new recipes
     const generateRecipe = () => {
+        if (!dietaryRegime) {
+            alert("Veuillez sélectionner un régime alimentaire !");
+            return;
+        }
+
         setLoading(true);
-        fetch(GENERATE_RECIPE, {
+        fetch(`${GENERATE_RECIPE}?dietaryRegime=${dietaryRegime}&count=${recipeCount}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(recipeCount) // Envoie juste le nombre
+            headers: { "Content-Type": "application/json" }
         })
             .then((response) => response.json())
             .then((newRecipes) => {
                 if (!Array.isArray(newRecipes)) {
-                    newRecipes = [newRecipes]; // Si la réponse est un seul objet, on le met dans un tableau
+                    newRecipes = [newRecipes];
                 }
-                setRecipes([...newRecipes]); // Remplace toutes les recettes par les nouvelles générées
+                setRecipes([...newRecipes]);
                 setLoading(false);
             })
             .catch((err) => {
-                console.error("Problème dans la récupération de données :", err);
+                console.error("Erreur lors de la récupération des recettes :", err);
                 setLoading(false);
             });
     };
 
     return (
         <Box bg="#1f2b3e" minHeight="100vh">
-            {/* Sidebar with navigation */}
             <Box position="fixed" w="250px" h="100vh" bg="#0F1C2E" zIndex="1000">
                 <Navbar />
             </Box>
@@ -59,21 +59,40 @@ export default function Recipe() {
                     Bibliothèque de Recettes
                 </Heading>
 
-                {/* Input to specify the number of recipes */}
                 <Flex alignItems="center" mb={4}>
                     <label style={{ marginRight: "10px" }}>Nombre de recettes :</label>
-                    <Input
-                        type="number"
-                        min="1"
+                    <Select
                         value={recipeCount}
-                        onChange={(e) => setRecipeCount(Math.max(1, Number(e.target.value)))}
-                        width="80px"
+                        onChange={(e) => setRecipeCount(Number(e.target.value))}
+                        width="100px"
                         textAlign="center"
                         mr={3}
-                    />
+                    >
+                        {[...Array(10).keys()].map((num) => (
+                            <option key={num + 1} value={num + 1}>{num + 1}</option>
+                        ))}
+                    </Select>
                 </Flex>
 
-                {/* Button to generate new recipes */}
+                <Flex alignItems="center" mb={4}>
+                    <label style={{ marginRight: "10px" }}>Régime alimentaire :</label>
+                    <Select
+                        placeholder="Sélectionner un régime"
+                        value={dietaryRegime}
+                        onChange={(e) => setDietaryRegime(e.target.value)}
+                        width="200px"
+                    >
+                        <option value="vegetarien">Végétarien</option>
+                        <option value="vegane">Végan</option>
+                        <option value="Omnivore">Omnivore</option>
+                        <option value="Halal">Halal</option>
+                        <option value="Casher">Casher</option>
+                        <option value="Pescetarien">Pescetarien</option>
+                        <option value="sans lactose">Sans Lactose</option>
+                        <option value="sans gluten">Sans Gluten</option>
+                    </Select>
+                </Flex>
+
                 <Button onClick={generateRecipe} isLoading={loading} colorScheme="teal" mb={6}>
                     Générer {recipeCount} Recette(s)
                 </Button>
