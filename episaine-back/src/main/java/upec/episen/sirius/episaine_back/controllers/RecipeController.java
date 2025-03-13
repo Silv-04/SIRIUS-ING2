@@ -53,12 +53,14 @@ public class RecipeController {
      * Generates multiple recipes based on user input.
      * @param count The number of recipes to generate.
      * @return ResponseEntity with a list of generated recipes.
+     * Add End point for testing new algo performance
      */
     @PostMapping("/generate")
-    public ResponseEntity<List<Recipe>> generateMultipleRecipes(@RequestBody int count) {
+    public ResponseEntity<List<Recipe>> generateMultipleRecipes(
+            @RequestParam String dietaryRegime,
+            @RequestParam int count) {
         try {
-            List<Recipe> recipes = recipeService.generateAndSaveMultipleRecipes(count);
-            System.out.println("Recettes générées : " + recipes.size());
+            List<Recipe> recipes = recipeService.generateAndSaveMultipleRecipes(dietaryRegime, count);
             return ResponseEntity.ok(recipes);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
