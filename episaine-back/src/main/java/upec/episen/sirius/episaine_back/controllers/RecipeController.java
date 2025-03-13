@@ -1,3 +1,4 @@
+
 package upec.episen.sirius.episaine_back.controllers;
 
 import org.springframework.http.ResponseEntity;
@@ -58,14 +59,17 @@ public class RecipeController {
     @PostMapping("/generate")
     public ResponseEntity<List<Recipe>> generateMultipleRecipes(
             @RequestParam String dietaryRegime,
-            @RequestParam int count) {
+            @RequestParam int count,
+            @RequestParam int minCalories,
+            @RequestParam int maxCalories) {
         try {
-            List<Recipe> recipes = recipeService.generateAndSaveMultipleRecipes(dietaryRegime, count);
+            List<Recipe> recipes = recipeService.generateAndSaveMultipleRecipes(dietaryRegime, count, minCalories, maxCalories);
             return ResponseEntity.ok(recipes);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
+
 
     /**
      * Retrieves all recipes from the database.
