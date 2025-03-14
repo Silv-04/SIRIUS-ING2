@@ -2,6 +2,8 @@ package upec.episen.sirius.episaine_back.services;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import upec.episen.sirius.episaine_back.models.Product;
@@ -9,10 +11,11 @@ import upec.episen.sirius.episaine_back.models.Recipe;
 import upec.episen.sirius.episaine_back.repositories.ProductRepository;
 import upec.episen.sirius.episaine_back.repositories.RecipeRepository;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Service class responsible for handling recipe-related logic, including
@@ -20,6 +23,8 @@ import java.util.Random;
  */
 @Service
 public class RecipeService {
+    private static final Logger logger = LoggerFactory.getLogger(RecipeService.class);
+    private static final String LOG_FILE_PATH = "src/main/java/upec/episen/sirius/episaine_back/services/recipe_generation_log.txt";
 
     @Autowired
     private RecipeRepository recipeRepository;
@@ -29,6 +34,22 @@ public class RecipeService {
 
     @Autowired
     private EntityManager entityManager;
+
+
+
+    /**
+     * Logs messages to both console and a log file.
+     *
+     * @param message The message to log.
+     */
+    private void logToFile(String message) {
+        try (FileWriter writer = new FileWriter(LOG_FILE_PATH, true)) {
+            writer.write(message + "\n");
+        } catch (IOException e) {
+            logger.error("Error writing to log file: {}", e.getMessage());
+        }
+    }
+
 
     /**
      * Retrieves all recipes stored in the database.
@@ -107,12 +128,14 @@ public class RecipeService {
         }
 
         if (totalCalories == 0) {
-            return null; // Ignore recipes with 0 calories
+            logger.warn("Generated recipe for {} had 0 calories and was discarded.", dietaryRegime);
+            return null;
         }
 
         recipe.setCalorieCount(totalCalories);
         recipe.setInstructions("Mélangez les ingrédients et dégustez !");
 
+        logger.info("Generated recipe: {} with {} kcal", recipe.getRecipeName(), recipe.getCalorieCount());
         return recipeRepository.save(recipe);
     }
 
@@ -124,16 +147,19 @@ public class RecipeService {
      * @param count The number of recipes to generate.
      * @return A list of valid generated recipes.
      */
-    public List<Recipe> generateAndSaveMultipleRecipes(String dietaryRegime, int count) {
+    public List<Recipe> generateAndSaveMultipleRecipes(String dietaryRegime, int count, int minCalories, int maxCalories) {
+        logger.info("Starting generation of {} recipes for dietary regime: {}", count, dietaryRegime);
         List<Recipe> recipes = new ArrayList<>();
 
         while (recipes.size() < count) {
             Recipe newRecipe = generateAndSaveRecipe(dietaryRegime);
-            if (newRecipe != null) {
+
+            if (newRecipe != null && newRecipe.getCalorieCount() >= minCalories && newRecipe.getCalorieCount() <= maxCalories) {
                 recipes.add(newRecipe);
+                logger.info("Added new recipe: {} with {} kcal", newRecipe.getRecipeName(), newRecipe.getCalorieCount());
             }
         }
-
+        logger.info("Successfully generated {} recipes for dietary regime: {}", recipes.size(), dietaryRegime);
         return recipes;
     }
 }
