@@ -21,6 +21,7 @@ import java.util.ArrayList;
  * Service class responsible for handling recipe-related logic, including
  * generating recipes based on dietary requirements and filtering invalid recipes.
  */
+
 @Service
 public class RecipeService {
     private static final Logger logger = LoggerFactory.getLogger(RecipeService.class);
@@ -116,7 +117,20 @@ public class RecipeService {
         recipe.setDietaryRegime(dietaryRegime);
         recipe.setIngredients(new ArrayList<>());
 
+        /**
+         * Variables to store the total nutritional values of the recipe.
+         */
+
         int totalCalories = 0;
+        double totalGlucides = 0, totalLipides = 0, totalGlucose = 0, totalLactose = 0, totalMaltose = 0, totalAmidon = 0;
+        double totalFibres = 0, totalCholesterol = 0, totalSel = 0, totalCalcium = 0, totalCuivre = 0, totalFer = 0, totalProteines625 = 0;
+
+
+        /**
+         * Iterates through product categories, fetches random products,
+         * and accumulates their nutritional values.
+         */
+
         for (String category : categories) {
             query.setParameter("category", category);
             List<Product> result = query.getResultList();
@@ -124,16 +138,54 @@ public class RecipeService {
                 Product product = result.get(0);
                 recipe.getIngredients().add(product.getNomProduit());
                 totalCalories += product.getenergie_ue_kcal() != null ? product.getenergie_ue_kcal() : 0;
+                totalGlucides += product.getGlucides() != null ? product.getGlucides() : 0;
+                totalLipides += product.getLipides() != null ? product.getLipides() : 0;
+                totalGlucose += product.getGlucose() != null ? product.getGlucose() : 0;
+                totalLactose += product.getLactose() != null ? product.getLactose() : 0;
+                totalMaltose += product.getMaltose() != null ? product.getMaltose() : 0;
+                totalAmidon += product.getAmidon() != null ? product.getAmidon() : 0;
+                totalFibres += product.getFibres() != null ? product.getFibres() : 0;
+                totalCholesterol += product.getCholesterol() != null ? product.getCholesterol() : 0;
+                totalSel += product.getSel() != null ? product.getSel() : 0;
+                totalCalcium += product.getCalcium() != null ? product.getCalcium() : 0;
+                totalCuivre += product.getCuivre() != null ? product.getCuivre() : 0;
+                totalFer += product.getFer() != null ? product.getFer() : 0;
+                totalProteines625 += product.getProteines625() != null ? product.getProteines625() : 0;
             }
         }
+
+        /**
+         * If no valid recipe was generated (0 calories), discard it.
+         */
 
         if (totalCalories == 0) {
             logger.warn("Generated recipe for {} had 0 calories and was discarded.", dietaryRegime);
             return null;
         }
 
+        /**
+         * Assigns the computed nutritional values to the recipe.
+         */
+
         recipe.setCalorieCount(totalCalories);
+        recipe.setTotalGlucides(totalGlucides);
+        recipe.setTotalLipides(totalLipides);
+        recipe.setTotalGlucose(totalGlucose);
+        recipe.setTotalLactose(totalLactose);
+        recipe.setTotalMaltose(totalMaltose);
+        recipe.setTotalAmidon(totalAmidon);
+        recipe.setTotalFibres(totalFibres);
+        recipe.setTotalCholesterol(totalCholesterol);
+        recipe.setTotalSel(totalSel);
+        recipe.setTotalCalcium(totalCalcium);
+        recipe.setTotalCuivre(totalCuivre);
+        recipe.setTotalFer(totalFer);
+        recipe.setTotalProteines625(totalProteines625);
         recipe.setInstructions("Mélangez les ingrédients et dégustez !");
+
+        /**
+         * Logs and saves the generated recipe.
+         */
 
         logger.info("Generated recipe: {} with {} kcal", recipe.getRecipeName(), recipe.getCalorieCount());
         return recipeRepository.save(recipe);
