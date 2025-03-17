@@ -199,14 +199,39 @@ public class RecipeService {
      * @param count The number of recipes to generate.
      * @return A list of valid generated recipes.
      */
-    public List<Recipe> generateAndSaveMultipleRecipes(String dietaryRegime, int count, int minCalories, int maxCalories) {
+    public List<Recipe> generateAndSaveMultipleRecipes(
+            String dietaryRegime, int count, int minCalories, int maxCalories,
+            double minGlucides, double maxGlucides, double minLipides, double maxLipides,
+            double minGlucose, double maxGlucose, double minLactose, double maxLactose,
+            double minMaltose, double maxMaltose, double minAmidon, double maxAmidon,
+            double minFibres, double maxFibres, double minCholesterol, double maxCholesterol,
+            double minSel, double maxSel, double minCalcium, double maxCalcium,
+            double minCuivre, double maxCuivre, double minFer, double maxFer,
+            double minProteines625, double maxProteines625
+    ) {
         logger.info("Starting generation of {} recipes for dietary regime: {}", count, dietaryRegime);
         List<Recipe> recipes = new ArrayList<>();
 
         while (recipes.size() < count) {
             Recipe newRecipe = generateAndSaveRecipe(dietaryRegime);
 
-            if (newRecipe != null && newRecipe.getCalorieCount() >= minCalories && newRecipe.getCalorieCount() <= maxCalories) {
+
+            if (newRecipe != null &&
+                    newRecipe.getCalorieCount() >= minCalories && newRecipe.getCalorieCount() <= maxCalories &&
+                    newRecipe.getTotalGlucides() >= minGlucides && newRecipe.getTotalGlucides() <= maxGlucides &&
+                    newRecipe.getTotalLipides() >= minLipides && newRecipe.getTotalLipides() <= maxLipides &&
+                    newRecipe.getTotalGlucose() >= minGlucose && newRecipe.getTotalGlucose() <= maxGlucose &&
+                    newRecipe.getTotalLactose() >= minLactose && newRecipe.getTotalLactose() <= maxLactose &&
+                    newRecipe.getTotalMaltose() >= minMaltose && newRecipe.getTotalMaltose() <= maxMaltose &&
+                    newRecipe.getTotalAmidon() >= minAmidon && newRecipe.getTotalAmidon() <= maxAmidon &&
+                    newRecipe.getTotalFibres() >= minFibres && newRecipe.getTotalFibres() <= maxFibres &&
+                    newRecipe.getTotalCholesterol() >= minCholesterol && newRecipe.getTotalCholesterol() <= maxCholesterol &&
+                    newRecipe.getTotalSel() >= minSel && newRecipe.getTotalSel() <= maxSel &&
+                    newRecipe.getTotalCalcium() >= minCalcium && newRecipe.getTotalCalcium() <= maxCalcium &&
+                    newRecipe.getTotalCuivre() >= minCuivre && newRecipe.getTotalCuivre() <= maxCuivre &&
+                    newRecipe.getTotalFer() >= minFer && newRecipe.getTotalFer() <= maxFer &&
+                    newRecipe.getTotalProteines625() >= minProteines625 && newRecipe.getTotalProteines625() <= maxProteines625)
+            {
                 recipes.add(newRecipe);
                 logger.info("Added new recipe: {} with {} kcal", newRecipe.getRecipeName(), newRecipe.getCalorieCount());
             }
