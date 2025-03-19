@@ -212,7 +212,7 @@ public class RecipeService {
          * Logs and saves the generated recipe.
          */
 
-        logger.info("Generated recipe: {} with {} kcal", recipe.getRecipeName(), recipe.getCalorieCount());
+        logger.info("Recette générée : {} with {} kcal", recipe.getRecipeName(), recipe.getCalorieCount());
         return recipeRepository.save(recipe);
     }
 
@@ -258,10 +258,10 @@ public class RecipeService {
                     newRecipe.getTotalProteines625() >= minProteines625 && newRecipe.getTotalProteines625() <= maxProteines625)
             {
                 recipes.add(newRecipe);
-                logger.info("Added new recipe: {} with {} kcal", newRecipe.getRecipeName(), newRecipe.getCalorieCount());
+                logger.info("Ajout d'une nouvelle recette: {} avec {} kcal", newRecipe.getRecipeName(), newRecipe.getCalorieCount());
             }
         }
-        logger.info("Successfully generated {} recipes for dietary regime: {}", recipes.size(), dietaryRegime);
+        logger.info("Recettes {} générées avec succès pour le régime alimentaire: {}", recipes.size(), dietaryRegime);
         return recipes;
     }
 }
