@@ -45,4 +45,18 @@ export default function Recipe() {
     const [minFer, setMinFer] = useState(null);
     const [maxFer, setMaxFer] = useState(null);
     const [minProteines625, setMinProteines625] = useState(null);
-    const [maxProteines625, setMaxProteines625] = useState(null);}
+    const [maxProteines625, setMaxProteines625] = useState(null);
+
+    // Chakra UI modal for error display (  code from web site : https://chakra-ui.com/ )
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    /**
+     * Handles numeric input validation and state update
+     */
+
+    const handleInputChange = (setter) => (e) => {
+        let value = e.target.value.replace(/\D/g, ""); // Supprime tout caractère non numérique
+        setter(value ? Number(value) : 0);
+    };
+
+}
