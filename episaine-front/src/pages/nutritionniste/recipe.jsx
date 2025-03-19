@@ -59,4 +59,18 @@ export default function Recipe() {
         setter(value ? Number(value) : 0);
     };
 
+    /**
+     * Validation rule for calorie values
+     */
+    const validateCalories = (min, max) => {
+        if (max < min) {
+            setError("Le nombre de calories maximum ne peut pas être inférieur au minimum.");
+            onOpen();
+        } else if (min === max) {
+            setError("Les valeurs minimales et maximales ne peuvent pas être identiques.");
+            onOpen();
+        } else {
+            setError("");
+        }
+    };
 }
