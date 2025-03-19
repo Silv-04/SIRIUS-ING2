@@ -84,6 +84,27 @@ export default function Recipe() {
             return;
         }
         setLoading(true);
+        /**
+         * Construct query parameters for API request
+         */
+
+        const params = new URLSearchParams();
+        params.append("dietaryRegime", dietaryRegime);
+        params.append("count", recipeCount);
+
+        /**
+         * Add non-null nutritional values to query
+         */
+
+        const nutrientValues = {
+            minCalories, maxCalories, minGlucides, maxGlucides,
+            minLipides, maxLipides, minGlucose, maxGlucose,
+            minLactose, maxLactose, minMaltose, maxMaltose,
+            minAmidon, maxAmidon, minFibres, maxFibres,
+            minCholesterol, maxCholesterol, minSel, maxSel,
+            minCalcium, maxCalcium, minCuivre, maxCuivre,
+            minFer, maxFer, minProteines625, maxProteines625
+        };
 
 
-}
+    }
