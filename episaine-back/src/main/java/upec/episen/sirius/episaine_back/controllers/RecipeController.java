@@ -1,4 +1,5 @@
 
+
 package upec.episen.sirius.episaine_back.controllers;
 
 import org.springframework.http.ResponseEntity;
@@ -63,8 +64,7 @@ public class RecipeController {
             @RequestParam int minCalories,
             @RequestParam int maxCalories,
             @RequestParam(required = false, defaultValue = "0") double minGlucides,
-            @RequestParam(required = false, defaultValue = "2" +
-                    "50") double maxGlucides,
+            @RequestParam(required = false, defaultValue = "250") double maxGlucides,
             @RequestParam(required = false, defaultValue = "0") double minLipides,
             @RequestParam(required = false, defaultValue = "100") double maxLipides,
             @RequestParam(required = false, defaultValue = "0") double minGlucose,
@@ -104,8 +104,6 @@ public class RecipeController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
-
 
     /**
      * Retrieves all recipes from the database.
