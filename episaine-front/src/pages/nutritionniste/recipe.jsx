@@ -135,4 +135,117 @@ export default function Recipe() {
                 setLoading(false);
             });
     };
-    }
+
+    return (
+        <Box bg="#1f2b3e" minHeight="100vh">
+            <Box position="fixed" w="250px" h="100vh" bg="#0F1C2E" zIndex="1000">
+                <Navbar />
+            </Box>
+
+            <Box ml="250px" p={6} bg="white" minHeight="100vh">
+                <Heading mb={6} size="lg" color="teal.800" textAlign="center">Bibliothèque de Recettes</Heading>
+                <Flex alignItems="center" mb={4}>
+                    <Text fontWeight="bold" color="teal.700">Nombre de recettes :</Text>
+                    <Select value={recipeCount} onChange={(e) => setRecipeCount(Number(e.target.value))} width="100px" textAlign="center" mr={3}>
+                        {[...Array(10).keys()].map((num) => (
+                            <option key={num + 1} value={num + 1}>{num + 1}</option>
+                        ))}
+                    </Select>
+                </Flex>
+
+                {/* Input fields for min and max nutritional values */}
+
+                <Box mb={4}>
+                    <Heading size="md" fontWeight="bold" color="teal.700" mb={2}>Valeurs Nutritionnelles (Min / Max)</Heading>
+                    {[
+                        { label: "Glucides", stateMin: minGlucides, setStateMin: setMinGlucides, stateMax: maxGlucides, setStateMax: setMaxGlucides },
+                        { label: "Lipides", stateMin: minLipides, setStateMin: setMinLipides, stateMax: maxLipides, setStateMax: setMaxLipides },
+                        { label: "Glucose", stateMin: minGlucose, setStateMin: setMinGlucose, stateMax: maxGlucose, setStateMax: setMaxGlucose },
+                        { label: "Lactose", stateMin: minLactose, setStateMin: setMinLactose, stateMax: maxLactose, setStateMax: setMaxLactose },
+                        { label: "Maltose", stateMin: minMaltose, setStateMin: setMinMaltose, stateMax: maxMaltose, setStateMax: setMaxMaltose },
+                        { label: "Amidon", stateMin: minAmidon, setStateMin: setMinAmidon, stateMax: maxAmidon, setStateMax: setMaxAmidon },
+                        { label: "Fibres", stateMin: minFibres, setStateMin: setMinFibres, stateMax: maxFibres, setStateMax: setMaxFibres },
+                        { label: "Cholestérol", stateMin: minCholesterol, setStateMin: setMinCholesterol, stateMax: maxCholesterol, setStateMax: setMaxCholesterol },
+                        { label: "Sel", stateMin: minSel, setStateMin: setMinSel, stateMax: maxSel, setStateMax: setMaxSel },
+                        { label: "Calcium", stateMin: minCalcium, setStateMin: setMinCalcium, stateMax: maxCalcium, setStateMax: setMaxCalcium },
+                        { label: "Cuivre", stateMin: minCuivre, setStateMin: setMinCuivre, stateMax: maxCuivre, setStateMax: setMaxCuivre },
+                        { label: "Fer", stateMin: minFer, setStateMin: setMinFer, stateMax: maxFer, setStateMax: setMaxFer },
+                        { label: "Protéines", stateMin: minProteines625, setStateMin: setMinProteines625, stateMax: maxProteines625, setStateMax: setMaxProteines625 }
+                    ].map((nutrient, index) => (
+                        <Flex key={index} alignItems="center" mb={2}>
+                            <label style={{ width: "150px", marginRight: "10px" }}>{nutrient.label} :</label>
+
+                            <input
+                                type="number"
+                                value={nutrient.stateMin ?? ""}
+                                placeholder="Min"
+                                onChange={handleInputChange(nutrient.setStateMin)}
+                                style={{
+                                    padding: "5px",
+                                    width: "80px",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "5px",
+                                    marginRight: "10px"
+                                }}
+                            />
+                            <input
+                                type="number"
+                                value={nutrient.stateMax ?? ""}
+                                placeholder="Max"
+                                onChange={handleInputChange(nutrient.setStateMax)}
+                                style={{padding: "5px", width: "80px", border: "1px solid #ccc", borderRadius: "5px"}}
+                            />
+                        </Flex>
+                    ))}
+                </Box>
+
+                {/* Input fields for Regime */}
+
+                <Flex alignItems="center" mb={4}>
+                    <Text fontWeight="bold" color="teal.700" mr={3}>Régime alimentaire :</Text>
+                    <Select placeholder="Sélectionner un régime" value={dietaryRegime} onChange={(e) => setDietaryRegime(e.target.value)} width="200px">
+                        <option value="vegetarien">Végétarien</option>
+                        <option value="vegane">Végan</option>
+                        <option value="Omnivore">Omnivore</option>
+                        <option value="Halal">Halal</option>
+                        <option value="Casher">Casher</option>
+                        <option value="Pescetarien">Pescetarien</option>
+                        <option value="sans lactose">Sans Lactose</option>
+                        <option value="sans gluten">Sans Gluten</option>
+                    </Select>
+                </Flex>
+
+                <Flex alignItems="center" mb={4}>
+                    <Text fontWeight="bold" color="teal.700" mr={3}>Plage de calories :</Text>
+                    <Select value={minCalories} onChange={(e) => {const value = Number(e.target.value);setMinCalories(value);validateCalories(value, maxCalories);}}
+                            width="100px"
+                            textAlign="center"
+                            mr={3}
+                    >
+                        {[...Array(10).keys()].map((num) => (
+                            <option key={num} value={num * 100}>{num * 100}</option>
+                        ))}
+                    </Select>
+                    <span style={{ margin: "0 10px" }}>à</span>
+                    <Select
+                        value={maxCalories}
+                        onChange={(e) => {const value = Number(e.target.value);
+                            setMaxCalories(value);
+                            validateCalories(minCalories, value);
+                        }}
+                        width="100px"
+                        textAlign="center"
+                    >
+                        {[...Array(10).keys()].map((num) => (
+                            <option key={num} value={(num + 1) * 100}>{(num + 1) * 100}</option>
+                        ))}
+                    </Select>
+                </Flex>
+
+                <Button onClick={generateRecipe} isLoading={loading} colorScheme="teal" mb={6} isDisabled={error !== ""}>
+                    Générer {recipeCount} Recette(s)
+                </Button>
+            </Box>
+        </Box>
+    );
+}
