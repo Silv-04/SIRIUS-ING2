@@ -84,6 +84,7 @@ export default function Recipe() {
             return;
         }
         setLoading(true);
+
         /**
          * Construct query parameters for API request
          */
@@ -105,6 +106,7 @@ export default function Recipe() {
             minCalcium, maxCalcium, minCuivre, maxCuivre,
             minFer, maxFer, minProteines625, maxProteines625
         };
+
         /**
          * Add only filled parameters (avoid sending null or empty values)
          */
@@ -245,7 +247,79 @@ export default function Recipe() {
                 <Button onClick={generateRecipe} isLoading={loading} colorScheme="teal" mb={6} isDisabled={error !== ""}>
                     Générer {recipeCount} Recette(s)
                 </Button>
+
+                {/* Table recipe generated */}
+
+                {loading ? (
+                    <Spinner size="xl" color="teal.300" />
+                ) : (
+
+                    <Table variant="simple">
+                        <Thead bg="gray.100">
+                            <Tr>
+                                <Th textAlign="center">Nom de la Recette</Th>
+                                <Th textAlign="center">Calories (kcal)</Th>
+                                <Th textAlign="center">Glucides (g)</Th>
+                                <Th textAlign="center">Lipides (g)</Th>
+                                <Th textAlign="center">Glucose (g)</Th>
+                                <Th textAlign="center">Lactose (g)</Th>
+                                <Th textAlign="center">Maltose (g)</Th>
+                                <Th textAlign="center">Amidon (g)</Th>
+                                <Th textAlign="center">Fibres (g)</Th>
+                                <Th textAlign="center">Cholestérol (mg)</Th>
+                                <Th textAlign="center">Sel (g)</Th>
+                                <Th textAlign="center">Calcium (mg)</Th>
+                                <Th textAlign="center">Cuivre (mg)</Th>
+                                <Th textAlign="center">Fer (mg)</Th>
+                                <Th textAlign="center">Protéines (g)</Th>
+                                <Th textAlign="center">Régime Alimentaire</Th>
+                                <Th textAlign="center">Instructions</Th>
+                                <Th textAlign="center">Ingrédients</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {recipes.map((recipe, index) => (
+                                <Tr key={index}>
+                                    <Td textAlign="center">{recipe.recipeName}</Td>
+                                    <Td textAlign="center">{recipe.calorieCount}</Td>
+                                    <Td textAlign="center">{recipe.totalGlucides?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalLipides?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalGlucose?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalLactose?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalMaltose?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalAmidon?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalFibres?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalCholesterol?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalSel?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalCalcium?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalCuivre?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalFer?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.totalProteines625?.toFixed(2) || 0}</Td>
+                                    <Td textAlign="center">{recipe.dietaryRegime}</Td>
+                                    <Td textAlign="center">{recipe.instructions}</Td>
+                                    <Td textAlign="center">
+                                        {recipe.ingredients?.join(", ") || "Aucun ingrédient"}
+                                    </Td>
+                                </Tr>
+                            ))}
+                        </Tbody>
+                    </Table>
+                )}
             </Box>
+
+            {/* Modal d'erreur */}
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Erreur</ModalHeader>
+                    <ModalBody>
+                        <Text color="red.500">{error}</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="red" onClick={onClose}>Fermer</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 }
