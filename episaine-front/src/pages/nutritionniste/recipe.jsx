@@ -105,6 +105,34 @@ export default function Recipe() {
             minCalcium, maxCalcium, minCuivre, maxCuivre,
             minFer, maxFer, minProteines625, maxProteines625
         };
+        /**
+         * Add only filled parameters (avoid sending null or empty values)
+         */
+        Object.entries(nutrientValues).forEach(([key, value]) => {
+            if (value !== null && value !== "") {
+                params.append(key, value);
+            }
+        });
 
+        /**
+         * Fetch request execution
+         */
 
+        fetch(`${GENERATE_RECIPE}?${params.toString()}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then((response) => response.json())
+            .then((newRecipes) => {
+                if (!Array.isArray(newRecipes)) {
+                    newRecipes = [newRecipes];
+                }
+                setRecipes([...newRecipes]);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error("Erreur lors de la récupération des recettes :", err);
+                setLoading(false);
+            });
+    };
     }
