@@ -69,6 +69,13 @@ public class RecipeService {
      * @return The generated recipe or null if it has 0 calories.
      */
     public Recipe generateAndSaveRecipe(String dietaryRegime) {
+
+        logger.info("Début de la génération d'une recette pour le régime alimentaire : {}", dietaryRegime);
+
+        if (dietaryRegime == null || dietaryRegime.isEmpty()) {
+            logger.warn("Aucun régime alimentaire spécifié. Arrêt de la génération de la recette.");
+            return null;
+        }
         List<String> categories = Arrays.asList(
                 "entrees et plats composes",
                 "produits cerealiers",
@@ -81,31 +88,43 @@ public class RecipeService {
 
         switch (dietaryRegime.toLowerCase()) {
             case "vegetarien":
+                logger.info("Filtrage des viandes pour un régime végétarien.");
                 sql += "AND nom_soussousgroupe NOT IN ('abats', 'agneau et mouton', 'bœuf et veau', 'gibier', 'porc', 'poulet', 'dinde', 'autres viandes') ";
                 break;
             case "vegane":
+                logger.info("Filtrage des viandes et des produits laitiers pour un régime végan.");
+
             case "vegetalien":
+                logger.info("Filtrage des viandes et des produits laitiers pour un régime végan.");
+
                 sql += "AND nom_soussousgroupe NOT IN ('abats', 'agneau et mouton', 'bœuf et veau', 'gibier', 'porc', 'poulet', 'dinde', 'autres viandes', "
                         + "'œufs crus', 'œufs cuits', 'fromages a pate molle', 'fromages blancs', "
                         + "'laits de vaches liquides (non concentres)', 'desserts lactes', "
                         + "'yaourts et specialites laitieres type yaourt') ";
                 break;
             case "pescetarien":
+                logger.info("Autorisation des poissons mais exclusion des autres viandes.");
+
                 sql += "AND nom_soussousgroupe NOT IN ('abats', 'agneau et mouton', 'bœuf et veau', 'gibier', 'porc', 'poulet', 'dinde', 'autres viandes') ";
                 break;
             case "halal":
+                logger.info("Filtrage des produits non-halal (alcool et porc).");
                 sql += "AND alcool = 0 AND nom_soussousgroupe NOT LIKE '%porc%' ";
                 break;
             case "casher":
+                logger.info("Filtrage des produits non-casher (alcool et porc).");
                 sql += "AND alcool = 0 AND nom_soussousgroupe NOT IN ('porc', 'saucisses et assimiles', 'rillettes', 'saucisson secs') ";
                 break;
             case "sans gluten":
+                logger.info("Sélection des produits sans gluten.");
                 sql += "AND (glucides = 0 OR glucides IS NULL)";
                 break;
             case "sans lactose":
+                logger.info("Sélection des produits sans lactose.");
                 sql += "AND (lactose = 0 OR lactose IS NULL)";
                 break;
             default:
+                logger.info("Aucun filtrage spécifique appliqué pour le régime : {}", dietaryRegime);
                 break;
         }
 
@@ -132,10 +151,16 @@ public class RecipeService {
          */
 
         for (String category : categories) {
+
+            logger.info("Recherche d'ingrédients dans la catégorie : {}", category);
+
             query.setParameter("category", category);
             List<Product> result = query.getResultList();
             if (!result.isEmpty()) {
                 Product product = result.get(0);
+
+                logger.info("Ingrédient sélectionné : {} ({} kcal)", product.getNomProduit(), product.getenergie_ue_kcal());
+
                 recipe.getIngredients().add(product.getNomProduit());
                 totalCalories += product.getenergie_ue_kcal() != null ? product.getenergie_ue_kcal() : 0;
                 totalGlucides += product.getGlucides() != null ? product.getGlucides() : 0;
