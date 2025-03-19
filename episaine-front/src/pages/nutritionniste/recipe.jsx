@@ -73,4 +73,17 @@ export default function Recipe() {
             setError("");
         }
     };
+
+    /**
+     * Function to generate new recipes based on user selection.
+     */
+    const generateRecipe = () => {
+        if (!dietaryRegime) {
+            setError("Veuillez sélectionner un régime alimentaire !");
+            onOpen();
+            return;
+        }
+        setLoading(true);
+
+
 }
