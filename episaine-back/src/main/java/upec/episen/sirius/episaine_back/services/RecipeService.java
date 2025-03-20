@@ -36,8 +36,6 @@ public class RecipeService {
     @Autowired
     private EntityManager entityManager;
 
-
-
     /**
      * Logs messages to both console and a log file.
      *
@@ -51,6 +49,20 @@ public class RecipeService {
         }
     }
 
+    private boolean isValidRange(double value, double min, double max, String nutrient, StringBuilder rejectionReason) {
+        if (value < min || value > max) {
+            rejectionReason.append(nutrient)
+                    .append(" hors plage : ")
+                    .append(value)
+                    .append(" (Min: ")
+                    .append(min)
+                    .append(", Max: ")
+                    .append(max)
+                    .append(") | ");
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Retrieves all recipes stored in the database.
@@ -219,11 +231,11 @@ public class RecipeService {
     /**
      * Generates multiple recipes based on the selected dietary regime.
      * Ensures that only recipes with non-zero calorie values are included.
-     *
      * @param dietaryRegime The dietary regime for the recipes.
      * @param count The number of recipes to generate.
      * @return A list of valid generated recipes.
      */
+
     public List<Recipe> generateAndSaveMultipleRecipes(
             String dietaryRegime, int count, int minCalories, int maxCalories,
             double minGlucides, double maxGlucides, double minLipides, double maxLipides,
@@ -234,34 +246,68 @@ public class RecipeService {
             double minCuivre, double maxCuivre, double minFer, double maxFer,
             double minProteines625, double maxProteines625
     ) {
-        logger.info("Starting generation of {} recipes for dietary regime: {}", count, dietaryRegime);
+        logger.info(" ... Début de la génération des {} recettes pour le régime : {}", count, dietaryRegime);
         List<Recipe> recipes = new ArrayList<>();
 
         while (recipes.size() < count) {
             Recipe newRecipe = generateAndSaveRecipe(dietaryRegime);
 
+            if (newRecipe != null) {
+                logger.info(" Vérification des critères pour la recette : {} ({} kcal)",
+                        newRecipe.getRecipeName(), newRecipe.getCalorieCount());
 
-            if (newRecipe != null &&
-                    newRecipe.getCalorieCount() >= minCalories && newRecipe.getCalorieCount() <= maxCalories &&
-                    newRecipe.getTotalGlucides() >= minGlucides && newRecipe.getTotalGlucides() <= maxGlucides &&
-                    newRecipe.getTotalLipides() >= minLipides && newRecipe.getTotalLipides() <= maxLipides &&
-                    newRecipe.getTotalGlucose() >= minGlucose && newRecipe.getTotalGlucose() <= maxGlucose &&
-                    newRecipe.getTotalLactose() >= minLactose && newRecipe.getTotalLactose() <= maxLactose &&
-                    newRecipe.getTotalMaltose() >= minMaltose && newRecipe.getTotalMaltose() <= maxMaltose &&
-                    newRecipe.getTotalAmidon() >= minAmidon && newRecipe.getTotalAmidon() <= maxAmidon &&
-                    newRecipe.getTotalFibres() >= minFibres && newRecipe.getTotalFibres() <= maxFibres &&
-                    newRecipe.getTotalCholesterol() >= minCholesterol && newRecipe.getTotalCholesterol() <= maxCholesterol &&
-                    newRecipe.getTotalSel() >= minSel && newRecipe.getTotalSel() <= maxSel &&
-                    newRecipe.getTotalCalcium() >= minCalcium && newRecipe.getTotalCalcium() <= maxCalcium &&
-                    newRecipe.getTotalCuivre() >= minCuivre && newRecipe.getTotalCuivre() <= maxCuivre &&
-                    newRecipe.getTotalFer() >= minFer && newRecipe.getTotalFer() <= maxFer &&
-                    newRecipe.getTotalProteines625() >= minProteines625 && newRecipe.getTotalProteines625() <= maxProteines625)
-            {
-                recipes.add(newRecipe);
-                logger.info("Ajout d'une nouvelle recette: {} avec {} kcal", newRecipe.getRecipeName(), newRecipe.getCalorieCount());
+                boolean isValid = true;
+                StringBuilder rejectionReason = new StringBuilder();
+
+                /**
+                 * Checking nutritional values
+                 * */
+
+                if (!isValidRange(newRecipe.getCalorieCount(), minCalories, maxCalories, "Calories", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalGlucides(), minGlucides, maxGlucides, "Glucides", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalLipides(), minLipides, maxLipides, "Lipides", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalGlucose(), minGlucose, maxGlucose, "Glucose", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalLactose(), minLactose, maxLactose, "Lactose", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalMaltose(), minMaltose, maxMaltose, "Maltose", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalAmidon(), minAmidon, maxAmidon, "Amidon", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalFibres(), minFibres, maxFibres, "Fibres", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalCholesterol(), minCholesterol, maxCholesterol, "Cholestérol", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalSel(), minSel, maxSel, "Sel", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalCalcium(), minCalcium, maxCalcium, "Calcium", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalCuivre(), minCuivre, maxCuivre, "Cuivre", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalFer(), minFer, maxFer, "Fer", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getTotalProteines625(), minProteines625, maxProteines625, "Protéines", rejectionReason)) isValid = false;
+
+                /**
+                 * Display nutritional parameters for each generated recipe
+                */
+
+                logger.info(" -- Détails nutritionnels pour {} : Calories: {} kcal | Glucides: {} g | Lipides: {} g | Glucose: {} g | Lactose: {} g | Maltose: {} g | Amidon: {} g | Fibres: {} g | Cholestérol: {} mg | Sel: {} g | Calcium: {} mg | Cuivre: {} mg | Fer: {} mg | Protéines: {} g",
+                        newRecipe.getRecipeName(),
+                        newRecipe.getCalorieCount(), newRecipe.getTotalGlucides(), newRecipe.getTotalLipides(),
+                        newRecipe.getTotalGlucose(), newRecipe.getTotalLactose(), newRecipe.getTotalMaltose(),
+                        newRecipe.getTotalAmidon(), newRecipe.getTotalFibres(), newRecipe.getTotalCholesterol(),
+                        newRecipe.getTotalSel(), newRecipe.getTotalCalcium(), newRecipe.getTotalCuivre(),
+                        newRecipe.getTotalFer(), newRecipe.getTotalProteines625());
+
+                /**
+                 * Si la recette est valide, on l'ajoute
+                 */
+
+                if (isValid) {
+                    recipes.add(newRecipe);
+                    logger.info(" Recette ajoutée avec succès : {} | Calories: {} kcal",
+                            newRecipe.getRecipeName(), newRecipe.getCalorieCount());
+                } else {
+                    logger.warn(" Recette rejetée : {}. Raisons : {}",
+                            newRecipe.getRecipeName(), rejectionReason.toString());
+                }
+            } else {
+                logger.warn(" Impossible de générer une recette pour le régime : {}", dietaryRegime);
             }
         }
-        logger.info("Recettes {} générées avec succès pour le régime alimentaire: {}", recipes.size(), dietaryRegime);
+
+        logger.info(" {} recettes générées avec succès pour le régime : {}", recipes.size(), dietaryRegime);
         return recipes;
     }
 }
