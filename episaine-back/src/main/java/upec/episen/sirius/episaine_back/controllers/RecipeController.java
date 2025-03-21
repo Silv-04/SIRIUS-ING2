@@ -5,6 +5,8 @@ package upec.episen.sirius.episaine_back.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import upec.episen.sirius.episaine_back.services.ProgressService;
 import upec.episen.sirius.episaine_back.services.RecipeService;
 import upec.episen.sirius.episaine_back.models.Recipe;
 
@@ -22,13 +24,15 @@ import java.util.Random;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final ProgressService progress;
 
     /**
      * Constructor for RecipeController.
      * @param recipeService The service used to handle recipe operations.
      */
-    public RecipeController(RecipeService recipeService) {
+    public RecipeController(RecipeService recipeService, ProgressService progress) {
         this.recipeService = recipeService;
+        this.progress = progress;
     }
 
     /**
@@ -119,5 +123,38 @@ public class RecipeController {
         }
 
         return ResponseEntity.ok(recipes);
+    }
+    /**
+     * @param regime : given a regime type
+     * @param minCalories : given a minimum range of calories
+     * @param maxCalories : given a maximum range of calories
+     * @param category : given a category of recipe
+     * @param orderOption : given an order option to sort the data
+     * @return List<Recipes> : return a list of recipes filtered by the given parameters
+     */
+    @GetMapping("/filter")
+    public List<Recipe> getRecipesFiltered(
+            @RequestParam(required = false) String regime,
+            @RequestParam(required = false) Integer minCalories,
+            @RequestParam(required = false) Integer maxCalories,
+            @RequestParam(required = false) String orderOption) {
+        return recipeService.getRecipesFilteredByRegimeCalories(regime, minCalories, maxCalories, orderOption);
+    }
+
+    
+    /**
+     * @param id : given a customer id
+     * @param numberOfDays : given a number of days
+     * @param orderOption : given an order option to sort the data
+     * @param n : given a max number of recipes
+     * @return List<List<Recipes>> : return a list of list of recipes for a given customer id
+     */
+    @GetMapping("/getRecipesList/{id}")
+    public List<List<Recipe>> getRecipesTest(
+        @PathVariable int id,
+        @RequestParam(required = false) Integer numberOfDays,
+        @RequestParam(required = false) String orderOption,
+        @RequestParam int n) {
+        return progress.getRecipesForId(id, numberOfDays, orderOption, n);
     }
 }

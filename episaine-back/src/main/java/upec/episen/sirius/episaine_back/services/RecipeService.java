@@ -5,6 +5,7 @@ import jakarta.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import upec.episen.sirius.episaine_back.models.Product;
 import upec.episen.sirius.episaine_back.models.Recipe;
@@ -309,5 +310,23 @@ public class RecipeService {
 
         logger.info(" {} recettes générées avec succès pour le régime : {}", recipes.size(), dietaryRegime);
         return recipes;
+    }
+
+    /** 
+     * @param regime : given a regime type
+     * @param minCalories : given a minimum number of calories
+     * @param maxCalories : given a maximum number of calories
+     * @param category : given a category of recipe
+     * @param orderOption : given an order option
+     * @return List<Recipe> : return a list of recipes filtered by regime, calories and ordered by the order option
+     */
+    public List<Recipe> getRecipesFilteredByRegimeCalories(String regime, Integer minCalories, Integer maxCalories, String orderOption) {
+        if (orderOption.equals("") || orderOption.isEmpty()) {
+            return recipeRepository.findRecipesWithFilter(regime, minCalories, maxCalories);
+        }
+        else {
+            Sort sort = Sort.by(Sort.Direction.DESC, orderOption);
+            return recipeRepository.findRecipesWithFilterAndOrder(regime, minCalories, maxCalories, sort);
+        }
     }
 }
