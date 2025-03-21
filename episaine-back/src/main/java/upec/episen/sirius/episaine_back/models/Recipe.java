@@ -180,4 +180,8 @@ public class Recipe {
     public Double getTotalProteines625() { return totalProteines625; }
     public void setTotalProteines625(Double totalProteines625) { this.totalProteines625 = totalProteines625; }
 
+    @Override
+    public String toString() {
+        return "Recipe{RecipeName='" + recipeName + '}';
+    }
 }

@@ -162,7 +162,7 @@ public class WeightForecastService {
         int nbOfDays = 1;
 
         while (!satisfied) {
-            recipeList = progressService.getRecipesForId(id, 1, "calorie_count", nbOfDays*30);
+            recipeList = progressService.getRecipesForId(id, 1, nbOfDays*30);
             recipeListWithDay = formatRecipeList(recipeList);
             caloriesListPerDay = recipeToCaloriesList(recipeListWithDay);
             weights = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);

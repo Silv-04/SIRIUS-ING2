@@ -1,6 +1,3 @@
-
-
-
 package upec.episen.sirius.episaine_back.controllers;
 
 import org.springframework.http.ResponseEntity;
@@ -138,7 +135,7 @@ public class RecipeController {
             @RequestParam(required = false) Integer minCalories,
             @RequestParam(required = false) Integer maxCalories,
             @RequestParam(required = false) String orderOption) {
-        return recipeService.getRecipesFilteredByRegimeCalories(regime, minCalories, maxCalories, orderOption);
+        return recipeService.getRecipesFilteredByRegimeCalories(regime, minCalories, maxCalories);
     }
 
     
@@ -155,6 +152,6 @@ public class RecipeController {
         @RequestParam(required = false) Integer numberOfDays,
         @RequestParam(required = false) String orderOption,
         @RequestParam int n) {
-        return progress.getRecipesForId(id, numberOfDays, orderOption, n);
+        return progress.getRecipesForId(id, numberOfDays, n);
     }
 }

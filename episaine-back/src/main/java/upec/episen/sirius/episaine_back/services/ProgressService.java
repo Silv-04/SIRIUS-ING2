@@ -37,7 +37,7 @@ public class ProgressService {
         this.customerService = customerService;
     }
 
-    public List<List<Recipe>> getRecipesForId(int id, Integer numberOfDays, String orderOption, int n) {
+    public List<List<Recipe>> getRecipesForId(int id, Integer numberOfDays, int n) {
         List<Recipe> recipesList = new ArrayList<>();
 
         Informations informations = informationsService.findByIdCustomer(id);
@@ -86,24 +86,23 @@ public class ProgressService {
             case "gain de poids":
                 double gainCalories = calories + gain_min;
                 recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
-                        (int) Math.floor(gainCalories), null, orderOption));
+                        (int) Math.floor(gainCalories), null));
                 break;
             case "perte de poids":
                 double minLostCalories = calories - perte_min;
                 double maxLostCalories = calories - perte_max;
                 recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
-                        (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories),
-                        orderOption));
+                        (int) Math.floor(maxLostCalories), (int) Math.floor(minLostCalories)));
                 break;
             case "maintien de poids":
                 double infCalories = calories - perte_min;
                 double supCalories = calories + gain_min;
                 recipesList.addAll(recipeService.getRecipesFilteredByRegimeCalories(regime,
-                        (int) Math.floor(infCalories), (int) Math.floor(supCalories), orderOption));
+                        (int) Math.floor(infCalories), (int) Math.floor(supCalories)));
             default:
                 break;
         }
-        // progressLogger.info("Current list:" + recipesList);
+        progressLogger.info("Current list:" + recipesList);
 
         // 3. Filter recipes according to client's allergies, intolerances and
         // prohibited foods
