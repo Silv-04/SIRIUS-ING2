@@ -49,6 +49,7 @@ function ExistingCustomerOrNot() {
                         <form onSubmit={handleValidate}>
                             <Text fontWeight={"bold"} textAlign={"center"}>Client existant</Text>
                             <Input
+                                id="customer-number"
                                 placeholder="Numéro client"
                                 value={customerNumber}
                                 onChange={handleChange}
@@ -56,7 +57,7 @@ function ExistingCustomerOrNot() {
                                 inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                             />
                             <Grid align={"center"} templateColumns={"repeat(2, 1fr"}>
-                                <GridItem gridColumn={1}><Button bgColor={"#bbf7d0"} type={"submit"}>Valider</Button></GridItem>
+                                <GridItem gridColumn={1}><Button bgColor={"#bbf7d0"} type={"submit"} id="validateCustomerId">Valider</Button></GridItem>
                                 <GridItem gridColumn={2}><Button bgColor={"#fca5a5"} onClick={handleReset}>Annuler</Button></GridItem>
                             </Grid>
                         </form>

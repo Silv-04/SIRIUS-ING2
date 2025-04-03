@@ -31,7 +31,7 @@
     "webpack": "^5.97.1"
   },
   "scripts": {
-    "start": "cross-env REACT_APP_BACKEND_URL=http://localhost:8080 react-scripts start",
+    "start": "cross-env REACT_APP_BACKEND_URL=http://dd-4.inside.esipe-creteil.info:8080 react-scripts start",
     "build:local": "cross-env REACT_APP_BACKEND_URL=http://localhost:8080 react-scripts build ",
     "build:dev": "CI=false cross-env REACT_APP_BACKEND_URL=http://172.31.253.160:8081 react-scripts build ",
     "build:preprod": "CI=false cross-env REACT_APP_BACKEND_URL=http://192.168.2.21:8080 react-scripts build ",

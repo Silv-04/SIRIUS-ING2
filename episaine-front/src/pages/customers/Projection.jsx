@@ -8,7 +8,7 @@ import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 function ProjectionPage() {
 
     const location = useLocation();
-    const [value, setValue] = useState(0)
+    const [value, setValue] = useState()
     const [id, setId] = useState([]);
     const [weightsListGenerated, setWeightsListGenerated] = useState([]);
 
@@ -38,7 +38,7 @@ function ProjectionPage() {
                     <Grid templateColumns="repeat(3, 1fr)" gap={6} alignItems={"center"} justifyContent={"center"} paddingTop={20}>
                         <Text>Objectf de poids (kg) :</Text>
                         <Input
-                            type="number"
+                            id="weight-value"
                             value={value}
                             onChange={(e) => setValue(e.target.value)}
                             placeholder="Objectif de poids"
@@ -46,7 +46,7 @@ function ProjectionPage() {
                     </Grid >
                 </GridItem>
                 <GridItem>
-                    <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit'>Obtenir ma projection</Button>
+                    <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit' id="validate-projection">Obtenir ma projection</Button>
                 </GridItem>
             </form>
             <GridItem>

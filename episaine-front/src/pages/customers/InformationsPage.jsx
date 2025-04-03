@@ -288,6 +288,7 @@ function InformationsPageInputs() {
                     </Grid>
                     <Grid rowSpan={3} templateColumns={"repeat(3, 1fr)"} gap={4} padding={4}>
                         <Button
+                            id='get-recipes-button'
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"
@@ -298,6 +299,7 @@ function InformationsPageInputs() {
                             bg="#2C3A4F"
                             onClick={handleReset}>Vider les champs</Button>
                         <Button
+                            id='get-projection-button'
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"

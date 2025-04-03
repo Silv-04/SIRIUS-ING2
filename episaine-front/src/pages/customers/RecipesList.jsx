@@ -100,6 +100,7 @@ function RecipesListInput() {
                         <Grid templateRows={"repeat(2, 1fr"}>
                             <Text>Nombre de jour</Text>
                             <Input
+                                id="number-of-days"
                                 placeholder="Nombre de jour"
                                 value={numberOfDays}
                                 onChange={handleChange}
@@ -108,6 +109,7 @@ function RecipesListInput() {
                     </GridItem>
                     <GridItem colSpan={2}>
                         <Select
+                            id='sort-recipes'
                             value={sortValue}
                             onChange={(e) => setSortValue(e.target.value)}
                         >
@@ -118,7 +120,7 @@ function RecipesListInput() {
                             ))}
                         </Select>
                     </GridItem>
-                    <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit'>Générer la liste</Button>
+                    <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit' id='generate-recipes'>Générer la liste</Button>
                 </Grid>
             </form>
             <form onSubmit={(e) => { e.preventDefault(); handleValidate(); }} noValidate autoComplete='off'>

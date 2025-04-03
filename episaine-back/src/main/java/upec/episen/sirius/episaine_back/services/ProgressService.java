@@ -77,8 +77,8 @@ public class ProgressService {
 
         double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, nbOfMealsPerDay);
 
-        progressLogger.info("Calories: " + calories + ", objective: " + informations.getHealth_goal() + ", nb of days: "
-                + numberOfDays + ", nb of meals:" + nbOfMealsPerDay + ", regime:" + regime);
+        //progressLogger.info("Calories: " + calories + ", objective: " + informations.getHealth_goal() + ", nb of days: "
+        //        + numberOfDays + ", nb of meals:" + nbOfMealsPerDay + ", regime:" + regime);
 
         // 2. Get recipes according to client's goals (health goal, regime, cuisine
         // type)
@@ -102,7 +102,7 @@ public class ProgressService {
             default:
                 break;
         }
-        progressLogger.info("Current list:" + recipesList);
+        //progressLogger.info("Current list:" + recipesList);
 
         // 3. Filter recipes according to client's allergies, intolerances and
         // prohibited foods
@@ -113,7 +113,7 @@ public class ProgressService {
         List<List<Recipe>> allRecipesLists = new ArrayList<>();
         int combinationSize = numberOfDays * nbOfMealsPerDay;
         getCombination(recipesList, combinationSize, 0, 0, n, new ArrayList<>(), allRecipesLists);
-        progressLogger.info("All recipes lists:" + allRecipesLists);
+        //progressLogger.info("All recipes lists:" + allRecipesLists);
         return allRecipesLists;
     }
 

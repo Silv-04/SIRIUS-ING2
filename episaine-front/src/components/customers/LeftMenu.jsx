@@ -49,6 +49,7 @@ export default function LeftMenu() {
                         Page d'accueil
                     </Button>
                     <Button
+                        id="get-recipes"
                         as={RouterLink}
                         to="/client/recettes/"
                         variant="ghost"
