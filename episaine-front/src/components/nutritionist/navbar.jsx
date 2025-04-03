@@ -74,6 +74,7 @@ export default function Navbar() {
                     Rendez-vous
                 </Button>
                 <Button
+                    id="btn-recipe-lib"
                     as={RouterLink}
                     to="/components/nutritionniste/recipe/"
                     variant="ghost"

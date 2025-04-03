@@ -148,7 +148,7 @@ export default function Recipe() {
                 <Heading mb={6} size="lg" color="teal.800" textAlign="center">Bibliothèque de Recettes</Heading>
                 <Flex alignItems="center" mb={4}>
                     <Text fontWeight="bold" color="teal.700">Nombre de recettes :</Text>
-                    <Select value={recipeCount} onChange={(e) => setRecipeCount(Number(e.target.value))} width="100px" textAlign="center" mr={3}>
+                    <Select id="select-recipe-count" value={recipeCount} onChange={(e) => setRecipeCount(Number(e.target.value))} width="100px" textAlign="center" mr={3}>
                         {[...Array(10).keys()].map((num) => (
                             <option key={num + 1} value={num + 1}>{num + 1}</option>
                         ))}
@@ -205,7 +205,7 @@ export default function Recipe() {
 
                 <Flex alignItems="center" mb={4}>
                     <Text fontWeight="bold" color="teal.700" mr={3}>Régime alimentaire :</Text>
-                    <Select placeholder="Sélectionner un régime" value={dietaryRegime} onChange={(e) => setDietaryRegime(e.target.value)} width="200px">
+                    <Select id="select-dietary-regime" placeholder="Sélectionner un régime" value={dietaryRegime} onChange={(e) => setDietaryRegime(e.target.value)} width="200px">
                         <option value="vegetarien">Végétarien</option>
                         <option value="vegane">Végan</option>
                         <option value="Omnivore">Omnivore</option>
@@ -219,7 +219,7 @@ export default function Recipe() {
 
                 <Flex alignItems="center" mb={4}>
                     <Text fontWeight="bold" color="teal.700" mr={3}>Plage de calories :</Text>
-                    <Select value={minCalories} onChange={(e) => {const value = Number(e.target.value);setMinCalories(value);validateCalories(value, maxCalories);}}
+                    <Select id="select-min-calories" value={minCalories} onChange={(e) => {const value = Number(e.target.value);setMinCalories(value);validateCalories(value, maxCalories);}}
                             width="100px"
                             textAlign="center"
                             mr={3}
@@ -230,6 +230,7 @@ export default function Recipe() {
                     </Select>
                     <span style={{ margin: "0 10px" }}>à</span>
                     <Select
+                        id="select-max-calories"
                         value={maxCalories}
                         onChange={(e) => {const value = Number(e.target.value);
                             setMaxCalories(value);
@@ -244,7 +245,9 @@ export default function Recipe() {
                     </Select>
                 </Flex>
 
-                <Button onClick={generateRecipe} isLoading={loading} colorScheme="teal" mb={6} isDisabled={error !== ""}>
+                <Button
+                    id="btn-generate-recipe"
+                    onClick={generateRecipe} isLoading={loading} colorScheme="teal" mb={6} isDisabled={error !== ""}>
                     Générer {recipeCount} Recette(s)
                 </Button>
 

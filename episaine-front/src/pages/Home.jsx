@@ -94,6 +94,7 @@ export default function Home() {
                     </Button>
 
                     <Button
+                        id="btn-nutritionist"
                         as={RouterLink}
                         to="/nutritionniste"    
                         colorScheme="green"
