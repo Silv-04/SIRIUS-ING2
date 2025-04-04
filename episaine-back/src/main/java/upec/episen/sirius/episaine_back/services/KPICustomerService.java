@@ -68,7 +68,7 @@ public class KPICustomerService {
      */
 
     public Map<String, Long> getAgeDistribution() {
-        List<Object[]> results = kpiCustomerRepository.getAgeDistribution();
+        List<Object[]> results = kpiCustomerRepository.getStatsByAgeGroup();
         Map<String, Long> ageDistribution = new HashMap<>();
         for (Object[] result : results) {
             String ageGroup = (String) result[0];
@@ -107,7 +107,7 @@ public class KPICustomerService {
          *
          * */
 
-        List<Object[]> results = kpiCustomerRepository.getMonthlyDistribution();
+        List<Object[]> results = kpiCustomerRepository.getStatsByAgeGroup();
 
         /**
          *
@@ -126,4 +126,33 @@ public class KPICustomerService {
                 })
                 .toList();
     }
+
+    public List<Map<String, Object>> getStatsByAgeGroup() {
+        List<Object[]> rawStats = kpiCustomerRepository.getStatsByAgeGroup();
+        List<Map<String, Object>> stats = new ArrayList<>();
+
+        for (Object[] row : rawStats) {
+            String ageGroup = (String) row[0];
+            double avgWeight = row[1] != null ? ((Number) row[1]).doubleValue() : 0;
+            double avgHeight = row[2] != null ? ((Number) row[2]).doubleValue() : 0;
+
+            double imc = 0;
+            if (avgHeight > 0) {
+                imc = avgWeight / Math.pow(avgHeight / 100.0, 2);
+            }
+
+            Map<String, Object> stat = new HashMap<>();
+            stat.put("ageGroup", ageGroup);
+            stat.put("averageWeight", avgWeight);
+            stat.put("averageHeight", avgHeight);
+            stat.put("imc", imc);
+
+            stats.add(stat);
+        }
+
+        return stats;
+    }
+
+
+
 }
