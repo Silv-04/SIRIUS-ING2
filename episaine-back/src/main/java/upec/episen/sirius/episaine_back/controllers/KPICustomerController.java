@@ -8,7 +8,7 @@ import upec.episen.sirius.episaine_back.services.KPICustomerService;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/kpis/customers")
+@RequestMapping("/kpi/")
 public class KPICustomerController {
 
     @Autowired
@@ -43,4 +43,11 @@ public class KPICustomerController {
     public ResponseEntity<List<Map<String, Object>>> getMonthlyDistribution() {
         return ResponseEntity.ok(kpiCustomerService.getMonthlyDistribution());
     }
+
+    @GetMapping("/stats")
+    public ResponseEntity<List<Map<String, Object>>> getStatsByAgeGroup() {
+        return ResponseEntity.ok(kpiCustomerService.getStatsByAgeGroup());
+    }
+
 }
+
