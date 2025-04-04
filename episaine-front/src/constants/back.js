@@ -6,11 +6,14 @@ export const READ_ALL_CUSTOMERS = BACKEND_HOST_EPISAINE + '/customer/get/all';
 export const UPDATE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/update';
 export const DELETE_CUSTOMER = BACKEND_HOST_EPISAINE + '/customer/delete';
 
-export const FEMALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/females";
-export const MALE_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/males";
-export const TOTAL_COUNT = BACKEND_HOST_EPISAINE + "/api/kpis/customers/count/total";
-export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/api/kpis/customers/age-distribution';
-export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/api/kpis/customers/monthly-distribution'
+export const FEMALE_COUNT = BACKEND_HOST_EPISAINE + "/kpi/count/females";
+export const MALE_COUNT = BACKEND_HOST_EPISAINE + "/kpi/count/males";
+export const TOTAL_COUNT = BACKEND_HOST_EPISAINE + "/kpi/count/total";
+export const AGE_DISTRIBUTION = BACKEND_HOST_EPISAINE + '/kpi/age-distribution';
+export const MONTHLY_CUSTOMER_COUNT = BACKEND_HOST_EPISAINE + '/kpi/monthly-distribution'
+export const AVG_IMC_CUSTOMER = BACKEND_HOST_EPISAINE + '/kpi/stats'
+
+
 export const GET_PROJECTION_VALUES = BACKEND_HOST_EPISAINE + '/weight-forecast/getWeightValues';
 
 export const GET_RECIPES_BY_CUSTOMER = BACKEND_HOST_EPISAINE + '/recipe/getRecipesList';
