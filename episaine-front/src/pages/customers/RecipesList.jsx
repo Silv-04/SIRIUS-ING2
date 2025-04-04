@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import LeftMenu from '../../components/customers/LeftMenu';
 import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
-import { useLocation, useNavigate } from 'react-router-dom';
-import sortRecipesTableOptions from '../../constants/sortRecipesTableOptions.json';
-import { Box, Button, Center, Checkbox, Grid, GridItem, Input, Select, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { Box, Button, Center, Checkbox, Grid, GridItem, Input, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { generateRecipesList } from '../../api/customerAPI';
 
-// path="/client/recettes/informations/choix/"
+// path="/client/recettes/"
 // page to display each recipes according to the customer's informations
 function RecipesListInput() {
     const [id, setId] = useState('');
@@ -14,15 +13,13 @@ function RecipesListInput() {
     const [allRecipesList, setAllRecipesList] = useState([]);
     const [selectedTables, setSelectedTables] = useState({});
     const [recipesList, setRecipesList] = useState([]);
-    const [sortValue, setSortValue] = useState('none');
-    const location = useLocation();
     const navigate = useNavigate();
 
 
     // fetched recipes
     const getRecipes = async () => {
         try {
-            const response = await generateRecipesList(id, numberOfDays, sortValue, 10);
+            const response = await generateRecipesList(id, numberOfDays, 'calorie_count', 10);
             console.log("Recipes fetched:", response.data);
             const tempRecipesList = response.data;
 
@@ -51,7 +48,7 @@ function RecipesListInput() {
     // sent saved recipes to the next page
     const handleValidate = () => {
         console.log("Selected recipes: ", recipesList);
-        navigate("/client/recettes/informations/choix/resultat/", { state: { inputValue: recipesList } });
+        navigate("/client/recettes/resultat/", { state: { inputValue: recipesList } });
     }
 
     // calculate average calories to sort the list
@@ -62,28 +59,25 @@ function RecipesListInput() {
 
     // handle the sort according to the chosen option
     const handleSort = (tempRecipesList) => {
-        if (sortValue === 'none') return;
-
         let sortedRecipesGroups = [...tempRecipesList];
-
-        if (sortValue === 'calorie_count') {
             sortedRecipesGroups.sort((groupA, groupB) => {
                 const avgA = calculateAverageCalories(groupA);
                 const avgB = calculateAverageCalories(groupB);
                 return avgB - avgA;
             });
-        }
-
         return sortedRecipesGroups;
     };
 
     // receive id from previous page
     useEffect(() => {
-        if (location.state?.inputValue) {
-            console.log("ID received: ", location.state.inputValue);
-            setId(location.state.inputValue);
+        const informations = JSON.parse(localStorage.getItem("customer data"));
+        if (informations) {
+            console.log("ID received: ", informations.fk_customer_id);
+            setId(informations.fk_customer_id);
+        } else {
+            console.log("No customer data found in local storage.");
         }
-    }, [location.state]);
+    },[]);
 
     const handleChange = (e) => {
         const value = e.target.value;
@@ -97,7 +91,6 @@ function RecipesListInput() {
             <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
                 <Grid templateColumns={"repeat(1, 1fr)"} gap={4} p={4} justifyContent={"center"} alignItems={"center"}>
                     <GridItem colSpan={1}>
-                        <Grid templateRows={"repeat(2, 1fr"}>
                             <Text>Nombre de jour</Text>
                             <Input
                                 id="number-of-days"
@@ -105,20 +98,6 @@ function RecipesListInput() {
                                 value={numberOfDays}
                                 onChange={handleChange}
                                 inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
-                        </Grid>
-                    </GridItem>
-                    <GridItem colSpan={2}>
-                        <Select
-                            id='sort-recipes'
-                            value={sortValue}
-                            onChange={(e) => setSortValue(e.target.value)}
-                        >
-                            {sortRecipesTableOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </Select>
                     </GridItem>
                     <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit' id='generate-recipes'>Générer la liste</Button>
                 </Grid>

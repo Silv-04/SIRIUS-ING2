@@ -14,6 +14,7 @@ import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import upec.episen.sirius.episaine_back.dto.WeightProjectionDTO;
 import upec.episen.sirius.episaine_back.models.Customer;
 import upec.episen.sirius.episaine_back.models.Informations;
 import upec.episen.sirius.episaine_back.models.Recipe;
@@ -113,12 +114,11 @@ public class WeightForecastService {
             double newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) Math.round(avgCalories));
             weightList.put(i, newWeight);
         }
-
         return weightList;
     }
 
     
-    /** 
+    /**
      * @param recipeList : given a list of recipes
      * @return List<Pair<Integer, Recipe>> : return a list of pair of recipes and their corresponding day
      */
@@ -138,7 +138,7 @@ public class WeightForecastService {
      * @param objective : given the customer's objective
      * @return Map<Integer, Double> : return a map of weight values per day
      */
-    public Map<Integer, Double> getWeightList(int id, int objective) {
+    public WeightProjectionDTO getWeightList(int id, int objective) {
         Informations informations = informationsService.findByIdCustomer(id);
         Customer customer = customerService.findByIdCustomer(id);
 
@@ -166,7 +166,6 @@ public class WeightForecastService {
             recipeListWithDay = formatRecipeList(recipeList);
             caloriesListPerDay = recipeToCaloriesList(recipeListWithDay);
             weights = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);
-            forecastLogger.info("Weight list: " + weights.toString());
             switch (informations.getHealth_goal().toLowerCase()) {
                 case "gain de poids":
                     if (weights.get(weights.size()-1) > objective) {
@@ -190,6 +189,8 @@ public class WeightForecastService {
             }
         }
         forecastLogger.info("Weight list: " + weights.toString());
-        return weights;
+        forecastLogger.info("Recipe list: " + recipeListWithDay.toString());
+
+        return new WeightProjectionDTO(weights, recipeListWithDay);
     }
 }

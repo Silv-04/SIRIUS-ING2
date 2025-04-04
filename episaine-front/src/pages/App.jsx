@@ -33,14 +33,15 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
 
-                    <Route path="/client/" element={<CustomerMainPage />} />
-                    <Route path="/client/recettes/" element={<ExistingCustomer />} />
-                    <Route path="/client/recettes/informations/" element={<InformationsPage />} />
-                    <Route path="/client/recettes/informations/choix/" element={<RecipesList />} />
-                    <Route path="/client/recettes/informations/choix/resultat/" element={<Result />} />
-                    <Route path="/client/recettes/creation_profil/" element={<CreateCustomers />} />
+                    <Route path="/client/" element={<ExistingCustomer />} />
+                    <Route path="/client/menu/" element={<CustomerMainPage />} />
+                    <Route path="/client/profil/" element={<InformationsPage />} />
+                    
+                    <Route path="/client/recettes/" element={<RecipesList />} />
+                    <Route path="/client/recettes/resultat/" element={<Result />} />
+                    <Route path="/client/creation_profil/" element={<CreateCustomers />} />
                     <Route path="/client/parametre/" element={<CustomerParameter />} />
-                    <Route path="/client/recettes/informations/projection/" element={<Projection />} />
+                    <Route path="/client/projection/" element={<Projection />} />
 
                     <Route path="/nutritionniste/" element={<HomeNutritionniste />} />
                     <Route path="/indicateurPerformance/" element={<IndicateurPerformance />} />

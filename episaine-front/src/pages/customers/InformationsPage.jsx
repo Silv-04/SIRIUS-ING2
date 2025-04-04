@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import allergyOptions from '../../constants/allergyOptions';
 import intoleranceOptions from '../../constants/intoleranceOptions';
 import regimeOptions from '../../constants/regimeOptions';
@@ -9,14 +9,13 @@ import LeftMenu from '../../components/customers/LeftMenu';
 import healthGoalOptions from '../../constants/healthGoalOptions';
 import { Button, Grid, GridItem, Input, Select, Text } from '@chakra-ui/react';
 import { MultiSelect } from 'chakra-multiselect';
-import { updateCustomerInformation, createCustomerInformation, getCustomerInformationByCustomerId } from '../../api/customerAPI';
+import { updateCustomerInformation, createCustomerInformation } from '../../api/customerAPI';
 
-// path="/client/recettes/informations/"
+// path="/client/profil/"
 // page to display and update the customer's informations if needed
 function InformationsPageInputs() {
     const [informations, setInformations] = useState();
 
-    const location = useLocation();
     const navigate = useNavigate();
 
     const [healthGoal, setHealthGoal] = useState("");
@@ -52,7 +51,7 @@ function InformationsPageInputs() {
 
         if (informations && JSON.stringify(informations) === JSON.stringify(new_information)) {
             console.log("No changes detected");
-            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } })
+            navigate("/client/menu/")
             return;
         }
         else {
@@ -69,46 +68,7 @@ function InformationsPageInputs() {
             } catch (error) {
                 console.error("Error while updating or creating data:", error);
             }
-            navigate("/client/recettes/informations/choix/", { state: { inputValue: new_information.fk_customer_id } })
-        }
-    };
-
-    const handleSubmitProjection = async (e) => {
-        e.preventDefault();
-        const new_information = {
-            information_id: informationId,
-            health_goal: healthGoal,
-            intolerances: Array.isArray(intolerances) ? intolerances.join(",") : "",
-            allergies: Array.isArray(allergies) ? allergies.join(",") : "",
-            dietary_regime: dietaryRegime,
-            meals_per_day: mealsPerDay,
-            weight: weight,
-            height: height,
-            prohibited_food: foodToAvoid,
-            recipe_temperature: foodTemperature,
-            cuisine_type: Array.isArray(cuisineType) ? cuisineType.join(",") : "",
-            fk_customer_id: customerId
-        };
-
-        if (informations && JSON.stringify(informations) === JSON.stringify(new_information)) {
-            console.log("No changes detected");
-            navigate("/client/recettes/informations/projection/", { state: { inputValue: new_information.fk_customer_id}})
-        }
-        else {
-            try {
-                if (informations) {
-                    console.log("Changes in informations detected");
-                    await updateCustomerInformation(new_information);
-                    console.log("Informations updated");
-                } else {
-                    console.log("No information found, creating new data");
-                    await createCustomerInformation(new_information);
-                    console.log("Informations created");
-                }
-            } catch (error) {
-                console.error("Error while updating or creating data:", error);
-            }
-            navigate("/client/recettes/informations/projection/", { state: { inputValue: new_information.fk_customer_id } })
+            navigate("/client/menu/")
         }
     };
 
@@ -127,29 +87,16 @@ function InformationsPageInputs() {
     };
 
 
-    // get data sent from the previous page (customer ID number)
+    // get data stored in local storage
     useEffect(() => {
-        if (location.state?.inputValue) {
-            setCustomerId(location.state.inputValue);
+        const informations = JSON.parse(localStorage.getItem("customer data"));
+        if (informations) {
+            setInformations(informations);
         }
-    }, [location.state]);
-
-    // get informations from customer's id once received from the previous page
-    useEffect(() => {
-        const readInformations = async () => {
-            try {
-                const response = await getCustomerInformationByCustomerId(customerId);
-                console.log("Informations fetched", response.data);
-                setInformations(response.data);
-            } catch (error) {
-                console.error("Error while reading data:", error);
-            }
-        };
-
-        if (customerId) {
-            readInformations();
+        else {
+            console.log("No data found in local storage");
         }
-    }, [customerId]);
+    }, []);
 
     // once informations received, update each fields
     useEffect(() => {
@@ -286,24 +233,18 @@ function InformationsPageInputs() {
                             </GridItem>
                         </Grid>
                     </Grid>
-                    <Grid rowSpan={3} templateColumns={"repeat(3, 1fr)"} gap={4} padding={4}>
+                    <Grid templateColumns={"repeat(2, 1fr)"} gap={4} padding={4}>
                         <Button
                             id='get-recipes-button'
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"
-                            onClick={handleSubmitChoice}>Choisir mes recettes</Button>
+                            onClick={handleSubmitChoice}>Valider</Button>
                         <Button
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"
                             onClick={handleReset}>Vider les champs</Button>
-                        <Button
-                            id='get-projection-button'
-                            _hover={{ bg: "#4d648d" }}
-                            color="white"
-                            bg="#2C3A4F"
-                            onClick={handleSubmitProjection}>Obtenir un programme</Button>
                     </Grid>
                 </form>
             </GridItem>

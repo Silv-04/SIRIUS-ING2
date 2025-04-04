@@ -77,11 +77,7 @@ public class ProgressService {
 
         double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, nbOfMealsPerDay);
 
-        //progressLogger.info("Calories: " + calories + ", objective: " + informations.getHealth_goal() + ", nb of days: "
-        //        + numberOfDays + ", nb of meals:" + nbOfMealsPerDay + ", regime:" + regime);
-
-        // 2. Get recipes according to client's goals (health goal, regime, cuisine
-        // type)
+        // 2. Get recipes according to client's goals (health goal, regime, cuisine, type)
         switch (informations.getHealth_goal().toLowerCase()) {
             case "gain de poids":
                 double gainCalories = calories + gain_min;
@@ -102,18 +98,14 @@ public class ProgressService {
             default:
                 break;
         }
-        //progressLogger.info("Current list:" + recipesList);
 
-        // 3. Filter recipes according to client's allergies, intolerances and
-        // prohibited foods
+        // 3. Filter recipes according to client's allergies, intolerances and prohibited foods
         recipesList = recipesProductFiltering(allergiesArray, intolerancesArray, prohibitedFoodsArray, recipesList);
-        progressLogger.info("Filtered list:" + recipesList);
-        // 4. Generate combinations of recipes lists with list of days*mealsPerDay
-        // recipes (10 per page)
+
+        // 4. Generate combinations of recipes lists with list of days*mealsPerDay recipes (10 per page)
         List<List<Recipe>> allRecipesLists = new ArrayList<>();
         int combinationSize = numberOfDays * nbOfMealsPerDay;
         getCombination(recipesList, combinationSize, 0, 0, n, new ArrayList<>(), allRecipesLists);
-        //progressLogger.info("All recipes lists:" + allRecipesLists);
         return allRecipesLists;
     }
 
@@ -197,8 +189,7 @@ public class ProgressService {
     }
 
     // generate a combination of recipes
-    // source :
-    // https://www.geeksforgeeks.org/print-all-possible-combinations-of-r-elements-in-a-given-array-of-size-n/
+    // source : https://www.geeksforgeeks.org/print-all-possible-combinations-of-r-elements-in-a-given-array-of-size-n/
     public static int getCombination(List<Recipe> recipesList, int k, int start, int cpt, int n,
             List<Recipe> currentList, List<List<Recipe>> allRecipesLists) {
         if (cpt >= n) {
@@ -218,5 +209,4 @@ public class ProgressService {
 
         return cpt;
     }
-
 }

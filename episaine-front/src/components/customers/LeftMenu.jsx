@@ -51,7 +51,6 @@ export default function LeftMenu() {
                     <Button
                         id="get-recipes"
                         as={RouterLink}
-                        to="/client/recettes/"
                         variant="ghost"
                         justifyContent="flex-start"
                         leftIcon={<Icon as={FaUsers} />}
@@ -61,11 +60,10 @@ export default function LeftMenu() {
                         borderRadius="8px"
                         w="100%"
                     >
-                        Obtenir mes recettes
+                        TBA
                     </Button>
                     <Button
                         as={RouterLink}
-                        to="/client/"
                         variant="ghost"
                         justifyContent="flex-start"
                         leftIcon={<Icon as={FaCalendarAlt} />}
@@ -79,7 +77,6 @@ export default function LeftMenu() {
                     </Button>
                     <Button
                         as={RouterLink}
-                        to="/client/"
                         variant="ghost"
                         justifyContent="flex-start"
                         leftIcon={<Icon as={FaBook} />}
