@@ -138,7 +138,7 @@ public class WeightForecastService {
      * @param objective : given the customer's objective
      * @return Map<Integer, Double> : return a map of weight values per day
      */
-    public WeightProjectionDTO getWeightList(int id, int objective) {
+    public WeightProjectionDTO getWeightList(int id, int objective, int mealsPerDay) {
         Informations informations = informationsService.findByIdCustomer(id);
         Customer customer = customerService.findByIdCustomer(id);
 
@@ -148,7 +148,6 @@ public class WeightForecastService {
         int birthday = Integer.parseInt(formatter.format(customer.getCustomer_birthdate()));
         int age = (today - birthday) / 10000;
         String gender = customer.getGender();
-        int number_of_meals = informations.getMeals_per_day();
         int weight = informations.getWeight();
 
         forecastLogger.info("Original weight: " + weight);
@@ -162,10 +161,10 @@ public class WeightForecastService {
         int nbOfDays = 1;
 
         while (!satisfied) {
-            recipeList = progressService.getRecipesForId(id, 1, nbOfDays*30);
+            recipeList = progressService.getRecipesForId(id, 1, mealsPerDay, nbOfDays*30);
             recipeListWithDay = formatRecipeList(recipeList);
             caloriesListPerDay = recipeToCaloriesList(recipeListWithDay);
-            weights = weightEachDay(height, age, gender, number_of_meals, weight, caloriesListPerDay);
+            weights = weightEachDay(height, age, gender, mealsPerDay, weight, caloriesListPerDay);
             switch (informations.getHealth_goal().toLowerCase()) {
                 case "gain de poids":
                     if (weights.get(weights.size()-1) > objective) {

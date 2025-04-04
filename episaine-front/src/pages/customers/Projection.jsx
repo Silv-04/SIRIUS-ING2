@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LeftMenu from "../../components/customers/LeftMenu";
-import { Box, Button, Grid, GridItem, Input, Text } from "@chakra-ui/react";
+import { Box, Button, CircularProgress, Grid, GridItem, Input, Text } from "@chakra-ui/react";
 import { projection } from "../../api/customerAPI";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 function ProjectionPage() {
 
     const [value, setValue] = useState()
+    const [mealsPerDay, setValueMeals] = useState();
+    const [isLoading, setIsLoading] = useState(false);
     const [id, setId] = useState([]);
     const [weightsListGenerated, setWeightsListGenerated] = useState([]);
     const [recipesList, setRecipesList] = useState([]);
@@ -28,7 +30,8 @@ function ProjectionPage() {
     const handleValidate = async (e) => {
         e.preventDefault();
 
-        const values = await projection(id, value);
+        setIsLoading(true);
+        const values = await projection(id, value, mealsPerDay);
 
         setWeightsListGenerated(Object.keys(values.data.weightProjection).map((key) => ({
             day: Number(key),
@@ -37,6 +40,8 @@ function ProjectionPage() {
 
         setRecipesList((values.data.recipes).map(recipes => [[recipes.value1], recipes.value0+1]));
         console.log("Recettes: ", recipesList);
+
+        setIsLoading(false);
     }
 
     // sent saved recipes to the next page
@@ -58,10 +63,19 @@ function ProjectionPage() {
                                 onChange={(e) => setValue(e.target.value)}
                                 placeholder="Objectif de poids"
                             />
+                            <Text>Nombre de repas par jour :</Text>
+                            <Input
+                                id="number-of-days"
+                                value={mealsPerDay}
+                                onChange={(e) => setValueMeals(e.target.value)}
+                                placeholder="Repas par jour"
+                            />
                         </Grid >
                     </GridItem>
+                    
                     <GridItem>
                         <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit' id="validate-projection">Obtenir ma projection</Button>
+                        {isLoading && <CircularProgress isIndeterminate color='green.300' />}
                     </GridItem>
                 </form>
                 <GridItem>

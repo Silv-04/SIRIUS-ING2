@@ -3,13 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import allergyOptions from '../../constants/allergyOptions';
 import intoleranceOptions from '../../constants/intoleranceOptions';
 import regimeOptions from '../../constants/regimeOptions';
-import temperatureOptions from '../../constants/temperatureOptions';
-import cuisineTypeOptions from '../../constants/cuisineTypeOptions';
 import LeftMenu from '../../components/customers/LeftMenu';
 import healthGoalOptions from '../../constants/healthGoalOptions';
 import { Button, Grid, GridItem, Input, Select, Text } from '@chakra-ui/react';
 import { MultiSelect } from 'chakra-multiselect';
 import { updateCustomerInformation, createCustomerInformation } from '../../api/customerAPI';
+import { Link as RouterLink } from "react-router-dom";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { IoMdArrowRoundForward } from "react-icons/io";
+import { IoTrashBin } from "react-icons/io5";
 
 // path="/client/profil/"
 // page to display and update the customer's informations if needed
@@ -22,7 +24,6 @@ function InformationsPageInputs() {
     const [allergies, setAllergies] = useState([]);
     const [intolerances, setIntolerances] = useState([]);
     const [dietaryRegime, setDietaryRegime] = useState("");
-    const [mealsPerDay, setMealsPerDay] = useState("");
     const [weight, setWeight] = useState("");
     const [height, setHeight] = useState("");
     const [foodToAvoid, setFoodToAvoid] = useState("");
@@ -40,7 +41,6 @@ function InformationsPageInputs() {
             intolerances: Array.isArray(intolerances) ? intolerances.join(",") : "",
             allergies: Array.isArray(allergies) ? allergies.join(",") : "",
             dietary_regime: dietaryRegime,
-            meals_per_day: mealsPerDay,
             weight: weight,
             height: height,
             prohibited_food: foodToAvoid,
@@ -78,7 +78,6 @@ function InformationsPageInputs() {
         setIntolerances([]);
         setHealthGoal('maintien de poids');
         setDietaryRegime('');
-        setMealsPerDay('');
         setWeight('');
         setHeight('');
         setFoodToAvoid('');
@@ -105,7 +104,6 @@ function InformationsPageInputs() {
             setIntolerances(informations.intolerances || []);
             setHealthGoal(informations.health_goal || '');
             setDietaryRegime(informations.dietary_regime || '');
-            setMealsPerDay(informations.meals_per_day || '');
             setWeight(informations.weight || '');
             setHeight(informations.height || '');
             setFoodToAvoid(informations.prohibited_food || '');
@@ -116,12 +114,6 @@ function InformationsPageInputs() {
         }
     }, [informations]);
 
-    const handleChangeMealsPerDay = (e) => {
-        const value = e.target.value;
-        if (/^\d*$/.test(value)) {
-            setMealsPerDay(value);
-        }
-    };
     const handleChangeWeight = (e) => {
         const value = e.target.value;
         if (/^\d*$/.test(value)) {
@@ -143,7 +135,7 @@ function InformationsPageInputs() {
             <GridItem>
                 <form autoComplete='off'>
                     <Grid templateColumns={"repeat(2, 1fr)"} gap={4} padding={4} >
-                        <Grid templateRows={"repeat(5, 1fr)"} gap={4} padding={4}>
+                        <Grid templateRows={"repeat(4, 1fr)"} gap={4} padding={4}>
                             <GridItem>
                                 <Text>Objectif de santé</Text>
                                 <Select
@@ -180,16 +172,8 @@ function InformationsPageInputs() {
                                     ))}
                                 </Select>
                             </GridItem>
-                            <GridItem>
-                                <Text>Nombre de repas par jour</Text>
-                                <Input
-                                    value={mealsPerDay}
-                                    onChange={handleChangeMealsPerDay}
-                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}>
-                                </Input>
-                            </GridItem>
                         </Grid>
-                        <Grid templateRows={"repeat(5, 1fr)"} gap={4} padding={4}>
+                        <Grid templateRows={"repeat(4, 1fr)"} gap={4} padding={4}>
                             <GridItem>
                                 <Text>Poids (kg)</Text>
                                 <Input
@@ -213,38 +197,29 @@ function InformationsPageInputs() {
                                     onChange={(e) => setFoodToAvoid(e.target.value)}>
                                 </Input>
                             </GridItem>
-                            <GridItem>
-                                <Text>Température de plat</Text>
-                                <Select
-                                    value={foodTemperature}
-                                    onChange={(e) => setFoodTemperature(e.target.value)}>
-                                    {temperatureOptions.map((temperature) => (
-                                        <option key={temperature.key} value={temperature.label}>{temperature.label}</option>
-                                    ))}
-                                </Select>
-                            </GridItem>
-                            <GridItem>
-                                <Text>Spécialité culinaire</Text>
-                                <MultiSelect
-                                    options={cuisineTypeOptions.map((cuisineType) => ({ value: cuisineType.name, label: cuisineType.name }))}
-                                    onChange={(e) => setCuisineType(e)}
-                                    value={Array.isArray(cuisineType) ? cuisineType : []}
-                                />
-                            </GridItem>
                         </Grid>
                     </Grid>
-                    <Grid templateColumns={"repeat(2, 1fr)"} gap={4} padding={4}>
+                    <Grid templateColumns={"repeat(3, 1fr)"} gap={4} padding={4}>
                         <Button
+                            leftIcon={<IoMdArrowRoundBack />}
+                            _hover={{ bg: "#4d648d" }}
+                            color="white"
+                            bg="#2C3A4F"
+                            as={RouterLink}
+                            to="/client/menu/">Retour</Button>
+                        <Button
+                            leftIcon={<IoTrashBin />}
+                            _hover={{ bg: "#4d648d" }}
+                            color="white"
+                            bg="#2C3A4F"
+                            onClick={handleReset}>Vider les champs</Button>
+                        <Button
+                            rightIcon={<IoMdArrowRoundForward />}
                             id='get-recipes-button'
                             _hover={{ bg: "#4d648d" }}
                             color="white"
                             bg="#2C3A4F"
                             onClick={handleSubmitChoice}>Valider</Button>
-                        <Button
-                            _hover={{ bg: "#4d648d" }}
-                            color="white"
-                            bg="#2C3A4F"
-                            onClick={handleReset}>Vider les champs</Button>
                     </Grid>
                 </form>
             </GridItem>

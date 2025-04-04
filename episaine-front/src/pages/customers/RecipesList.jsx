@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import LeftMenu from '../../components/customers/LeftMenu';
 import recipesListTableHeader from '../../constants/recipesListTableHeader.json';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Center, Checkbox, Grid, GridItem, Input, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { Box, Button, Center, Checkbox, CircularProgress, Grid, GridItem, Input, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import { generateRecipesList } from '../../api/customerAPI';
 
 // path="/client/recettes/"
@@ -10,23 +10,28 @@ import { generateRecipesList } from '../../api/customerAPI';
 function RecipesListInput() {
     const [id, setId] = useState('');
     const [numberOfDays, setNumberOfDays] = useState('');
+    const [numberOfMeals, setNumberOfMeals] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [allRecipesList, setAllRecipesList] = useState([]);
     const [selectedTables, setSelectedTables] = useState({});
     const [recipesList, setRecipesList] = useState([]);
     const navigate = useNavigate();
 
-
     // fetched recipes
     const getRecipes = async () => {
+        setIsLoading(true);
         try {
-            const response = await generateRecipesList(id, numberOfDays, 'calorie_count', 10);
+            
+            const response = await generateRecipesList(id, numberOfDays, numberOfMeals, 'calorie_count', 10);
             console.log("Recipes fetched:", response.data);
             const tempRecipesList = response.data;
 
             const recipes = handleSort(tempRecipesList);
             setAllRecipesList(recipes);
+            setIsLoading(false);
         } catch (error) {
             console.error("Error while reading data:", error);
+            setIsLoading(false);
         }
     };
 
@@ -79,10 +84,17 @@ function RecipesListInput() {
         }
     },[]);
 
-    const handleChange = (e) => {
+    const handleChangeDays = (e) => {
         const value = e.target.value;
         if (/^\d*$/.test(value)) {
             setNumberOfDays(value);
+        }
+    };
+
+    const handleChangeMeals = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setNumberOfMeals(value);
         }
     };
 
@@ -96,10 +108,20 @@ function RecipesListInput() {
                                 id="number-of-days"
                                 placeholder="Nombre de jour"
                                 value={numberOfDays}
-                                onChange={handleChange}
+                                onChange={handleChangeDays}
+                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
+                    </GridItem>
+                    <GridItem colSpan={1}>
+                            <Text>Nombre de repas par jour</Text>
+                            <Input
+                                id="meals-per-day"
+                                placeholder="Nombre de repas par jour"
+                                value={numberOfMeals}
+                                onChange={handleChangeMeals}
                                 inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} />
                     </GridItem>
                     <Button _hover={{ bg: "#4d648d" }} color="white" bg="#2C3A4F" type='submit' id='generate-recipes'>Générer la liste</Button>
+                    {isLoading && <CircularProgress isIndeterminate color='green.300' />}
                 </Grid>
             </form>
             <form onSubmit={(e) => { e.preventDefault(); handleValidate(); }} noValidate autoComplete='off'>

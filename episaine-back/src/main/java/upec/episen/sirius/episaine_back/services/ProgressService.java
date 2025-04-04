@@ -37,7 +37,7 @@ public class ProgressService {
         this.customerService = customerService;
     }
 
-    public List<List<Recipe>> getRecipesForId(int id, Integer numberOfDays, int n) {
+    public List<List<Recipe>> getRecipesForId(int id, Integer numberOfDays, Integer mealsPerDay, int n) {
         List<Recipe> recipesList = new ArrayList<>();
 
         Informations informations = informationsService.findByIdCustomer(id);
@@ -57,7 +57,6 @@ public class ProgressService {
         String intolerances = informations.getIntolerances();
         String prohibitedFoods = informations.getProhibited_food();
         String regime = informations.getDietary_regime();
-        int nbOfMealsPerDay = informations.getMeals_per_day();
 
         if (allergies.equals("") || allergies == null) {
             allergiesArray = null;
@@ -75,7 +74,7 @@ public class ProgressService {
             prohibitedFoodsArray = normalize(prohibitedFoods.toLowerCase().split(", "));
         }
 
-        double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, nbOfMealsPerDay);
+        double calories = avgCalories(informations.getWeight(), informations.getHeight(), age, gender, mealsPerDay);
 
         // 2. Get recipes according to client's goals (health goal, regime, cuisine, type)
         switch (informations.getHealth_goal().toLowerCase()) {
@@ -104,7 +103,7 @@ public class ProgressService {
 
         // 4. Generate combinations of recipes lists with list of days*mealsPerDay recipes (10 per page)
         List<List<Recipe>> allRecipesLists = new ArrayList<>();
-        int combinationSize = numberOfDays * nbOfMealsPerDay;
+        int combinationSize = numberOfDays * mealsPerDay;
         getCombination(recipesList, combinationSize, 0, 0, n, new ArrayList<>(), allRecipesLists);
         return allRecipesLists;
     }

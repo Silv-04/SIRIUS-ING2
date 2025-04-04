@@ -150,8 +150,9 @@ public class RecipeController {
     public List<List<Recipe>> getRecipesTest(
         @PathVariable int id,
         @RequestParam(required = false) Integer numberOfDays,
+        @RequestParam(required = false) Integer mealsPerDay,
         @RequestParam(required = false) String orderOption,
         @RequestParam int n) {
-        return progress.getRecipesForId(id, numberOfDays, n);
+        return progress.getRecipesForId(id, numberOfDays, mealsPerDay, n);
     }
 }
