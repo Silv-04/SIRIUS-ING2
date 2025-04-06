@@ -16,10 +16,8 @@ import { IoTrashBin } from "react-icons/io5";
 // path="/client/profil/"
 // page to display and update the customer's informations if needed
 function InformationsPageInputs() {
-    const [informations, setInformations] = useState();
-
     const navigate = useNavigate();
-
+    const [informations, setInformations] = useState();
     const [healthGoal, setHealthGoal] = useState("");
     const [allergies, setAllergies] = useState([]);
     const [intolerances, setIntolerances] = useState([]);
@@ -27,7 +25,6 @@ function InformationsPageInputs() {
     const [weight, setWeight] = useState("");
     const [height, setHeight] = useState("");
     const [foodToAvoid, setFoodToAvoid] = useState("");
-    const [foodTemperature, setFoodTemperature] = useState("");
     const [cuisineType, setCuisineType] = useState([]);
     const [customerId, setCustomerId] = useState("");
     const [informationId, setInformationId] = useState("");
@@ -44,7 +41,6 @@ function InformationsPageInputs() {
             weight: weight,
             height: height,
             prohibited_food: foodToAvoid,
-            recipe_temperature: foodTemperature,
             cuisine_type: Array.isArray(cuisineType) ? cuisineType.join(",") : "",
             fk_customer_id: customerId
         };
@@ -81,7 +77,6 @@ function InformationsPageInputs() {
         setWeight('');
         setHeight('');
         setFoodToAvoid('');
-        setFoodTemperature('aucune préférence');
         setCuisineType([]);
     };
 
@@ -107,8 +102,6 @@ function InformationsPageInputs() {
             setWeight(informations.weight || '');
             setHeight(informations.height || '');
             setFoodToAvoid(informations.prohibited_food || '');
-            setFoodTemperature(informations.recipe_temperature || '');
-            setCuisineType(informations.cuisine_type || []);
             setCustomerId(informations.fk_customer_id || '');
             setInformationId(informations.information_id || '');
         }

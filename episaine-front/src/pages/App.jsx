@@ -19,6 +19,7 @@ import Customer from "./nutritionniste/Customer"
 import ParametreNutritionist from "./nutritionniste/Parametre"
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { MultiSelectTheme } from "chakra-multiselect";
+import NutritionalPreferences from "./customers/NutritionalPreferences";
 
 function App() {
     const theme = extendTheme({
@@ -36,7 +37,7 @@ function App() {
                     <Route path="/client/" element={<ExistingCustomer />} />
                     <Route path="/client/menu/" element={<CustomerMainPage />} />
                     <Route path="/client/profil/" element={<InformationsPage />} />
-                    
+                    <Route path="/client/nutrition/" element={<NutritionalPreferences/>} />
                     <Route path="/client/recettes/" element={<RecipesList />} />
                     <Route path="/client/recettes/resultat/" element={<Result />} />
                     <Route path="/client/creation_profil/" element={<CreateCustomers />} />

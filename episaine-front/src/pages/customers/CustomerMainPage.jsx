@@ -25,6 +25,16 @@ function MainPage() {
                     </Button>
                     <Button
                         as={RouterLink}
+                        to="/client/nutrition/"
+                        _hover={{ bg: "#4d648d" }}
+                        color="white"
+                        bg="#2C3A4F"
+                        leftIcon={<FaBowlFood size={24} />}
+                    >
+                        Préciser des valeurs nutritionnelles
+                    </Button>
+                    <Button
+                        as={RouterLink}
                         to="/client/recettes/"
                         _hover={{ bg: "#4d648d" }}
                         color="white"

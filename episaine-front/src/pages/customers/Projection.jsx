@@ -15,6 +15,33 @@ function ProjectionPage() {
     const [recipesList, setRecipesList] = useState([]);
     const navigate = useNavigate();
 
+    const [minGlucides, setMinGlucides] = useState(null);
+    const [maxGlucides, setMaxGlucides] = useState(null);
+    const [minLipides, setMinLipides] = useState(null);
+    const [maxLipides, setMaxLipides] = useState(null);
+    const [minGlucose, setMinGlucose] = useState(null);
+    const [maxGlucose, setMaxGlucose] = useState(null);
+    const [minLactose, setMinLactose] = useState(null);
+    const [maxLactose, setMaxLactose] = useState(null);
+    const [minMaltose, setMinMaltose] = useState(null);
+    const [maxMaltose, setMaxMaltose] = useState(null);
+    const [minAmidon, setMinAmidon] = useState(null);
+    const [maxAmidon, setMaxAmidon] = useState(null);
+    const [minFibres, setMinFibres] = useState(null);
+    const [maxFibres, setMaxFibres] = useState(null);
+    const [minCholesterol, setMinCholesterol] = useState(null);
+    const [maxCholesterol, setMaxCholesterol] = useState(null);
+    const [minSel, setMinSel] = useState(null);
+    const [maxSel, setMaxSel] = useState(null);
+    const [minCalcium, setMinCalcium] = useState(null);
+    const [maxCalcium, setMaxCalcium] = useState(null);
+    const [minCuivre, setMinCuivre] = useState(null);
+    const [maxCuivre, setMaxCuivre] = useState(null);
+    const [minFer, setMinFer] = useState(null);
+    const [maxFer, setMaxFer] = useState(null);
+    const [minProteines625, setMinProteines625] = useState(null);
+    const [maxProteines625, setMaxProteines625] = useState(null);
+
     // receive informations from previous page
     useEffect(() => {
         const informations = JSON.parse(localStorage.getItem("customer data"));
@@ -27,11 +54,66 @@ function ProjectionPage() {
         }
     }, []);
 
+    useEffect(() => {
+                setMinGlucides(JSON.parse(localStorage.getItem("minGlucides")));
+                setMaxGlucides(JSON.parse(localStorage.getItem("maxGlucides")));
+                setMinLipides(JSON.parse(localStorage.getItem("minLipides")));
+                setMaxLipides(JSON.parse(localStorage.getItem("maxLipides")));
+                setMinGlucose(JSON.parse(localStorage.getItem("minGlucose")));
+                setMaxGlucose(JSON.parse(localStorage.getItem("maxGlucose")));
+                setMinLactose(JSON.parse(localStorage.getItem("minLactose")));
+                setMaxLactose(JSON.parse(localStorage.getItem("maxLactose")));
+                setMinMaltose(JSON.parse(localStorage.getItem("minMaltose")));
+                setMaxMaltose(JSON.parse(localStorage.getItem("maxMaltose")));
+                setMinAmidon(JSON.parse(localStorage.getItem("minAmidon")));
+                setMaxAmidon(JSON.parse(localStorage.getItem("maxAmidon")));
+                setMinFibres(JSON.parse(localStorage.getItem("minFibres")));
+                setMaxFibres(JSON.parse(localStorage.getItem("maxFibres")));
+                setMinCholesterol(JSON.parse(localStorage.getItem("minCholesterol")));
+                setMaxCholesterol(JSON.parse(localStorage.getItem("maxCholesterol")));
+                setMinSel(JSON.parse(localStorage.getItem("minSel")));
+                setMaxSel(JSON.parse(localStorage.getItem("maxSel")));
+                setMinCalcium(JSON.parse(localStorage.getItem("minCalcium")));
+                setMaxCalcium(JSON.parse(localStorage.getItem("maxCalcium")));
+                setMinCuivre(JSON.parse(localStorage.getItem("minCuivre")));
+                setMaxCuivre(JSON.parse(localStorage.getItem("maxCuivre")));
+                setMinFer(JSON.parse(localStorage.getItem("minFer")));
+                setMaxFer(JSON.parse(localStorage.getItem("maxFer")));
+                setMinProteines625(JSON.parse(localStorage.getItem("minProteines625")));
+                setMaxProteines625(JSON.parse(localStorage.getItem("maxProteines625")));
+            }, []);
+
     const handleValidate = async (e) => {
         e.preventDefault();
 
         setIsLoading(true);
-        const values = await projection(id, value, mealsPerDay);
+        const values = await projection(id, value, mealsPerDay,
+            minGlucides,
+            maxGlucides,
+            minLipides,
+            maxLipides,
+            minGlucose,
+            maxGlucose,
+            minLactose,
+            maxLactose,
+            minMaltose,
+            maxMaltose,
+            minAmidon,
+            maxAmidon,
+            minFibres,
+            maxFibres,
+            minCholesterol,
+            maxCholesterol,
+            minSel,
+            maxSel,
+            minCalcium,
+            maxCalcium,
+            minCuivre,
+            maxCuivre,
+            minFer,
+            maxFer,
+            minProteines625,
+            maxProteines625);
 
         setWeightsListGenerated(Object.keys(values.data.weightProjection).map((key) => ({
             day: Number(key),
