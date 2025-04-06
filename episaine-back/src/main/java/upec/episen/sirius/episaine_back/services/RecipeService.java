@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import upec.episen.sirius.episaine_back.models.Product;
 import upec.episen.sirius.episaine_back.models.Recipe;
 import upec.episen.sirius.episaine_back.repositories.ProductRepository;
@@ -19,7 +21,8 @@ import java.util.ArrayList;
 
 /**
  * Service class responsible for handling recipe-related logic, including
- * generating recipes based on dietary requirements and filtering invalid recipes.
+ * generating recipes based on dietary requirements and filtering invalid
+ * recipes.
  */
 
 @Service
@@ -93,8 +96,7 @@ public class RecipeService {
                 "produits cerealiers",
                 "viandes, œufs, poissons et assimilés",
                 "fruits, legumes, legumineuses et oleagineux",
-                "eaux et autres boissons"
-        );
+                "eaux et autres boissons");
 
         String sql = "SELECT * FROM products WHERE nom_groupe = :category ";
 
@@ -153,9 +155,10 @@ public class RecipeService {
          */
 
         int totalCalories = 0;
-        double totalGlucides = 0, totalLipides = 0, totalGlucose = 0, totalLactose = 0, totalMaltose = 0, totalAmidon = 0;
-        double totalFibres = 0, totalCholesterol = 0, totalSel = 0, totalCalcium = 0, totalCuivre = 0, totalFer = 0, totalProteines625 = 0;
-
+        double totalGlucides = 0, totalLipides = 0, totalGlucose = 0, totalLactose = 0, totalMaltose = 0,
+                totalAmidon = 0;
+        double totalFibres = 0, totalCholesterol = 0, totalSel = 0, totalCalcium = 0, totalCuivre = 0, totalFer = 0,
+                totalProteines625 = 0;
 
         /**
          * Iterates through product categories, fetches random products,
@@ -171,7 +174,8 @@ public class RecipeService {
             if (!result.isEmpty()) {
                 Product product = result.get(0);
 
-                logger.info("Ingrédient sélectionné : {} ({} kcal)", product.getNomProduit(), product.getenergie_ue_kcal());
+                logger.info("Ingrédient sélectionné : {} ({} kcal)", product.getNomProduit(),
+                        product.getenergie_ue_kcal());
 
                 recipe.getIngredients().add(product.getNomProduit());
                 totalCalories += product.getenergie_ue_kcal() != null ? product.getenergie_ue_kcal() : 0;
@@ -231,8 +235,9 @@ public class RecipeService {
     /**
      * Generates multiple recipes based on the selected dietary regime.
      * Ensures that only recipes with non-zero calorie values are included.
+     * 
      * @param dietaryRegime The dietary regime for the recipes.
-     * @param count The number of recipes to generate.
+     * @param count         The number of recipes to generate.
      * @return A list of valid generated recipes.
      */
 
@@ -244,8 +249,7 @@ public class RecipeService {
             double minFibres, double maxFibres, double minCholesterol, double maxCholesterol,
             double minSel, double maxSel, double minCalcium, double maxCalcium,
             double minCuivre, double maxCuivre, double minFer, double maxFer,
-            double minProteines625, double maxProteines625
-    ) {
+            double minProteines625, double maxProteines625) {
         logger.info(" ... Début de la génération des {} recettes pour le régime : {}", count, dietaryRegime);
         List<Recipe> recipes = new ArrayList<>();
 
@@ -261,28 +265,45 @@ public class RecipeService {
 
                 /**
                  * Checking nutritional values
-                 * */
+                 */
 
-                if (!isValidRange(newRecipe.getCalorieCount(), minCalories, maxCalories, "Calories", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalGlucides(), minGlucides, maxGlucides, "Glucides", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalLipides(), minLipides, maxLipides, "Lipides", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalGlucose(), minGlucose, maxGlucose, "Glucose", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalLactose(), minLactose, maxLactose, "Lactose", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalMaltose(), minMaltose, maxMaltose, "Maltose", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalAmidon(), minAmidon, maxAmidon, "Amidon", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalFibres(), minFibres, maxFibres, "Fibres", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalCholesterol(), minCholesterol, maxCholesterol, "Cholestérol", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalSel(), minSel, maxSel, "Sel", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalCalcium(), minCalcium, maxCalcium, "Calcium", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalCuivre(), minCuivre, maxCuivre, "Cuivre", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalFer(), minFer, maxFer, "Fer", rejectionReason)) isValid = false;
-                if (!isValidRange(newRecipe.getTotalProteines625(), minProteines625, maxProteines625, "Protéines", rejectionReason)) isValid = false;
+                if (!isValidRange(newRecipe.getCalorieCount(), minCalories, maxCalories, "Calories", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalGlucides(), minGlucides, maxGlucides, "Glucides", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalLipides(), minLipides, maxLipides, "Lipides", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalGlucose(), minGlucose, maxGlucose, "Glucose", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalLactose(), minLactose, maxLactose, "Lactose", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalMaltose(), minMaltose, maxMaltose, "Maltose", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalAmidon(), minAmidon, maxAmidon, "Amidon", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalFibres(), minFibres, maxFibres, "Fibres", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalCholesterol(), minCholesterol, maxCholesterol, "Cholestérol",
+                        rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalSel(), minSel, maxSel, "Sel", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalCalcium(), minCalcium, maxCalcium, "Calcium", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalCuivre(), minCuivre, maxCuivre, "Cuivre", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalFer(), minFer, maxFer, "Fer", rejectionReason))
+                    isValid = false;
+                if (!isValidRange(newRecipe.getTotalProteines625(), minProteines625, maxProteines625, "Protéines",
+                        rejectionReason))
+                    isValid = false;
 
                 /**
                  * Display nutritional parameters for each generated recipe
-                */
+                 */
 
-                logger.info(" -- Détails nutritionnels pour {} : Calories: {} kcal | Glucides: {} g | Lipides: {} g | Glucose: {} g | Lactose: {} g | Maltose: {} g | Amidon: {} g | Fibres: {} g | Cholestérol: {} mg | Sel: {} g | Calcium: {} mg | Cuivre: {} mg | Fer: {} mg | Protéines: {} g",
+                logger.info(
+                        " -- Détails nutritionnels pour {} : Calories: {} kcal | Glucides: {} g | Lipides: {} g | Glucose: {} g | Lactose: {} g | Maltose: {} g | Amidon: {} g | Fibres: {} g | Cholestérol: {} mg | Sel: {} g | Calcium: {} mg | Cuivre: {} mg | Fer: {} mg | Protéines: {} g",
                         newRecipe.getRecipeName(),
                         newRecipe.getCalorieCount(), newRecipe.getTotalGlucides(), newRecipe.getTotalLipides(),
                         newRecipe.getTotalGlucose(), newRecipe.getTotalLactose(), newRecipe.getTotalMaltose(),
@@ -311,15 +332,49 @@ public class RecipeService {
         return recipes;
     }
 
-    /** 
-     * @param regime : given a regime type
+    /**
+     * @param regime      : given a regime type
      * @param minCalories : given a minimum number of calories
      * @param maxCalories : given a maximum number of calories
-     * @param category : given a category of recipe
+     * @param category    : given a category of recipe
      * @param orderOption : given an order option
-     * @return List<Recipe> : return a list of recipes filtered by regime, calories and ordered by the order option
+     * @return List<Recipe> : return a list of recipes filtered by regime, calories
+     *         and ordered by the order option
      */
-    public List<Recipe> getRecipesFilteredByRegimeCalories(String regime, Integer minCalories, Integer maxCalories) {
-            return recipeRepository.findRecipesWithFilter(regime, minCalories, maxCalories);
+    public List<Recipe> getRecipesFilteredByRegimeCalories(
+            String regime,
+            Integer minCalories,
+            Integer maxCalories,
+            Double minGlucides,
+            Double maxGlucides,
+            Double minLipides,
+            Double maxLipides,
+            Double minGlucose,
+            Double maxGlucose,
+            Double minLactose,
+            Double maxLactose,
+            Double minMaltose,
+            Double maxMaltose,
+            Double minAmidon,
+            Double maxAmidon,
+            Double minFibres,
+            Double maxFibres,
+            Double minCholesterol,
+            Double maxCholesterol,
+            Double minSel,
+            Double maxSel,
+            Double minCalcium,
+            Double maxCalcium,
+            Double minCuivre,
+            Double maxCuivre,
+            Double minFer,
+            Double maxFer,
+            Double minProteines625,
+            Double maxProteines625) {
+        return recipeRepository.findRecipesWithFilter(
+                regime, minCalories, maxCalories, minGlucides, maxGlucides, minLipides, maxLipides, minGlucose,
+                maxGlucose, minLactose, maxLactose, minMaltose, maxMaltose, minAmidon, maxAmidon,
+                minFibres, maxFibres, minCholesterol, maxCholesterol, minSel, maxSel, minCalcium, maxCalcium, minCuivre,
+                maxCuivre, minFer, maxFer, minProteines625, maxProteines625);
     }
 }
