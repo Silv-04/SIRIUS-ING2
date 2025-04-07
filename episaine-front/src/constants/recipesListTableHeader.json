@@ -15,8 +15,7 @@
     {"value": "totalGlucose", "label": "Glucose"},
     {"value": "totalLipides", "label": "Lipides"},
     {"value": "totalMaltose", "label": "Maltose"},
-    {"value": "totalProteines", "label": "Protéine"},
     {"value": "totalSel", "label": "Sel"},
-    {"value": "totalMactose", "label": "Lactose"},
+    {"value": "totalLactose", "label": "Lactose"},
     {"value": "totalProteines625", "label": "Protéine 625"}
 ]

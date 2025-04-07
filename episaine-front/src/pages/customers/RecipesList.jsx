@@ -207,11 +207,11 @@ function RecipesListInput() {
                 </Grid>
             </form>
             <form onSubmit={(e) => { e.preventDefault(); handleValidate(); }} noValidate autoComplete='off'>
-                <TableContainer sx={{ overflowY: "auto" }} height={"50vh"} width={"100%"}>
+                <TableContainer sx={{ overflowY: "auto", overflowX: "auto"}} height={"50vh"} width={"100%"}>
                     <Table size='sm'>
                         <Tbody>
                             {Array.isArray(allRecipesList) && allRecipesList.length > 0 && allRecipesList.map((recipesListGroup, index) => (
-                                <Table size='sm' width={"100%"} layout={"fixed"} key={index}>
+                                <Table size='sm' width={"100%"} key={index}>
                                     <caption style={{ captionSide: "top", textAlign: "center", fontWeight: "bold", fontSize: "30px", paddingTop: "50px" }}>Liste numéro {index + 1}</caption>
                                     <Thead>
                                         <Tr>

@@ -107,6 +107,6 @@ public class WeightForecastTest {
         Map<Integer, Double> weights = weightProjectionDTO.getWeightProjection();
 
         // Then
-        assertFalse(weights.get(weights.size() - 1) >= objective);
+        assertTrue(weights.get(weights.size() - 1) >= objective);
     }
 }
