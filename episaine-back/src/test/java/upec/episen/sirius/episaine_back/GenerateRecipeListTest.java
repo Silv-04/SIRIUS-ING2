@@ -214,10 +214,7 @@ public class GenerateRecipeListTest {
         // When
         when(customerService.findByIdCustomer(1)).thenReturn(customer);
         when(informationsService.findByIdCustomer(1)).thenReturn(informations);
-        when(recipesService.getRecipesFilteredByRegimeCalories(anyString(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any())).thenReturn(mockRecipes);
-
+        
         List<List<Recipe>> recipeList = progressService.getRecipesForId(customerId, nbOfDays, mealsPerDay, numberOfRecipes, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null);
@@ -256,20 +253,16 @@ public class GenerateRecipeListTest {
         int customerId = 1;
         int nbOfDays = 1;
         int mealsPerDay = 3;
-        int numberOfRecipes = 5;
+        int numberOfRecipes = 6;
 
         DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         int today = Integer.parseInt(formatter.format(new java.util.Date()));
         int birthday = Integer.parseInt(formatter.format(customer.getCustomer_birthdate()));
         int age = (today - birthday) / 10000;
         double calories = progressService.avgCalories(informations.getWeight(), informations.getHeight(), age, customer.getGender(), mealsPerDay);
-        System.out.println("Calories: " + calories);
         // When
         when(customerService.findByIdCustomer(1)).thenReturn(customer);
         when(informationsService.findByIdCustomer(1)).thenReturn(informations);
-        when(recipesService.getRecipesFilteredByRegimeCalories(anyString(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any(), any(), any())).thenReturn(mockRecipes);
 
         List<List<Recipe>> recipeList = progressService.getRecipesForId(customerId, nbOfDays, mealsPerDay, numberOfRecipes, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -279,7 +272,6 @@ public class GenerateRecipeListTest {
         boolean hasRightCalories = true;
         for (List<Recipe> recipes : recipeList) {
             for (Recipe recipe : recipes) {
-                System.out.println("Calories: " + recipe.getCalorieCount());
                 if (recipe.getCalorieCount() < calories) {
                     hasRightCalories = false;
                     break;
