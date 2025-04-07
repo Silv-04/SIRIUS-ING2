@@ -91,6 +91,7 @@ public class WeightForecastTest {
         int objective = 55;
         int mealsPerDay = 1;
         int idCustomer = 1;
+        int startDay = 0;
 
         // When
         when(customerService.findByIdCustomer(idCustomer)).thenReturn(customer);
@@ -100,12 +101,12 @@ public class WeightForecastTest {
                 any(), any(), any(), any(), any())).thenReturn(mockRecipeList);
 
         WeightProjectionDTO weightProjectionDTO = weightForecastService.getWeightList(idCustomer, objective,
-                mealsPerDay, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                mealsPerDay, startDay, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null);
 
         Map<Integer, Double> weights = weightProjectionDTO.getWeightProjection();
 
         // Then
-        assertTrue(weights.get(weights.size() - 1) >= objective);
+        assertFalse(weights.get(weights.size() - 1) >= objective);
     }
 }

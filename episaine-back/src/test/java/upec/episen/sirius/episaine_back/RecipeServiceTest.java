@@ -1,4 +1,4 @@
-package episaine_back.services;
+package upec.episen.sirius.episaine_back;
 
 
 import jakarta.persistence.EntityManager;
@@ -6,7 +6,6 @@ import jakarta.persistence.Query;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import upec.episen.sirius.episaine_back.models.Product;
 import upec.episen.sirius.episaine_back.models.Recipe;
 import upec.episen.sirius.episaine_back.repositories.ProductRepository;
 import upec.episen.sirius.episaine_back.repositories.RecipeRepository;
