@@ -218,9 +218,9 @@ public class KPICustomerService {
             Object weightObj = stat.get("averageWeight");
             Object heightObj = stat.get("averageHeight");
 
-        /**
-         * Only process if both values are numeric
-         */
+            /**
+             * Only process if both values are numeric
+             */
 
             if (weightObj instanceof Number && heightObj instanceof Number) {
                 double avgWeight = ((Number) weightObj).doubleValue();
