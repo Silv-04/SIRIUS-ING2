@@ -3,7 +3,7 @@ import {Box, Flex, Heading, Text, SimpleGrid, Button,} from "@chakra-ui/react";
 import Navbar from "../../components/nutritionist/navbar";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { LineChart, BarChart, Bar ,Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { ScatterChart ,LineChart,Scatter, BarChart,LabelList , Bar ,Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { FEMALE_COUNT, MALE_COUNT, TOTAL_COUNT, MONTHLY_CUSTOMER_COUNT, AGE_DISTRIBUTION,AVG_IMC_CUSTOMER,ACM_RESULT} from "../../constants/back";
 
 export default function IndicateurPerformance() {
@@ -18,6 +18,8 @@ export default function IndicateurPerformance() {
     const [errorAge, setErrorAge] = useState(null);
     const contentRef = useRef(null);
 
+
+
     // Adding cont for IMC
 
     const [imcData, setImcData] = useState([]);
@@ -27,12 +29,14 @@ export default function IndicateurPerformance() {
 
     // Adding Const for ACM
 
+
     const [acmData, setAcmData] = useState([]);
     const [loadingAcm, setLoadingAcm] = useState(true);
     const [errorAcm, setErrorAcm] = useState(null);
     const ageOrder = ["18-25", "26-35", "36-45", "46-55", "56-64", "+65"];
     const sortedAcmData = [...acmData].sort(
         (a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
+
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -339,6 +343,32 @@ export default function IndicateurPerformance() {
                                 </Box>
                             )}
                         </Box>
+
+                        <ResponsiveContainer width="100%" height={400}>
+                            <ScatterChart margin={{ top: 20, right: 40, bottom: 40, left: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis type="category" dataKey="ageGroup" name="Tranche d'âge" />
+                                <YAxis type="number" dataKey="value" name="Valeur" />
+                                <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+                                <Legend />
+
+                                {["C1", "C2", "C3"].map((key, index) => {
+                                    const colorMap = { C1: "#4C9AFF", C2: "#FFA500", C3: "#AA66CC" };
+                                    const flatData = sortedAcmData.map((item) => ({
+                                        ageGroup: item.ageGroup,
+                                        value: item.U[index],
+                                        label: `${key}: ${item.U[index].toFixed(3)}`
+                                    }));
+
+                                    return (
+                                        <Scatter key={key} name={`${key} (${["Taille", "Poids", "IMC"][index]})`} data={flatData} fill={colorMap[key]}>
+                                            <LabelList dataKey="label" position="top" fontSize={11} />
+                                        </Scatter>
+                                    );
+                                })}
+                            </ScatterChart>
+                        </ResponsiveContainer>
+
                     </Box>
                 </Box>
             </Flex>
