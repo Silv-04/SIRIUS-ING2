@@ -19,6 +19,7 @@ import Customer from "./nutritionniste/Customer"
 import ParametreNutritionist from "./nutritionniste/Parametre"
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { MultiSelectTheme } from "chakra-multiselect";
+import NutritionalPreferences from "./customers/NutritionalPreferences";
 
 function App() {
     const theme = extendTheme({
@@ -33,14 +34,15 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
 
-                    <Route path="/client/" element={<CustomerMainPage />} />
-                    <Route path="/client/recettes/" element={<ExistingCustomer />} />
-                    <Route path="/client/recettes/informations/" element={<InformationsPage />} />
-                    <Route path="/client/recettes/informations/choix/" element={<RecipesList />} />
-                    <Route path="/client/recettes/informations/choix/resultat/" element={<Result />} />
-                    <Route path="/client/recettes/creation_profil/" element={<CreateCustomers />} />
+                    <Route path="/client/" element={<ExistingCustomer />} />
+                    <Route path="/client/menu/" element={<CustomerMainPage />} />
+                    <Route path="/client/profil/" element={<InformationsPage />} />
+                    <Route path="/client/nutrition/" element={<NutritionalPreferences/>} />
+                    <Route path="/client/recettes/" element={<RecipesList />} />
+                    <Route path="/client/recettes/resultat/" element={<Result />} />
+                    <Route path="/client/creation_profil/" element={<CreateCustomers />} />
                     <Route path="/client/parametre/" element={<CustomerParameter />} />
-                    <Route path="/client/recettes/informations/projection/" element={<Projection />} />
+                    <Route path="/client/projection/" element={<Projection />} />
 
                     <Route path="/nutritionniste/" element={<HomeNutritionniste />} />
                     <Route path="/indicateurPerformance/" element={<IndicateurPerformance />} />

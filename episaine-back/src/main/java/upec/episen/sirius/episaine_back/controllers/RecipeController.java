@@ -25,6 +25,7 @@ public class RecipeController {
 
     /**
      * Constructor for RecipeController.
+     * 
      * @param recipeService The service used to handle recipe operations.
      */
     public RecipeController(RecipeService recipeService, ProgressService progress) {
@@ -33,19 +34,18 @@ public class RecipeController {
     }
 
     /**
-     * Generates a random recipe with a randomly selected dietary regime and saves it to the database.
+     * Generates a random recipe with a randomly selected dietary regime and saves
+     * it to the database.
+     * 
      * @return ResponseEntity with the generated recipe or an error status.
      */
     @PostMapping("/generaterandom")
     public ResponseEntity<Recipe> generateRandomRecipe() {
         try {
-            // List of possible dietary regimes
             List<String> dietaryRegimes = Arrays.asList(
                     "Omnivore", "Vegetarien", "Vegane", "Pescetarien",
-                    "Halal", "Casher", "Sans gluten", "Sans lactose"
-            );
+                    "Halal", "Casher", "Sans gluten", "Sans lactose");
 
-            // Select a random dietary regime
             String randomDietaryRegime = dietaryRegimes.get(new Random().nextInt(dietaryRegimes.size()));
 
             Recipe recipe = recipeService.generateAndSaveRecipe(randomDietaryRegime);
@@ -56,7 +56,61 @@ public class RecipeController {
     }
 
     /**
+     * Generates multiple recipes based on user input.
+     * 
+     * @param count The number of recipes to generate.
+     * @return ResponseEntity with a list of generated recipes.
+     *         Add End point for testing new algo performance
+     */
+    @PostMapping("/generate")
+    public ResponseEntity<List<Recipe>> generateMultipleRecipes(
+            @RequestParam String dietaryRegime,
+            @RequestParam int count,
+            @RequestParam int minCalories,
+            @RequestParam int maxCalories,
+            @RequestParam(required = false, defaultValue = "0") double minGlucides,
+            @RequestParam(required = false, defaultValue = "250") double maxGlucides,
+            @RequestParam(required = false, defaultValue = "0") double minLipides,
+            @RequestParam(required = false, defaultValue = "100") double maxLipides,
+            @RequestParam(required = false, defaultValue = "0") double minGlucose,
+            @RequestParam(required = false, defaultValue = "100") double maxGlucose,
+            @RequestParam(required = false, defaultValue = "0") double minLactose,
+            @RequestParam(required = false, defaultValue = "100") double maxLactose,
+            @RequestParam(required = false, defaultValue = "0") double minMaltose,
+            @RequestParam(required = false, defaultValue = "100") double maxMaltose,
+            @RequestParam(required = false, defaultValue = "0") double minAmidon,
+            @RequestParam(required = false, defaultValue = "100") double maxAmidon,
+            @RequestParam(required = false, defaultValue = "0") double minFibres,
+            @RequestParam(required = false, defaultValue = "100") double maxFibres,
+            @RequestParam(required = false, defaultValue = "0") double minCholesterol,
+            @RequestParam(required = false, defaultValue = "100") double maxCholesterol,
+            @RequestParam(required = false, defaultValue = "0") double minSel,
+            @RequestParam(required = false, defaultValue = "5") double maxSel,
+            @RequestParam(required = false, defaultValue = "0") double minCalcium,
+            @RequestParam(required = false, defaultValue = "100") double maxCalcium,
+            @RequestParam(required = false, defaultValue = "0") double minCuivre,
+            @RequestParam(required = false, defaultValue = "100") double maxCuivre,
+            @RequestParam(required = false, defaultValue = "0") double minFer,
+            @RequestParam(required = false, defaultValue = "100") double maxFer,
+            @RequestParam(required = false, defaultValue = "0") double minProteines625,
+            @RequestParam(required = false, defaultValue = "100") double maxProteines625) {
+        try {
+            List<Recipe> recipes = recipeService.generateAndSaveMultipleRecipes(
+                    dietaryRegime, count, minCalories, maxCalories,
+                    minGlucides, maxGlucides, minLipides, maxLipides, minGlucose, maxGlucose,
+                    minLactose, maxLactose, minMaltose, maxMaltose, minAmidon, maxAmidon,
+                    minFibres, maxFibres, minCholesterol, maxCholesterol, minSel, maxSel,
+                    minCalcium, maxCalcium, minCuivre, maxCuivre, minFer, maxFer,
+                    minProteines625, maxProteines625);
+            return ResponseEntity.ok(recipes);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
      * Retrieves all recipes from the database.
+     * 
      * @return ResponseEntity with a list of all recipes or a no content status.
      */
     @GetMapping("/all")
@@ -71,36 +125,97 @@ public class RecipeController {
     }
 
     /**
-     * @param regime : given a regime type
+     * @param regime      : given a regime type
      * @param minCalories : given a minimum range of calories
      * @param maxCalories : given a maximum range of calories
-     * @param category : given a category of recipe
+     * @param category    : given a category of recipe
      * @param orderOption : given an order option to sort the data
-     * @return List<Recipes> : return a list of recipes filtered by the given parameters
+     * @return List<Recipes> : return a list of recipes filtered by the given
+     *         parameters
      */
     @GetMapping("/filter")
     public List<Recipe> getRecipesFiltered(
             @RequestParam(required = false) String regime,
             @RequestParam(required = false) Integer minCalories,
             @RequestParam(required = false) Integer maxCalories,
-            @RequestParam(required = false) String orderOption) {
-        return recipeService.getRecipesFilteredByRegimeCalories(regime, minCalories, maxCalories, orderOption);
+            @RequestParam(required = false) String orderOption,
+            @RequestParam(required = false, defaultValue = "0") Double minGlucides,
+            @RequestParam(required = false, defaultValue = "250") Double maxGlucides,
+            @RequestParam(required = false, defaultValue = "0") Double minLipides,
+            @RequestParam(required = false, defaultValue = "100") Double maxLipides,
+            @RequestParam(required = false, defaultValue = "0") Double minGlucose,
+            @RequestParam(required = false, defaultValue = "100") Double maxGlucose,
+            @RequestParam(required = false, defaultValue = "0") Double minLactose,
+            @RequestParam(required = false, defaultValue = "100") Double maxLactose,
+            @RequestParam(required = false, defaultValue = "0") Double minMaltose,
+            @RequestParam(required = false, defaultValue = "100") Double maxMaltose,
+            @RequestParam(required = false, defaultValue = "0") Double minAmidon,
+            @RequestParam(required = false, defaultValue = "100") Double maxAmidon,
+            @RequestParam(required = false, defaultValue = "0") Double minFibres,
+            @RequestParam(required = false, defaultValue = "100") Double maxFibres,
+            @RequestParam(required = false, defaultValue = "0") Double minCholesterol,
+            @RequestParam(required = false, defaultValue = "100") Double maxCholesterol,
+            @RequestParam(required = false, defaultValue = "0") Double minSel,
+            @RequestParam(required = false, defaultValue = "5") Double maxSel,
+            @RequestParam(required = false, defaultValue = "0") Double minCalcium,
+            @RequestParam(required = false, defaultValue = "100") Double maxCalcium,
+            @RequestParam(required = false, defaultValue = "0") Double minCuivre,
+            @RequestParam(required = false, defaultValue = "100") Double maxCuivre,
+            @RequestParam(required = false, defaultValue = "0") Double minFer,
+            @RequestParam(required = false, defaultValue = "100") Double maxFer,
+            @RequestParam(required = false, defaultValue = "0") Double minProteines625,
+            @RequestParam(required = false, defaultValue = "100") Double maxProteines625) {
+        return recipeService.getRecipesFilteredByRegimeCalories(regime, minCalories, maxCalories,
+                minGlucides, maxGlucides, minLipides, maxLipides, minGlucose,
+                maxGlucose, minLactose, maxLactose, minMaltose, maxMaltose, minAmidon, maxAmidon,
+                minFibres, maxFibres, minCholesterol, maxCholesterol, minSel, maxSel, minCalcium, maxCalcium, minCuivre,
+                maxCuivre, minFer, maxFer, minProteines625, maxProteines625);
     }
 
-    
     /**
-     * @param id : given a customer id
+     * @param id           : given a customer id
      * @param numberOfDays : given a number of days
-     * @param orderOption : given an order option to sort the data
-     * @param n : given a max number of recipes
-     * @return List<List<Recipes>> : return a list of list of recipes for a given customer id
+     * @param orderOption  : given an order option to sort the data
+     * @param n            : given a max number of recipes
+     * @return List<List<Recipes>> : return a list of list of recipes for a given
+     *         customer id
      */
     @GetMapping("/getRecipesList/{id}")
     public List<List<Recipe>> getRecipesTest(
-        @PathVariable int id,
-        @RequestParam(required = false) Integer numberOfDays,
-        @RequestParam(required = false) String orderOption,
-        @RequestParam int n) {
-        return progress.getRecipesForId(id, numberOfDays, orderOption, n);
+            @PathVariable int id,
+            @RequestParam(required = false) Integer numberOfDays,
+            @RequestParam(required = false) Integer mealsPerDay,
+            @RequestParam(required = false) String orderOption,
+            @RequestParam(required = false, defaultValue = "0") Double minGlucides,
+            @RequestParam(required = false, defaultValue = "250") Double maxGlucides,
+            @RequestParam(required = false, defaultValue = "0") Double minLipides,
+            @RequestParam(required = false, defaultValue = "100") Double maxLipides,
+            @RequestParam(required = false, defaultValue = "0") Double minGlucose,
+            @RequestParam(required = false, defaultValue = "100") Double maxGlucose,
+            @RequestParam(required = false, defaultValue = "0") Double minLactose,
+            @RequestParam(required = false, defaultValue = "100") Double maxLactose,
+            @RequestParam(required = false, defaultValue = "0") Double minMaltose,
+            @RequestParam(required = false, defaultValue = "100") Double maxMaltose,
+            @RequestParam(required = false, defaultValue = "0") Double minAmidon,
+            @RequestParam(required = false, defaultValue = "100") Double maxAmidon,
+            @RequestParam(required = false, defaultValue = "0") Double minFibres,
+            @RequestParam(required = false, defaultValue = "100") Double maxFibres,
+            @RequestParam(required = false, defaultValue = "0") Double minCholesterol,
+            @RequestParam(required = false, defaultValue = "100") Double maxCholesterol,
+            @RequestParam(required = false, defaultValue = "0") Double minSel,
+            @RequestParam(required = false, defaultValue = "5") Double maxSel,
+            @RequestParam(required = false, defaultValue = "0") Double minCalcium,
+            @RequestParam(required = false, defaultValue = "100") Double maxCalcium,
+            @RequestParam(required = false, defaultValue = "0") Double minCuivre,
+            @RequestParam(required = false, defaultValue = "100") Double maxCuivre,
+            @RequestParam(required = false, defaultValue = "0") Double minFer,
+            @RequestParam(required = false, defaultValue = "100") Double maxFer,
+            @RequestParam(required = false, defaultValue = "0") Double minProteines625,
+            @RequestParam(required = false, defaultValue = "100") Double maxProteines625,
+            @RequestParam int n) {
+        return progress.getRecipesForId(id, numberOfDays, mealsPerDay, n, minGlucides, maxGlucides, minLipides, maxLipides, minGlucose,
+        maxGlucose, minLactose, maxLactose, minMaltose, maxMaltose, minAmidon, maxAmidon,
+        minFibres, maxFibres, minCholesterol, maxCholesterol, minSel, maxSel, minCalcium, maxCalcium, minCuivre,
+        maxCuivre, minFer, maxFer, minProteines625, maxProteines625);
     }
 }

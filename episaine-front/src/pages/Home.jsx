@@ -75,6 +75,7 @@ export default function Home() {
                     direction={{ base: "column", md: "row" }}
                 >
                     <Button
+                        id="client-button"
                         as={RouterLink}
                         to="/client/"
                         colorScheme="teal"
@@ -94,6 +95,7 @@ export default function Home() {
                     </Button>
 
                     <Button
+                        id="btn-nutritionist"
                         as={RouterLink}
                         to="/nutritionniste"    
                         colorScheme="green"
