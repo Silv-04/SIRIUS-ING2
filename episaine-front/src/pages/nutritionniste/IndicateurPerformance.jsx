@@ -1,24 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import {
-    Box,
-    Flex,
-    Heading,
-    Text,
-    SimpleGrid,
-    Button,
-} from "@chakra-ui/react";
+import {Box, Flex, Heading, Text, SimpleGrid, Button,} from "@chakra-ui/react";
 import Navbar from "../../components/nutritionist/navbar";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { FEMALE_COUNT, MALE_COUNT, TOTAL_COUNT, MONTHLY_CUSTOMER_COUNT, AGE_DISTRIBUTION } from "../../constants/back";
+import { LineChart, BarChart, Bar ,Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { FEMALE_COUNT, MALE_COUNT, TOTAL_COUNT, MONTHLY_CUSTOMER_COUNT, AGE_DISTRIBUTION,AVG_IMC_CUSTOMER,ACM_RESULT} from "../../constants/back";
 
 export default function IndicateurPerformance() {
-    const [stats, setStats] = useState({
-        females: 0,
-        males: 0,
-        total: 0,
-    });
+    const [stats, setStats] = useState({females: 0, males: 0, total: 0,});
     const [monthlyData, setMonthlyData] = useState([]);
     const [ageDistributionData, setAgeDistributionData] = useState([]);
     const [loadingStats, setLoadingStats] = useState(true);
@@ -29,10 +18,25 @@ export default function IndicateurPerformance() {
     const [errorAge, setErrorAge] = useState(null);
     const contentRef = useRef(null);
 
+    // Adding cont for IMC
+
+    const [imcData, setImcData] = useState([]);
+    const [loadingImc, setLoadingImc] = useState(true);
+    const [errorImc, setErrorImc] = useState(null);
+
+
+    // Adding Const for ACM
+
+    const [acmData, setAcmData] = useState([]);
+    const [loadingAcm, setLoadingAcm] = useState(true);
+    const [errorAcm, setErrorAcm] = useState(null);
+    const ageOrder = ["18-25", "26-35", "36-45", "46-55", "56-64", "+65"];
+    const sortedAcmData = [...acmData].sort(
+        (a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
+
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                console.log("Fetching global stats...");
                 const [femaleRes, maleRes, totalRes] = await Promise.all([
                     fetch(FEMALE_COUNT),
                     fetch(MALE_COUNT),
@@ -40,7 +44,7 @@ export default function IndicateurPerformance() {
                 ]);
 
                 if (!femaleRes.ok || !maleRes.ok || !totalRes.ok) {
-                    throw new Error("Erreur API : Impossible de récupérer les statistiques globales.");
+                    throw new Error("Impossible de récupérer les datas globales.");
                 }
 
                 const [femaleCount, maleCount, totalCount] = await Promise.all([
@@ -65,13 +69,11 @@ export default function IndicateurPerformance() {
 
         const fetchMonthlyData = async () => {
             try {
-                console.log("Fetching monthly data...");
                 const monthlyRes = await fetch(MONTHLY_CUSTOMER_COUNT);
 
                 if (!monthlyRes.ok) {
-                    throw new Error("Erreur API : Impossible de récupérer les données mensuelles.");
+                    throw new Error("Impossible de récupérer les datas globales.");
                 }
-
                 const rawMonthlyData = await monthlyRes.json();
                 const monthsMap = [];
 
@@ -107,7 +109,6 @@ export default function IndicateurPerformance() {
                 setMonthlyData(monthsMap);
                 setErrorMonthly(null);
             } catch (err) {
-                console.error(err.message);
                 setErrorMonthly(err.message);
             } finally {
                 setLoadingMonthly(false);
@@ -116,39 +117,28 @@ export default function IndicateurPerformance() {
 
         const fetchAgeDistribution = async () => {
             try {
-                console.log("Fetching age distribution...");
                 console.log("URL utilisée :", AGE_DISTRIBUTION);
-
                 const ageRes = await fetch(AGE_DISTRIBUTION);
-
-                console.log("Statut de la réponse API :", ageRes.status);
                 if (!ageRes.ok) {
                     const errorText = await ageRes.text();
-                    console.log("Erreur API détaillée :", errorText);
-                    throw new Error("Erreur API : Impossible de récupérer les données par tranche d'âge.");
+                    throw new Error("Impossible de récupérer les datas par tranche d'âge.");
                 }
 
                 const rawAgeData = await ageRes.json();
                 console.log("Données brutes reçues :", rawAgeData);
 
-                // // Age groups in the desired order
-                const ageOrder = ["18-25", "26-35", "36-45", "46-55", "56-64", "+65"];
-                const ageFormatted = Object.entries(rawAgeData)
-                    .map(([ageGroup, count]) => ({
-                        ageGroup,
-                        count,
-                    }))
-                    .sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
+                // Age groups in the desired order
 
+                const ageOrder = ["18-25", "26-35", "36-45", "46-55", "56-64", "+65"];
+                const ageFormatted = Object.entries(rawAgeData).map(([ageGroup, count]) => ({ageGroup, count,})).sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
                 console.log("Données formatées (triées) :", ageFormatted);
 
                 setAgeDistributionData(ageFormatted);
                 setErrorAge(null);
             } catch (err) {
-                console.error("Erreur lors de la récupération des données :", err.message);
-                setErrorAge("Impossible de récupérer les données par tranche d'âge. Utilisation de données factices.");
 
                 // Fallback to dummy data
+
                 const mockAgeData = {
                     "18-25": 0,
                     "26-35": 0,
@@ -165,12 +155,58 @@ export default function IndicateurPerformance() {
                     }))
                     .sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
 
-                setAgeDistributionData(mockFormattedData);
-            } finally {
+                setAgeDistributionData(mockFormattedData);} finally {
                 setLoadingAge(false);
+            }
+
+            const fetchAcmData = async () => {
+                try {
+                    const res = await fetch(ACM_RESULT);
+                    if (!res.ok) throw new Error("Erreur API : Impossible de récupérer les datas ACM.");
+                    const data = await res.json();
+                    const cleanedData = data.filter(item => item.ageGroup);
+                    setAcmData(cleanedData);
+                    setErrorAcm(null);
+                } catch (err) {
+                    console.error("Erreur ACM:", err.message);
+                    setErrorAcm(err.message);
+                } finally {
+                    setLoadingAcm(false);
+                }
+            };
+
+            fetchAcmData();
+
+            const fetchImcData = async () => {
+            try {
+                const res = await fetch(AVG_IMC_CUSTOMER);
+                if (!res.ok) {
+                    throw new Error("Erreur API : Impossible de récupérer les data d'IMC.");
+                }
+
+                const rawData = await res.json();
+
+                // Sorted according to the logical order of age groups
+
+                const ageOrder = ["18-25", "26-35", "36-45", "46-55", "56-64", "+65"];
+                const sortedData = rawData
+                    .map(item => ({
+                        ageGroup: item.ageGroup,
+                        imc: item.imc,
+                        averageWeight: item.averageWeight,
+                        averageHeight: item.averageHeight,
+                    }))
+                    .sort((a, b) => ageOrder.indexOf(a.ageGroup) - ageOrder.indexOf(b.ageGroup));
+                setImcData(sortedData);
+                setErrorImc(null);} catch (err) {
+                setErrorImc("Impossible de récupérer les données IMC.");
+            } finally {
+                setLoadingImc(false);
             }
         };
 
+        fetchImcData();
+        };
         fetchStats();
         fetchMonthlyData();
         fetchAgeDistribution();
@@ -184,26 +220,16 @@ export default function IndicateurPerformance() {
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
         pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         pdf.save("indicateurs_performance.pdf");
     };
 
     return (
         <Box bg="#1f2b3e" minHeight="100vh">
-            <Flex height="100%" color="#1f2b3e">
+            <Flex height="100%" color="#eeeee4">
                 <Navbar />
 
-                <Box
-                    flex="1"
-                    p={6}
-                    bg="#1f2b3e"
-                    color="#1f2b3e"
-                    maxWidth="1200px"
-                    mx="auto"
-                    w="calc(100% - 250px)"
-                    ml="250px"
-                >
+                <Box flex="1" p={6} bg="#1f2b3e" color="#1f2b3e" maxWidth="1200px" mx="auto" w="calc(100% - 250px)" ml="250px">
                     <Button colorScheme="teal" onClick={generatePDF} mb={6}>
                         Télécharger en PDF
                     </Button>
@@ -214,101 +240,37 @@ export default function IndicateurPerformance() {
                         </Heading>
 
                         {/* Statistiques Globales */}
+
                         <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
                             {loadingStats ? (
-                                <Text color="white">Chargement des statistiques globales...</Text>
-                            ) : errorStats ? (
-                                <Text color="red.400">{errorStats}</Text>
-                            ) : (
-                                <>
-                                    <Box
-                                        bg="#292e3b"
-                                        p={6}
-                                        rounded="lg"
-                                        shadow="lg"
-                                        textAlign="center"
-                                        border="1px solid #4d648d"
-                                    >
-                                        <Text fontSize="lg" fontWeight="bold" color="#cee8ff">
-                                            Femmes
-                                        </Text>
-                                        <Heading size="xl" color="#FD6C9E">
-                                            👩 {stats.females}
-                                        </Heading>
+                                <Text color="white">Chargement des statistiques globales...</Text>) : errorStats ? (
+                                <Text color="red.400">{errorStats}</Text>) : (<>
+                                    <Box bg="#292e3b" p={6} rounded="lg" shadow="lg" textAlign="center" border="1px solid #4d648d">
+                                        <Text fontSize="lg" fontWeight="bold" color="#cee8ff">Femmes</Text>
+                                        <Heading size="xl" color="#FD6C9E">👩 {stats.females}</Heading>
                                     </Box>
-                                    <Box
-                                        bg="#292e3b"
-                                        p={6}
-                                        rounded="lg"
-                                        shadow="lg"
-                                        textAlign="center"
-                                        border="1px solid #4d648d"
-                                    >
-                                        <Text fontSize="lg" fontWeight="bold" color="#cee8ff">
-                                            Hommes
-                                        </Text>
-                                        <Heading size="xl" color="#1E7FCB">
-                                            👨 {stats.males}
-                                        </Heading>
+
+                                    <Box bg="#292e3b" p={6} rounded="lg" shadow="lg" textAlign="center" border="1px solid #4d648d">
+                                        <Text fontSize="lg" fontWeight="bold" color="#cee8ff">Hommes</Text>
+                                        <Heading size="xl" color="#1E7FCB">👨 {stats.males}</Heading>
                                     </Box>
-                                    <Box
-                                        bg="#292e3b"
-                                        p={6}
-                                        rounded="lg"
-                                        shadow="lg"
-                                        textAlign="center"
-                                        border="1px solid #4d648d"
-                                    >
-                                        <Text fontSize="lg" fontWeight="bold" color="#cee8ff">
-                                            Total
-                                        </Text>
-                                        <Heading size="xl" color="#FF4D4D">
-                                            👥 {stats.total}
-                                        </Heading>
+
+                                    <Box bg="#292e3b" p={6} rounded="lg" shadow="lg" textAlign="center" border="1px solid #4d648d">
+                                        <Text fontSize="lg" fontWeight="bold" color="#cee8ff">Total</Text>
+                                        <Heading size="xl" color="#FF4D4D">👥 {stats.total}</Heading>
                                     </Box>
                                 </>
                             )}
                         </SimpleGrid>
 
-                        {/* Répartition par Mois */}
-                        <Box bg="#292e3b" p={6} rounded="lg" shadow="lg" mt={6}>
-                            <Heading size="md" mb={4} color="#cee8ff">
-                                Répartition des clients par mois
-                            </Heading>
-                            {loadingMonthly ? (
-                                <Text color="white">Chargement des données mensuelles...</Text>
-                            ) : errorMonthly ? (
-                                <Text color="red.400">{errorMonthly}</Text>
-                            ) : (
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={monthlyData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis
-                                            dataKey="month"
-                                            tickFormatter={(value, index) =>
-                                                `${monthlyData[index].year}-${String(value).padStart(2, "0")}`
-                                            }
-                                        />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Bar dataKey="males" fill="#1E7FCB" name="Hommes" />
-                                        <Bar dataKey="females" fill="#FD6C9E" name="Femmes" />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            )}
-                        </Box>
+                        {/* Distribution by Age Group */}
 
-                        {/* Répartition par Tranche d'Âge */}
                         <Box bg="#292e3b" p={6} rounded="lg" shadow="lg" mt={6}>
                             <Heading size="md" mb={4} color="#cee8ff">
                                 Répartition des clients par tranche d'âge
                             </Heading>
-                            {loadingAge ? (
-                                <Text color="white">Chargement des données par tranche d'âge...</Text>
-                            ) : errorAge ? (
-                                <Text color="red.400">{errorAge}</Text>
-                            ) : (
+                            {loadingAge ? (<Text color="white">Chargement des données par tranche d'âge...</Text>) : errorAge ? (
+                                <Text color="red.400">{errorAge}</Text>) : (
                                 <ResponsiveContainer width="100%" height={300}>
                                     <BarChart data={ageDistributionData}>
                                         <CartesianGrid strokeDasharray="3 3" />
@@ -319,6 +281,62 @@ export default function IndicateurPerformance() {
                                         <Bar dataKey="count" fill="#FFA500" name="Clients" />
                                     </BarChart>
                                 </ResponsiveContainer>
+                            )}
+                        </Box>
+
+                        {/* Average BMI, Weight and Height by age group */}
+
+                        <Box bg="#292e3b" p={6} rounded="lg" shadow="lg" mt={6}>
+                            <Heading size="md" mb={4} color="#cee8ff">
+                                IMC, Poids et Taille moyen par tranche d'âge
+                            </Heading>{loadingImc ? (
+                                <Text color="white">Chargement des données IMC...</Text>) : errorImc ? (
+                                <Text color="red.400">{errorImc}</Text>) : (
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <LineChart data={imcData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="ageGroup" tickFormatter={(value) => value}/>
+                                        <YAxis tickFormatter={(value) => value.toFixed(1)}/>
+                                        <Tooltip formatter={(value) => value.toFixed(1)}/>
+                                        <Legend />
+                                        <Line type="monotone" dataKey="imc" stroke="#00C49F" name="IMC moyen" strokeWidth={3} />
+                                        <Line type="monotone" dataKey="averageWeight" stroke="#FFBB28" name="Poids moyen" strokeWidth={4}/>
+                                        <Line type="monotone" dataKey="averageHeight" stroke="#FF8042" name="Taille moyenne" strokeWidth={4} />
+                                    </LineChart>
+                                </ResponsiveContainer>)}
+                        </Box>
+
+                        <Box bg="#292e3b" p={6} rounded="lg" shadow="lg" mt={6}>
+                            <Heading size="md" mb={2} color="#cee8ff">Résultats ACM : Composantes principales par tranche d'âge</Heading>
+                            <Text fontSize="sm" mb={4} color="gray.400">
+                                <strong>Vert</strong> : valeur positive &nbsp;|&nbsp;
+                                <strong>Rouge</strong> : valeur négative <br />
+                            </Text>{loadingAcm ? (
+                                <Text color="white">Chargement des données ACM...</Text>) : errorAcm ? (
+                                <Text color="red.400">{errorAcm}</Text>) : (
+                                <Box overflowX="auto">
+                                    <table style={{ width: "100%", color: "#eee", borderCollapse: "collapse" }}>
+                                        <thead style={{ backgroundColor: "#1E2A38" }}>
+                                        <tr>
+                                            <th style={{ padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center" }}>Tranche d'âge</th>
+                                            <th style={{ padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center" }}>Composante 1 (Taille)</th>
+                                            <th style={{ padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center" }}>Composante 2 (Poids)</th>
+                                            <th style={{ padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center" }}>Composante 3 (IMC)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {sortedAcmData.map((item, index) => (
+                                            <tr key={index}><td style={{padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center"}}>{item.ageGroup}
+                                                </td>
+                                                <td style={{padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center", color: item.U[0] >= 0 ? "#4CAF50" : "#FF4C4C", fontWeight: "bold"}} title={item.U[0] >= 0 ? "Taille élevée" : "Taille plus faible"}>{item.U[0].toFixed(3)}</td>
+                                                <td style={{padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center", color: item.U[1] >= 0 ? "#4CAF50" : "#FF4C4C", fontWeight: "bold"}} title={item.U[1] >= 0 ? "Poids plus léger" : "Poids élevé"}>{item.U[1].toFixed(3)}</td>
+                                                <td style={{padding: "8px", borderBottom: "1px solid #4d648d", textAlign: "center", color: item.U[2] >= 0 ? "#4CAF50" : "#FF4C4C", fontWeight: "bold"}} title={item.U[2] >= 0 ? "IMC normal ou bas" : "IMC élevé"}>
+                                                    {item.U[2].toFixed(3)}
+                                                </td>
+                                            </tr>))}
+                                        </tbody>
+                                    </table>
+                                </Box>
                             )}
                         </Box>
                     </Box>
