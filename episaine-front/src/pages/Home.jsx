@@ -75,6 +75,7 @@ export default function Home() {
                     direction={{ base: "column", md: "row" }}
                 >
                     <Button
+                        id="client-button"
                         as={RouterLink}
                         to="/client/"
                         colorScheme="teal"

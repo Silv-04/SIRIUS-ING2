@@ -182,6 +182,6 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return "Recipe{RecipeName='" + recipeName + '}';
+        return "Recipe{RecipeName='" + recipeName + '}' + "\n";
     }
 }
