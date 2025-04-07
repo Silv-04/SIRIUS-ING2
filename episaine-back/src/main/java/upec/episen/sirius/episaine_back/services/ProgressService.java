@@ -138,6 +138,7 @@ public class ProgressService {
             default:
                 break;
         }
+        progressLogger.info("Recipes:" + recipesList.toString());
 
         // 3. Filter recipes according to client's allergies, intolerances and
         // prohibited foods
