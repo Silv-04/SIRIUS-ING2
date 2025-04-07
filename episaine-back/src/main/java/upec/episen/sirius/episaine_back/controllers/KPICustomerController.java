@@ -49,5 +49,20 @@ public class KPICustomerController {
         return ResponseEntity.ok(kpiCustomerService.getStatsByAgeGroup());
     }
 
+    /**
+     * Endpoint pour récupérer les résultats de l'ACM (Analyse des Correspondances Multiples)
+     */
+    @GetMapping("/acm-results")
+    public List<Map<String, Object>> getAcmResults() {
+        return kpiCustomerService.getAcmResults();
+    }
+
+    /**
+     * Endpoint pour récupérer les résultats du FCM (Fuzzy C-Means)
+     */
+    @GetMapping("/fcm-results")
+    public List<Map<String, Object>> getFcmResults() {
+        return kpiCustomerService.getFcmResults();
+    }
 }
 
