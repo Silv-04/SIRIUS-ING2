@@ -95,7 +95,7 @@ function Customers() {
                 date_creation)
 
             console.log("ID du client créé : ", response.data);
-            navigate("/client/recettes/informations/", { state: { inputValue: response.data } });
+            navigate("/client/");
         } catch (error) {
             console.error("Erreur lors de la création du client : ", error);
         }
