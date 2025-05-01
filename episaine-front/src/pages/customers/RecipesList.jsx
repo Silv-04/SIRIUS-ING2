@@ -181,7 +181,7 @@ function RecipesListInput() {
     };
 
     return (
-        <Box p={4} width={"80vw"} height={"80vh"}>
+            <Box sx={{ paddingLeft: "20px", paddingTop: "20px", height: "100vh"}}>
             <form onSubmit={(e) => { e.preventDefault(); getRecipes(); }} noValidate autoComplete='off'>
                 <Grid templateColumns={"repeat(1, 1fr)"} gap={4} p={4} justifyContent={"center"} alignItems={"center"}>
                     <GridItem colSpan={1}>

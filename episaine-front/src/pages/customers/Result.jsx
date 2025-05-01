@@ -20,8 +20,8 @@ function ResultPage() {
 
     return (
         <Box sx={{ paddingLeft: "20px", paddingTop: "20px", height: "100vh"}}>
-            <TableContainer overflowY="auto" height="80%" width={"100%"}>
-                <Table width={"100%"} layout={"fixed"}>
+                <TableContainer sx={{ overflowY: "auto", overflowX: "auto"}} height={"80%"} width={"100%"}>
+                <Table width={"100%"} >
                     <Thead position={"sticky"} top={0} zIndex={1} background={"white"}>
                         <Tr>
                             {recipesListTableHeader.map((header) => (

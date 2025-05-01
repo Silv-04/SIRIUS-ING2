@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.javatuples.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -108,5 +107,37 @@ public class WeightForecastTest {
 
         // Then
         assertTrue(weights.get(weights.size() - 1) >= objective);
+    }
+
+    @Test
+    public void weightForecastCoherence() {
+        // Given
+        int objective = 55;
+        int mealsPerDay = 1;
+        int idCustomer = 1;
+        int startDay = 0;
+
+        // When
+        when(customerService.findByIdCustomer(idCustomer)).thenReturn(customer);
+        when(informationsService.findByIdCustomer(idCustomer)).thenReturn(informations);
+        when(progressService.getRecipesForId(anyInt(), any(), any(), anyInt(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(),
+                any(), any(), any(), any(), any())).thenReturn(mockRecipeList);
+
+        WeightProjectionDTO weightProjectionDTO = weightForecastService.getWeightList(idCustomer, objective,
+                mealsPerDay, startDay, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, null, null, null, null, null);
+
+        Map<Integer, Double> weights = weightProjectionDTO.getWeightProjection();
+
+        // Then
+        boolean isCoherent = true;
+        for (int i = 0; i < weights.size() - 2; i++) {
+            if (Math.abs(weights.get(i) - weights.get(i+1)) > 0.2) {
+                isCoherent = false;
+                break;
+            }
+        }
+        assertTrue(isCoherent);
     }
 }
