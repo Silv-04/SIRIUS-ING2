@@ -95,7 +95,7 @@ function Customers() {
                 date_creation)
 
             console.log("ID du client créé : ", response.data);
-            navigate("/client/recettes/informations/", { state: { inputValue: response.data } });
+            navigate("/client/");
         } catch (error) {
             console.error("Erreur lors de la création du client : ", error);
         }
@@ -180,13 +180,13 @@ function Customers() {
 
 
     return (
-        <Grid templateRows={"repeat(2, 1fr)"} gap={6} paddingLeft={50} paddingRight={50}>
+        <Grid templateRows={"repeat(1, 1fr)"} gap={6} paddingLeft={50} paddingRight={50}>
             <GridItem>
                 <Text textAlign={"center"} fontWeight={"Bold"} fontSize={50} paddingTop={30}>
                     Formulaire client
                 </Text>
             </GridItem>
-            <GridItem>
+            <GridItem paddingTop={100}>
                 <form onSubmit={handleSubmit} noValidate autoComplete="off">
                     <Grid templateColumns={"repeat(2, 1fr)"} gap={6}>
                         <Grid templateRows={"repeat(5, 1fr)"} gap={2}>

@@ -4,5 +4,18 @@
     {"value": "calorieCount", "label": "Calories"},
     {"value": "ingredients", "label": "Ingrédients"},
     {"value": "instructions", "label": "Instructions"},
-    {"value": "dietaryRegime", "label": "Régime alimentaire"}
+    {"value": "dietaryRegime", "label": "Régime alimentaire"},
+    {"value": "totalAmidon", "label": "Amidon"},
+    {"value": "totalCalcium", "label": "Calcium"},
+    {"value": "totalCholesterol", "label": "Cholesterol"},
+    {"value": "totalCuivre", "label": "Cuivre"},
+    {"value": "totalFer", "label": "Fer"},
+    {"value": "totalFibres", "label": "Fibres"},
+    {"value": "totalGlucides", "label": "Glucides"},
+    {"value": "totalGlucose", "label": "Glucose"},
+    {"value": "totalLipides", "label": "Lipides"},
+    {"value": "totalMaltose", "label": "Maltose"},
+    {"value": "totalSel", "label": "Sel"},
+    {"value": "totalLactose", "label": "Lactose"},
+    {"value": "totalProteines625", "label": "Protéine 625"}
 ]
