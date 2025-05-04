@@ -3,7 +3,7 @@ import {Box, Flex, Heading, Text, SimpleGrid, Button,} from "@chakra-ui/react";
 import Navbar from "../../components/nutritionist/navbar";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { ScatterChart ,LineChart,Scatter, BarChart,LabelList , Bar ,Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { ScatterChart ,LineChart,Scatter, BarChart,ReferenceLine  , Bar ,Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { FEMALE_COUNT, MALE_COUNT, TOTAL_COUNT, MONTHLY_CUSTOMER_COUNT, AGE_DISTRIBUTION,AVG_IMC_CUSTOMER,ACM_RESULT} from "../../constants/back";
 
 export default function IndicateurPerformance() {
@@ -228,6 +228,52 @@ export default function IndicateurPerformance() {
         pdf.save("indicateurs_performance.pdf");
     };
 
+    const colorMap = {
+        C1: "#4C9AFF",
+        C2: "#FFA500",
+        C3: "#AA66CC",
+    };
+
+    const regimeParTranche = {
+        "18-25": "Omnivore",
+        "26-35": "Omnivore",
+        "36-45": "Sans gluten",
+        "46-55": "Végétarien",
+        "56-64": "Végan",
+        "+65": "Sans gluten"
+    };
+
+    const regimeColor = {
+        "Omnivore": "#4C9AFF",
+        "Sans gluten": "#FFBB28",
+        "Végétarien": "#4CAF50",
+        "Végan": "#AA66CC"
+    };
+
+
+    const flatComposantesData = sortedAcmData.map((item) => ({
+        ageGroup: item.ageGroup.trim(),
+        regime: regimeParTranche[item.ageGroup.trim()],
+        x: item.U[0], // C1
+        y: item.U[1], // C2
+        fill: regimeColor[regimeParTranche[item.ageGroup.trim()]],
+    }));
+
+
+    sortedAcmData.forEach((item, ageIndex) => {
+        ["C1", "C2", "C3"].forEach((key, index) => {
+            flatComposantesData.push({
+                index: ageIndex,
+                ageGroup: item.ageGroup.trim(),
+                composante: key,
+                value: item.U[index],
+                label: `${key}: ${item.U[index].toFixed(3)}`,
+                fill: colorMap[key],
+            });
+        });
+    });
+
+
     return (
         <Box bg="#1f2b3e" minHeight="100vh">
             <Flex height="100%" color="#eeeee4">
@@ -343,32 +389,66 @@ export default function IndicateurPerformance() {
                                 </Box>
                             )}
                         </Box>
+                        {/* ACM KPI */}
+                        <Box
+                            bg="white"
+                            p={6}
+                            rounded="lg"
+                            shadow="lg"
+                            mt={6}
+                            textAlign="center"
+                        >
+                            <Text fontSize="xl" fontWeight="bold" mb={2} color="gray.800">
+                                Composantes principales par tranche d’âge
+                            </Text>
+                            <Text fontSize="sm" mb={4} color="gray.600">
+                                Représentation des composantes C1 (Taille) et C2 (Poids) par intervalle d’âge, avec régime dominant affiché
+                            </Text>
+                            <Text fontSize="sm" color="gray.600" mb={4}>
+                                <span style={{ color: "#1f77b4", fontWeight: "bold" }}>C1 (Taille)</span>,{" "}
+                                <span style={{ color: "#ff7f0e", fontWeight: "bold" }}>C2 (Poids)</span>
+                            </Text>
 
-                        <ResponsiveContainer width="100%" height={400}>
-                            <ScatterChart margin={{ top: 20, right: 40, bottom: 40, left: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="category" dataKey="ageGroup" name="Tranche d'âge" />
-                                <YAxis type="number" dataKey="value" name="Valeur" />
-                                <Tooltip cursor={{ strokeDasharray: "3 3" }} />
-                                <Legend />
-
-                                {["C1", "C2", "C3"].map((key, index) => {
-                                    const colorMap = { C1: "#4C9AFF", C2: "#FFA500", C3: "#AA66CC" };
-                                    const flatData = sortedAcmData.map((item) => ({
-                                        ageGroup: item.ageGroup,
-                                        value: item.U[index],
-                                        label: `${key}: ${item.U[index].toFixed(3)}`
-                                    }));
-
-                                    return (
-                                        <Scatter key={key} name={`${key} (${["Taille", "Poids", "IMC"][index]})`} data={flatData} fill={colorMap[key]}>
-                                            <LabelList dataKey="label" position="top" fontSize={11} />
-                                        </Scatter>
-                                    );
-                                })}
-                            </ScatterChart>
-                        </ResponsiveContainer>
-
+                            <ResponsiveContainer width="100%" height={400}>
+                                <ScatterChart margin={{ top: 20, right: 40, bottom: 40, left: 40 }}>
+                                    <CartesianGrid stroke="#ccc" strokeDasharray="3 3" />
+                                    <XAxis
+                                        type="number"
+                                        dataKey="x"
+                                        name="Composante 1 (Taille)"
+                                        stroke="#333"
+                                    />
+                                    <YAxis
+                                        type="number"
+                                        dataKey="y"
+                                        name="Composante 2 (Poids)"
+                                        stroke="#333"
+                                    />
+                                    <Tooltip
+                                        cursor={{ strokeDasharray: "3 3" }}
+                                        formatter={(value, name) => [value.toFixed(3), name === "x" ? "C1 (Taille)" : "C2 (Poids)",]}
+                                        labelFormatter={(val, props) => {const p = props[0]?.payload;return `${p.ageGroup} - ${p.regime}`;}}/>
+                                    <Legend />
+                                    <ReferenceLine y={0} stroke="#aaa" strokeDasharray="3 3" />
+                                    <ReferenceLine x={0} stroke="#aaa" strokeDasharray="3 3" />
+                                    <Scatter
+                                        name="Tranches d'âge"
+                                        data={flatComposantesData}
+                                        shape={(props) => {
+                                            const { cx, cy, payload } = props;
+                                            return (
+                                                <>
+                                                    <text x={cx + 10} y={cy + 4} textAnchor="start" fontSize={12} fill="#333">
+                                                        {`${payload.ageGroup} : ${payload.regime}`}
+                                                    </text>
+                                                    <circle cx={cx} cy={cy} r={7} fill={payload.fill} stroke="#fff" strokeWidth={1.5}/>
+                                                </>
+                                            );
+                                        }}
+                                    />
+                                </ScatterChart>
+                            </ResponsiveContainer>
+                        </Box>
                     </Box>
                 </Box>
             </Flex>
