@@ -29,7 +29,8 @@ public class WeightForecastController {
      * @return Map<Integer, Double> : return a map of weight values
      */
     @GetMapping("/getWeightValues")
-    public WeightProjectionDTO getRecipesTest(@RequestParam int id, @RequestParam int objective, @RequestParam int mealsPerDay, @RequestParam int startDay,
+    public WeightProjectionDTO getRecipesTest(@RequestParam int id, @RequestParam int objective, @RequestParam int mealsPerDay, 
+    @RequestParam(required = false, defaultValue = "0") int startDay,
     @RequestParam(required = false) Double minGlucides,
     @RequestParam(required = false) Double maxGlucides,
     @RequestParam(required = false) Double minLipides,

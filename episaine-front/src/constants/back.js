@@ -17,6 +17,9 @@ export const GET_RECIPES_BY_CUSTOMER = BACKEND_HOST_EPISAINE + '/recipe/getRecip
 export const GET_INFORMATIONS_BY_CUSTOMER_ID = BACKEND_HOST_EPISAINE + '/informations/get';
 export const UPDATE_INFORMATIONS = BACKEND_HOST_EPISAINE + '/informations/update';
 export const CREATE_INFORMATIONS = BACKEND_HOST_EPISAINE + '/informations/add';
+export const SAVE_PROJECTIION = BACKEND_HOST_EPISAINE + '/customerProgress/add';
+export const UPDATE_PROJECTIION = BACKEND_HOST_EPISAINE + '/customerProgress/update';
+export const GET_PROJECTION = BACKEND_HOST_EPISAINE + '/customerProgress/get';
 
 export const GENERATE_RECIPE = BACKEND_HOST_EPISAINE + "/recipe/generate";
 

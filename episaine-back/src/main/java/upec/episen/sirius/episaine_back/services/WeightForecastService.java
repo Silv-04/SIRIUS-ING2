@@ -115,7 +115,7 @@ public class WeightForecastService {
         }
 
         for (int i = 1; i < caloriesListPerDay.size(); i++) {
-            double prevWeight = weightList.get(i - 1);
+            double prevWeight = weightList.get(startDay + i - 1);
             double avgCalories = caloriesPerDay(prevWeight, height, age, gender, number_of_meals);
             double newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) Math.round(avgCalories));
             weightList.put(startDay + i, newWeight);
