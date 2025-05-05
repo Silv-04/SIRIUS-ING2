@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CREATE_CUSTOMER, CREATE_INFORMATIONS, GET_INFORMATIONS_BY_CUSTOMER_ID, UPDATE_INFORMATIONS, GET_PROJECTION_VALUES, GET_RECIPES_BY_CUSTOMER } from '../constants/back';
+import { CREATE_CUSTOMER, CREATE_INFORMATIONS, GET_INFORMATIONS_BY_CUSTOMER_ID, UPDATE_INFORMATIONS, GET_PROJECTION_VALUES, GET_RECIPES_BY_CUSTOMER, UPDATE_PROJECTIION, GET_PROJECTION, SAVE_PROJECTIION } from '../constants/back';
 
 export async function updateCustomerInformation(information) {
     return await axios.post(UPDATE_INFORMATIONS, information);
@@ -13,7 +13,7 @@ export async function getCustomerInformationByCustomerId(customerId) {
     return await axios.get(GET_INFORMATIONS_BY_CUSTOMER_ID + "/" + customerId);
 }
 
-export async function projection(id, objective, numberOfMeals,
+export async function projection(id, objective, numberOfMeals, startDay,
     minGlucides,
     maxGlucides,
     minLipides,
@@ -51,6 +51,7 @@ export async function projection(id, objective, numberOfMeals,
     addParam("id", id);
     addParam("objective", objective);
     addParam("mealsPerDay", numberOfMeals);
+    addParam("startDay", startDay);
     addParam("minGlucides", minGlucides);
     addParam("maxGlucides", maxGlucides);
     addParam("minLipides", minLipides);
@@ -164,4 +165,16 @@ export async function createCustomer(customer_lastname, customer_firstname, cust
         postal_code,
         date_creation
     });
+}
+
+export async function getCustomerProgression(id) {
+    return await axios.get(GET_PROJECTION + "/" + id);
+}
+
+export async function updateCustomerProgression(customerProgress) {
+    return await axios.post(UPDATE_PROJECTIION, customerProgress);
+}
+
+export async function saveCustomerProgression(customerProgress) {
+    return await axios.post(SAVE_PROJECTIION, customerProgress);
 }

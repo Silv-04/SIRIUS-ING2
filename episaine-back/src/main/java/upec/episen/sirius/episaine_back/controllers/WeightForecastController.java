@@ -29,7 +29,8 @@ public class WeightForecastController {
      * @return Map<Integer, Double> : return a map of weight values
      */
     @GetMapping("/getWeightValues")
-    public WeightProjectionDTO getRecipesTest(@RequestParam int id, @RequestParam int objective, @RequestParam int mealsPerDay,
+    public WeightProjectionDTO getRecipesTest(@RequestParam int id, @RequestParam int objective, @RequestParam int mealsPerDay, 
+    @RequestParam(required = false, defaultValue = "0") int startDay,
     @RequestParam(required = false) Double minGlucides,
     @RequestParam(required = false) Double maxGlucides,
     @RequestParam(required = false) Double minLipides,
@@ -56,7 +57,7 @@ public class WeightForecastController {
     @RequestParam(required = false) Double maxFer,
     @RequestParam(required = false) Double minProteines625,
     @RequestParam(required = false) Double maxProteines625) {
-        return weightForecastService.getWeightList(id, objective, mealsPerDay, minGlucides, maxGlucides, minLipides, maxLipides, minGlucose,
+        return weightForecastService.getWeightList(id, objective, mealsPerDay, startDay, minGlucides, maxGlucides, minLipides, maxLipides, minGlucose,
         maxGlucose, minLactose, maxLactose, minMaltose, maxMaltose, minAmidon, maxAmidon,
         minFibres, maxFibres, minCholesterol, maxCholesterol, minSel, maxSel, minCalcium, maxCalcium, minCuivre,
         maxCuivre, minFer, maxFer, minProteines625, maxProteines625);

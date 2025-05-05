@@ -107,15 +107,18 @@ public class WeightForecastService {
      * @return Map<Integer, Double> : return a map of weights per day
      */
     public Map<Integer, Double> weightEachDay(int height, int age, String gender, int number_of_meals, double weight,
-            Map<Integer, Integer> caloriesListPerDay) {
+            Map<Integer, Integer> caloriesListPerDay, int startDay) {
         Map<Integer, Double> weightList = new HashMap<Integer, Double>();
-        weightList.put(0, weight);
+        weightList.put(startDay, weight);
+        for (int i = 0; i < startDay; i++) {
+            weightList.put(i, weight);
+        }
 
         for (int i = 1; i < caloriesListPerDay.size(); i++) {
-            double prevWeight = weightList.get(i - 1);
+            double prevWeight = weightList.get(startDay + i - 1);
             double avgCalories = caloriesPerDay(prevWeight, height, age, gender, number_of_meals);
             double newWeight = calculateNewWeight(prevWeight, caloriesListPerDay.get(i), (int) Math.round(avgCalories));
-            weightList.put(i, newWeight);
+            weightList.put(startDay + i, newWeight);
         }
         return weightList;
     }
@@ -140,7 +143,7 @@ public class WeightForecastService {
      * @param objective : given the customer's objective
      * @return Map<Integer, Double> : return a map of weight values per day
      */
-    public WeightProjectionDTO getWeightList(int id, int objective, int mealsPerDay,
+    public WeightProjectionDTO getWeightList(int id, int objective, int mealsPerDay, int startDay,
             Double minGlucides,
             Double maxGlucides,
             Double minLipides,
@@ -197,7 +200,7 @@ public class WeightForecastService {
                     maxCuivre, minFer, maxFer, minProteines625, maxProteines625);
             recipeListWithDay = formatRecipeList(recipeList);
             caloriesListPerDay = recipeToCaloriesList(recipeListWithDay);
-            weights = weightEachDay(height, age, gender, mealsPerDay, weight, caloriesListPerDay);
+            weights = weightEachDay(height, age, gender, mealsPerDay, weight, caloriesListPerDay, startDay);
             switch (informations.getHealth_goal().toLowerCase()) {
                 case "gain de poids":
                     if (weights.get(weights.size() - 1) > objective) {

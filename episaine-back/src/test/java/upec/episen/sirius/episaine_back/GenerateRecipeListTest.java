@@ -1,7 +1,6 @@
 package upec.episen.sirius.episaine_back;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.sql.Date;
@@ -218,6 +217,7 @@ public class GenerateRecipeListTest {
         List<List<Recipe>> recipeList = progressService.getRecipesForId(customerId, nbOfDays, mealsPerDay, numberOfRecipes, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null);
+
         // Then
         boolean hasForbiddenIngredient = false;
         for (List<Recipe> recipes : recipeList) {
